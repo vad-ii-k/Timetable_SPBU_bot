@@ -25,16 +25,17 @@ async def teacher_timetable(teacher_id) -> str:
     sunday = monday + timedelta(days=5)
     url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await make_request(url)
-    timetable = "<b>Преподаватель<\b>  {}\n".format(response.get("EducatorDisplayText"))
+    timetable = "<b>Преподаватель</b>  {}\n".format(response.get("EducatorDisplayText"))
     if len(response["EducatorEventsDays"]) > 0:
-        for num, day in enumerate(response["EducatorEventsDays"]):
+        for day in response["EducatorEventsDays"]:
             timetable += "\n<b>{}</b>\n".format(day.get("DayString"))
-            events = day["DayStudyEvents"][num]
-            timetable += "  {}\n".format(events.get("TimeIntervalString"))
-            timetable += "  <b>{}</b>\n".format(events.get("Subject"))
-            timetable += "    {}\n".format(events.get("ContingentUnitName"))
-            if events.get("LocationsDisplayText") == "С использованием информационно-коммуникационных технологий":
-                timetable += "    {}\n".format("С использованием ИКТ")
-            else:
-                timetable += "    {}\n".format(events.get("LocationsDisplayText"))
+            events = day["DayStudyEvents"]
+            for event in events:
+                timetable += "  {}\n".format(event.get("TimeIntervalString"))
+                timetable += "  <b>{}</b>\n".format(event.get("Subject"))
+                timetable += "    {}\n".format(event.get("ContingentUnitName"))
+                if event.get("LocationsDisplayText") == "С использованием информационно-коммуникационных технологий":
+                    timetable += "    {}\n".format("С использованием ИКТ")
+                else:
+                    timetable += "    {}\n".format(event.get("LocationsDisplayText"))
     return timetable
