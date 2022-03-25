@@ -47,14 +47,14 @@ async def widespread_last_name(message: types.Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
     await message.answer(f"Фамилия <i>{message.text}</i> очень распространена\n"
-                         "Попробуйте ввести фамилию и имя:")
+                         "Попробуйте ввести фамилию и первую букву имени:")
     await TeacherChoice.getting_choice.set()
 
 
 @dp.callback_query_handler(choice_teacher_callback.filter(), state=TeacherChoice.choosing)
 async def handling_group_of_student(call: CallbackQuery, state: FSMContext, callback_data: dict):
     await state.finish()
-    await call.answer(cache_time=60)
+    await call.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
     await call.message.edit_text("<i>Получение расписания...</i>")

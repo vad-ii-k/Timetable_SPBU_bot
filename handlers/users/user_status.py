@@ -9,7 +9,7 @@ from states.choice_teacher import TeacherChoice
 
 @dp.callback_query_handler(user_status_callback.filter(name="student group"))
 async def handling_group_of_student(call: CallbackQuery):
-    await call.answer(cache_time=60)
+    await call.answer(cache_time=5)
     callback_data = call.data
     logging.info(f"call = {callback_data}")
 
@@ -19,16 +19,16 @@ async def handling_group_of_student(call: CallbackQuery):
 
 @dp.callback_query_handler(user_status_callback.filter(name="student navigation"))
 async def handling_group_of_student(call: CallbackQuery):
-    await call.answer(cache_time=60)
+    await call.answer(cache_time=5)
     callback_data = call.data
     logging.info(f"call = {callback_data}")
 
     await call.message.answer("Здесь будет выбор по кнопочкам")
 
 
-@dp.callback_query_handler(user_status_callback.filter(name="teacher"), state=None)
+@dp.callback_query_handler(user_status_callback.filter(name="teacher"))
 async def handling_group_of_student(call: CallbackQuery):
-    await call.answer(cache_time=60)
+    await call.answer(cache_time=5)
     callback_data = call.data
     logging.info(f"call = {callback_data}")
 

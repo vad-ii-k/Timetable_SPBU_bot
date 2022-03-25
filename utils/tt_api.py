@@ -26,6 +26,7 @@ async def teacher_timetable(teacher_id) -> str:
     url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await make_request(url)
     timetable = "<b>Преподаватель</b>  {}\n".format(response.get("EducatorDisplayText"))
+    timetable += "<a href='{}'>Текущая неделя</a> \n".format(f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}")
     if len(response["EducatorEventsDays"]) > 0:
         for day in response["EducatorEventsDays"]:
             timetable += "\n<b>{}</b>\n".format(day.get("DayString"))
@@ -34,8 +35,5 @@ async def teacher_timetable(teacher_id) -> str:
                 timetable += "  {}\n".format(event.get("TimeIntervalString"))
                 timetable += "  <b>{}</b>\n".format(event.get("Subject"))
                 timetable += "    {}\n".format(event.get("ContingentUnitName"))
-                if event.get("LocationsDisplayText") == "С использованием информационно-коммуникационных технологий":
-                    timetable += "    {}\n".format("С использованием ИКТ")
-                else:
-                    timetable += "    {}\n".format(event.get("LocationsDisplayText"))
+                timetable += "    {}\n".format(event.get("LocationsDisplayText"))
     return timetable
