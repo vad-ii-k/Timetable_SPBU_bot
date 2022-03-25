@@ -5,3 +5,4 @@ class TeacherChoice(StatesGroup):
     getting_choice = State()
     choosing = State()
     wrong_last_name = State()
+    widespread_last_name = State()

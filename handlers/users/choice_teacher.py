@@ -17,10 +17,10 @@ async def getting_choice_for_teacher(message: types.Message):
     teachers_list = await teacher_search(answer)
     if len(teachers_list) == 0:
         await TeacherChoice.wrong_last_name.set()
-        await other_last_name(message)
+        await wrong_last_name(message)
     elif len(teachers_list) > 40:
-        pass
-        # TODO
+        await TeacherChoice.widespread_last_name.set()
+        await widespread_last_name(message)
     else:
         answer = await message.answer("<i>Получение списка преподавателей...</i>")
         await answer.edit_text("Выберите преподавателя из списка:",
@@ -34,11 +34,20 @@ async def choosing_teacher(message: types.Message):
 
 
 @dp.message_handler(state=TeacherChoice.wrong_last_name)
-async def other_last_name(message: types.Message):
+async def wrong_last_name(message: types.Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
-    await message.answer(f"Преподавателя с фамилией {message.text} нет!\n"
+    await message.answer(f"Преподавателя с фамилией <i>{message.text}</i> нет!\n"
                          "Пожалуйста, введите другую:")
+    await TeacherChoice.getting_choice.set()
+
+
+@dp.message_handler(state=TeacherChoice.widespread_last_name)
+async def widespread_last_name(message: types.Message):
+    await message.chat.delete_message(message.message_id - 1)
+    await message.delete()
+    await message.answer(f"Фамилия <i>{message.text}</i> очень распространена\n"
+                         "Попробуйте ввести фамилию и имя:")
     await TeacherChoice.getting_choice.set()
 
 
