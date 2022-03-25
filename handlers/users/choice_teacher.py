@@ -8,7 +8,7 @@ from keyboards.inline.callback_data import choice_teacher_callback
 from keyboards.inline.choice_teacher_buttons import create_teachers_keyboard
 from loader import dp
 from states.choice_teacher import TeacherChoice
-from utils.tt_api import teacher_search
+from utils.tt_api import teacher_search, teacher_timetable
 
 
 @dp.message_handler(state=TeacherChoice.getting_choice)
@@ -22,8 +22,9 @@ async def getting_choice_for_teacher(message: types.Message):
         pass
         # TODO
     else:
-        await message.answer("Выберите преподавателя из списка:",
-                                      reply_markup=await create_teachers_keyboard(teachers_list))
+        answer = await message.answer("<i>Получение списка преподавателей...</i>")
+        await answer.edit_text("Выберите преподавателя из списка:",
+                               reply_markup=await create_teachers_keyboard(teachers_list))
         await TeacherChoice.choosing.set()
 
 
@@ -42,10 +43,10 @@ async def other_last_name(message: types.Message):
 
 
 @dp.callback_query_handler(choice_teacher_callback.filter(), state=TeacherChoice.choosing)
-async def handling_group_of_student(call: CallbackQuery, state: FSMContext):
+async def handling_group_of_student(call: CallbackQuery, state: FSMContext, callback_data: dict):
     await state.finish()
     await call.answer(cache_time=60)
-    callback_data = call.data
     logging.info(f"call = {callback_data}")
 
-    await call.message.edit_text(f"{callback_data}")
+    await call.message.edit_text("<i>Получение расписания...</i>")
+    await call.message.edit_text(await teacher_timetable(callback_data.get("Id")))
