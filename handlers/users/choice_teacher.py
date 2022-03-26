@@ -60,4 +60,5 @@ async def viewing_schedule(call: CallbackQuery, state: FSMContext, callback_data
 
     await call.message.edit_text("<i>Получение расписания...</i>")
     await call.message.edit_text(await teacher_timetable_week(callback_data.get("Id")),
-                                 reply_markup=await create_timetable_keyboard())
+                                 reply_markup=await create_timetable_keyboard(user_type="teacher",
+                                                                              tt_id=callback_data.get("Id")))
