@@ -1,4 +1,4 @@
-async def teacher_timetable_parser_day(day):
+async def teacher_timetable_parser_day(day) -> str:
     timetable = "\n<b>{data}</b>\n".format(data=day.get("DayString"))
     events = day["DayStudyEvents"]
     for event in events:

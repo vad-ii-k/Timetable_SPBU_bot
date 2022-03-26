@@ -10,7 +10,7 @@ async def on_startup(dispatcher):
     await set_default_commands(dispatcher)
 
     # Launch Notification
-    await on_startup_notify(dispatcher)
+    # await on_startup_notify(dispatcher)
 
 
 if __name__ == '__main__':
