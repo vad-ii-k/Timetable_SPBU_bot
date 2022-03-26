@@ -4,11 +4,12 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from keyboards.inline.callback_data import choice_teacher_callback
+from keyboards.inline.callback_data import choice_teacher_callback, timetable_callback
 from keyboards.inline.choice_teacher_buttons import create_teachers_keyboard
+from keyboards.inline.timetable_buttons import create_timetable_keyboard
 from loader import dp
 from states.choice_teacher import TeacherChoice
-from utils.tt_api import teacher_search, teacher_timetable
+from utils.tt_api import teacher_search, teacher_timetable_week
 
 
 @dp.message_handler(state=TeacherChoice.getting_choice)
@@ -52,10 +53,11 @@ async def widespread_last_name(message: types.Message):
 
 
 @dp.callback_query_handler(choice_teacher_callback.filter(), state=TeacherChoice.choosing)
-async def handling_group_of_student(call: CallbackQuery, state: FSMContext, callback_data: dict):
+async def viewing_schedule(call: CallbackQuery, state: FSMContext, callback_data: dict):
     await state.finish()
     await call.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
     await call.message.edit_text("<i>Получение расписания...</i>")
-    await call.message.edit_text(await teacher_timetable(callback_data.get("Id")))
+    await call.message.edit_text(await teacher_timetable_week(callback_data.get("Id")),
+                                 reply_markup=await create_timetable_keyboard())

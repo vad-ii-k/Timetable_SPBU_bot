@@ -1,6 +1,8 @@
 from datetime import date, timedelta
 import aiohttp
 
+from utils.timetable_parsers import teacher_timetable_parser
+
 
 async def make_request(url) -> dict:
     async with aiohttp.ClientSession() as session:
@@ -19,21 +21,11 @@ async def teacher_search(last_name) -> list:
     return teachers
 
 
-async def teacher_timetable(teacher_id) -> str:
+async def teacher_timetable_week(teacher_id) -> str:
     current_date = date.today()
     monday = current_date - timedelta(days=current_date.weekday())
-    sunday = monday + timedelta(days=5)
+    sunday = monday + timedelta(days=6)
     url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await make_request(url)
-    timetable = "<b>Преподаватель</b>  {}\n".format(response.get("EducatorDisplayText"))
-    timetable += "<a href='{}'>Текущая неделя</a> \n".format(f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}")
-    if len(response["EducatorEventsDays"]) > 0:
-        for day in response["EducatorEventsDays"]:
-            timetable += "\n<b>{}</b>\n".format(day.get("DayString"))
-            events = day["DayStudyEvents"]
-            for event in events:
-                timetable += "  {}\n".format(event.get("TimeIntervalString"))
-                timetable += "  <b>{}</b>\n".format(event.get("Subject"))
-                timetable += "    {}\n".format(event.get("ContingentUnitName"))
-                timetable += "    {}\n".format(event.get("LocationsDisplayText"))
+    timetable = await teacher_timetable_parser(response)
     return timetable
