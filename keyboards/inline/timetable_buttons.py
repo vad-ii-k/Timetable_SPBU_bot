@@ -4,10 +4,13 @@ from datetime import date, timedelta
 from keyboards.inline.callback_data import timetable_callback
 
 
-async def create_timetable_keyboard(user_type,
-                                    tt_id,
-                                    prev_day_date=date.today() - timedelta(days=1),
-                                    next_day_date=date.today() + timedelta(days=1)):
+async def create_timetable_keyboard(user_type, tt_id, day_counter=0):
+    if day_counter > 0:
+        current_date = date.today() + timedelta(day_counter)
+    else:
+        current_date = date.today() - timedelta(-day_counter)
+    prev_day_date = current_date - timedelta(days=1)
+    next_day_date = current_date + timedelta(days=1)
 
     timetable_keyboard = InlineKeyboardMarkup()
     prev_day_button = InlineKeyboardButton(text="⬅ " + prev_day_date.strftime("%d.%m"),

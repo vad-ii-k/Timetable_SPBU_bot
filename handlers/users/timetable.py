@@ -14,7 +14,8 @@ async def timetable_keyboard_handler_1(call: CallbackQuery, callback_data: dict,
     await call.message.edit_text(text=await teacher_timetable_day(teacher_id=callback_data["Id"],
                                                                   day_counter=state_data.get("day_counter")),
                                  reply_markup=await create_timetable_keyboard(user_type=callback_data["type"],
-                                                                              tt_id=callback_data["Id"]))
+                                                                              tt_id=callback_data["Id"],
+                                                                              day_counter=state_data.get("day_counter")))
 
 
 @dp.callback_query_handler(timetable_callback.filter(button=['1-1', '1-3']))
