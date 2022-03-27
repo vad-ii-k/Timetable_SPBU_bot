@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 import aiohttp
 
-from utils.image_converter.converter import TimetablePicture
+from utils.image_converter.converter import TimetableIMG
 from utils.timetable_parsers import teacher_timetable_parser_day
 
 
@@ -51,24 +51,25 @@ async def teacher_timetable_week(teacher_id, week_counter=0) -> str:
     url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await request(url)
 
-    timetable = "Преподаватель: <b>{educator}</b>\n<a href='{link}'>Неделя: {monday} — {sunday}</a> \n".format(
+    timetable = "Преподаватель: <b>{educator}</b>\n<a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
         educator=response.get("EducatorDisplayText"),
         link=f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}/{monday}",
         monday=monday.strftime("%d.%m"),
         sunday=sunday.strftime("%d.%m")
     )
 
-    schedule_pic = TimetablePicture("utils/image_converter/output.png")
-    foundation = schedule_pic.create_foundation()
-    schedule_pic.image_title(image=foundation,
-                             title=response.get("EducatorDisplayText"),
+    schedule_pic = TimetableIMG("utils/image_converter/output.png")
+    schedule_pic.image_title(title=response.get("EducatorDisplayText"),
                              date="Неделя: {monday} — {sunday}".format(
-                                  monday=monday.strftime("%d.%m"),
-                                  sunday=sunday.strftime("%d.%m")))
+                                 monday=monday.strftime("%d.%m"),
+                                 sunday=sunday.strftime("%d.%m")))
 
     if len(response["EducatorEventsDays"]) > 0:
         for day in response["EducatorEventsDays"]:
-            timetable += await teacher_timetable_parser_day(day)
+            day_timetable = await teacher_timetable_parser_day(day)
+            timetable += day_timetable
+            schedule_pic.insert_timetable(timetable=day_timetable)
     else:
         timetable += '\n<i>Занятий на этой неделе нет</i>'
+
     return timetable

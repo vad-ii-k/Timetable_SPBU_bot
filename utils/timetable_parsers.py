@@ -1,16 +1,26 @@
-async def teacher_timetable_parser_day(day) -> str:
+async def separating_long_str(string) -> str:
+    if len(string) > 50:
+        sep = string.find(' ', len(string) // 2 - 7, len(string) // 2 + 7)
+        first_part = string[0:sep]
+        second_part = string[sep + 1:len(string)]
+        string = first_part + '\n  ' + second_part
+    return string
+
+
+async def teacher_timetable_parser_day(day: dict) -> str:
     timetable = "\n<b>{data}</b>\n".format(data=day.get("DayString"))
     events = day["DayStudyEvents"]
     for event in events:
-        timetable += "  <u>{time}</u>\n" \
-                     "  <b>{subject}</b>\n" \
-                     "    Формат: <i>{lesson_format}</i>\n" \
-                     "    Группы: {contingent}\n" \
-                     "    Место: <i>{locations}</i>\n".format(
-                            time=event.get("TimeIntervalString"),
-                            subject=event.get("Subject").split(", ")[0],
-                            lesson_format=event.get("Subject").split(", ")[1],
-                            contingent=event.get("ContingentUnitName"),
-                            locations=event.get("LocationsDisplayText")
-                        )
+        time = event.get("TimeIntervalString")
+        subject = await separating_long_str(event.get("Subject").split(", ")[0])
+        lesson_format = event.get("Subject").split(", ")[1]
+        contingent = event.get("ContingentUnitName")
+        locations = "Онлайн" if event.get("LocationsDisplayText").find("С использованием инф") != -1\
+            else event.get("LocationsDisplayText")
+
+        timetable += f"  <u>{time}</u>\n" \
+                     f"  <b>{subject}</b>\n" \
+                     f"    Формат: <i>{lesson_format}</i>\n" \
+                     f"    Группы: <b>{contingent}</b>\n" \
+                     f"    Место: <i>{locations}</i>\n"
     return timetable
