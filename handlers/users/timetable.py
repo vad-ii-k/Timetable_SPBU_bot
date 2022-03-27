@@ -1,5 +1,6 @@
 import logging
 
+from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
@@ -68,3 +69,10 @@ async def timetable_keyboard_handler_2_2(call: CallbackQuery, callback_data: dic
     else:
         await state.update_data(week_counter=1)
     await timetable_keyboard_handler_2(call, callback_data, await state.get_data())
+
+
+@dp.callback_query_handler(timetable_callback.filter(button='3-1'))
+async def timetable_keyboard_handler_3_1(call: CallbackQuery, callback_data: dict, state: FSMContext):
+    await call.answer(cache_time=10)
+    logging.info(f"call = {callback_data}")
+    await call.message.reply_photo(photo=types.InputFile("utils/image_converter/output.png"))

@@ -1,6 +1,6 @@
-async def separating_long_str(string) -> str:
-    if len(string) > 50:
-        sep = string.find(' ', len(string) // 2 - 7, len(string) // 2 + 7)
+async def separating_long_str(string: str) -> str:
+    if len(string) > 45:
+        sep = string.find(' ', len(string) // 2 - 6, len(string) // 2 + 6)
         first_part = string[0:sep]
         second_part = string[sep + 1:len(string)]
         string = first_part + '\n  ' + second_part
@@ -14,7 +14,7 @@ async def teacher_timetable_parser_day(day: dict) -> str:
         time = event.get("TimeIntervalString")
         subject = await separating_long_str(event.get("Subject").split(", ")[0])
         lesson_format = event.get("Subject").split(", ")[1]
-        contingent = event.get("ContingentUnitName")
+        contingent = await separating_long_str(event.get("ContingentUnitName"))
         locations = "Онлайн" if event.get("LocationsDisplayText").find("С использованием инф") != -1\
             else event.get("LocationsDisplayText")
 

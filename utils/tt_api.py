@@ -5,14 +5,14 @@ from utils.image_converter.converter import TimetableIMG
 from utils.timetable_parsers import teacher_timetable_parser_day
 
 
-async def request(url) -> dict:
+async def request(url: str) -> dict:
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
             if resp.status == 200:
                 return await resp.json()
 
 
-async def teacher_search(last_name) -> list:
+async def teacher_search(last_name: str) -> list:
     url = f"https://timetable.spbu.ru/api/v1/educators/search/{last_name}"
     response = await request(url)
     teachers = []
@@ -22,7 +22,7 @@ async def teacher_search(last_name) -> list:
     return teachers
 
 
-async def teacher_timetable_day(teacher_id, day_counter=0) -> str:
+async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
     if day_counter > 0:
         current_date = date.today() + timedelta(day_counter)
     else:
@@ -44,7 +44,7 @@ async def teacher_timetable_day(teacher_id, day_counter=0) -> str:
     return timetable
 
 
-async def teacher_timetable_week(teacher_id, week_counter=0) -> str:
+async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
     current_date = date.today() + timedelta(week_counter * 7)
     monday = current_date - timedelta(days=current_date.weekday())
     sunday = monday + timedelta(days=6)

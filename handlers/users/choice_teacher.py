@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from keyboards.inline.callback_data import choice_teacher_callback, timetable_callback
+from keyboards.inline.callback_data import choice_teacher_callback
 from keyboards.inline.choice_teacher_buttons import create_teachers_keyboard
 from keyboards.inline.timetable_buttons import create_timetable_keyboard
 from loader import dp
@@ -55,6 +55,8 @@ async def widespread_last_name(message: types.Message):
 @dp.callback_query_handler(choice_teacher_callback.filter(), state=TeacherChoice.choosing)
 async def viewing_schedule(call: CallbackQuery, state: FSMContext, callback_data: dict):
     await state.finish()
+    await call.message.chat.delete_message(call.message.message_id - 2)
+    await call.message.chat.delete_message(call.message.message_id - 1)
     await call.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
