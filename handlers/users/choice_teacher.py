@@ -38,8 +38,8 @@ async def choosing_teacher(message: types.Message):
 async def wrong_last_name(message: types.Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
-    await message.answer(f"Преподавателя с фамилией <i>{message.text}</i> нет!\n"
-                         "Пожалуйста, введите другую:")
+    await message.answer(f"Преподаватель <i>{message.text}</i> не найден!\n"
+                         "Пожалуйста, введите другую фамилию:")
     await TeacherChoice.getting_choice.set()
 
 
