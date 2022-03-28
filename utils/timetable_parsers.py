@@ -1,9 +1,10 @@
 async def separating_long_str(string: str) -> str:
     if len(string) > 45:
-        sep = string.find(' ', len(string) // 2 - 6, len(string) // 2 + 6)
-        first_part = string[0:sep]
-        second_part = string[sep + 1:len(string)]
-        string = first_part + '\n  ' + second_part
+        sep = string.find(' ', len(string) // 2 - 6, len(string) // 2 + 7)
+        if sep != -1:
+            first_part = string[0:sep]
+            second_part = string[sep + 1:len(string)]
+            string = first_part + '\n  ' + second_part
     return string
 
 
