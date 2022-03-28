@@ -8,8 +8,29 @@ async def separating_long_str(string: str) -> str:
     return string
 
 
+async def get_weekday_sticker(day: str):
+    weekday_sticker = ''
+    match day.split(",")[0]:
+        case 'понедельник':
+            weekday_sticker = '1️⃣'
+        case 'вторник':
+            weekday_sticker = '2️⃣'
+        case 'среда':
+            weekday_sticker = '3️⃣'
+        case 'четверг':
+            weekday_sticker = '4️⃣'
+        case 'пятница':
+            weekday_sticker = '5️⃣'
+        case 'суббота':
+            weekday_sticker = '6️⃣'
+        case 'воскресенье':
+            weekday_sticker = '7️⃣'
+    return weekday_sticker
+
+
 async def teacher_timetable_parser_day(day: dict) -> str:
-    timetable = "\n<b>{data}</b>\n".format(data=day.get("DayString"))
+    timetable = "\n\n{sticker} <b>{data}</b>\n".format(sticker=await get_weekday_sticker(day.get("DayString")),
+                                                       data=day.get("DayString"))
     events = day["DayStudyEvents"]
     for event in events:
         time = event.get("TimeIntervalString")
@@ -19,9 +40,11 @@ async def teacher_timetable_parser_day(day: dict) -> str:
         locations = "Онлайн" if event.get("LocationsDisplayText").find("С использованием инф") != -1\
             else event.get("LocationsDisplayText")
 
-        timetable += f"  <u>{time}</u>\n" \
+        timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"\
                      f"  <b>{subject}</b>\n" \
-                     f"    Формат: <i>{lesson_format}</i>\n" \
-                     f"    Группы: <b>{contingent}</b>\n" \
-                     f"    Место: <i>{locations}</i>\n"
+                     f"    🕟 <u>{time}</u>\n" \
+                     f"    🎓 Группы: <b>{contingent}</b>\n" \
+                     f"    ✍🏻 Формат: <i>{lesson_format}</i>\n" \
+                     f"    🚩 Место: <i>{locations}</i>\n" \
+
     return timetable

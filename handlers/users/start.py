@@ -14,5 +14,5 @@ async def bot_start(message: Message, state: FSMContext):
     logging.info(f"start: id{message.from_user.id}")
     await message.answer(text=f"Добро пожаловать, {message.from_user.full_name}!\n"
                               f"Следуйте инструкциям для настройки бота.\n"
-                              f"Нажмите соответствующую кнопку:",
+                              f"Получить расписание по:",
                          reply_markup=choice_user_status)

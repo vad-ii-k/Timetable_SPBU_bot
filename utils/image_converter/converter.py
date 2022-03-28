@@ -67,16 +67,17 @@ class TimetableIMG:
                               offset_x=indent, offset_y=skip)
         self.y += TimetableIMG.font_h2.size + skip
         for i in range(1, len(text), 5):
-            x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 1]}", font=TimetableIMG.font_bold,
+            x, y = self.draw_text(xy=(x, y), text=f"  {text[i]}", font=TimetableIMG.font_bold,
                                   offset_x=0, offset_y=skip)
             x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 2]}", font=TimetableIMG.font_italic,
                                   offset_x=0, offset_y=skip)
-            x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 3]}", font=TimetableIMG.font_reqular,
+            x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 4]}", font=TimetableIMG.font_reqular,
                                   offset_x=0, offset_y=skip)
-            x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 4]}", font=TimetableIMG.font_italic,
+            x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 3]}", font=TimetableIMG.font_italic,
                                   offset_x=0, offset_y=skip)
             draw.line(xy=[(x + 4, self.y + skip), (x + 4, y - skip//2)], fill="red", width=5)
-            self.draw_text(xy=(10, self.y + skip), text="{}\n{}".format(text[i].split('–')[0], text[i].split('–')[1]),
+            self.draw_text(xy=(10, self.y + skip),
+                           text="{}\n{}".format(text[i+1].split('–')[0], text[i+1].split('–')[1]),
                            font=TimetableIMG.font_h3, offset_x=0, offset_y=0)
             self.x, self.y = x, y + skip
         self.y += TimetableIMG.font_reqular.size + skip

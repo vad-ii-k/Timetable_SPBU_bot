@@ -31,7 +31,7 @@ async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
     url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{current_date}/{next_day}"
     response = await request(url)
 
-    timetable = "Преподаватель: <b>{educator}</b>\n<a href='{link}'>День: {current_date}</a> \n".format(
+    timetable = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>День: {current_date}</a> \n".format(
         educator=response.get("EducatorDisplayText"),
         link=f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}/{current_date}",
         current_date=current_date.strftime("%d.%m")
@@ -51,7 +51,7 @@ async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
     url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await request(url)
 
-    timetable = "Преподаватель: <b>{educator}</b>\n<a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
+    timetable = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
         educator=response.get("EducatorDisplayText"),
         link=f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}/{monday}",
         monday=monday.strftime("%d.%m"),
