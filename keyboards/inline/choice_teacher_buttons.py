@@ -1,5 +1,3 @@
-import logging
-
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from keyboards.inline.callback_data import choice_teacher_callback
