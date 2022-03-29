@@ -4,7 +4,7 @@ import re
 
 class TimetableIMG:
     """Class for creating a schedule image from text"""
-    final_img_width, final_img_height = (2200, 2700)
+    final_img_width, final_img_height = (2400, 2700)
     font_h1 = ImageFont.truetype(font="data/converter/FiraSansFonts/FiraSans-Medium.ttf", size=100)
     font_h2 = ImageFont.truetype(font="data/converter/FiraSansFonts/FiraSans-Medium.ttf", size=80)
     font_h3 = ImageFont.truetype(font="data/converter/FiraSansFonts/FiraSans-Medium.ttf", size=50)
@@ -15,8 +15,10 @@ class TimetableIMG:
     def __init__(self, path_final_img: str):
         self.path_final_img = path_final_img
         self.current_image = self.create_foundation()
-        self.x = 30
+        self.x = 50
         self.y = 30
+        self.days_count = 0
+        self.title_y = 0
 
     @staticmethod
     def create_foundation() -> Image:
@@ -41,7 +43,7 @@ class TimetableIMG:
         y += TimetableIMG.font_h2.size + 40
         draw.line(xy=[(x, y), (image.width-x, y)], fill="black", width=5)
         y += 20
-        self.x, self.y = x, y
+        self.x, self.y, self.title_y = x, y, y
         image.save(self.path_final_img)
 
     def draw_text(self, xy: tuple, text: str, font: ImageFont, offset_x: int, offset_y: int) -> tuple:
@@ -53,7 +55,7 @@ class TimetableIMG:
             y += font.size + offset_y
         else:
             draw.multiline_text(xy=xy, align="left", text=text, font=font, fill="black")
-            y += (font.size + offset_y) * 2
+            y += (font.size + offset_y) * (len([i for i in text if i == '\n']) + 1)
         x += offset_x
         return x, y
 
@@ -63,6 +65,8 @@ class TimetableIMG:
         draw = ImageDraw.Draw(image)
         skip = 10
         indent = 120
+        if self.days_count == 3:
+            self.x, self.y = self.final_img_width//2 - 40, self.title_y
         x, y = self.draw_text(xy=(self.x, self.y), text=text[0], font=TimetableIMG.font_h2,
                               offset_x=indent, offset_y=skip)
         self.y += TimetableIMG.font_h2.size + skip
@@ -76,10 +80,17 @@ class TimetableIMG:
             x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 3]}", font=TimetableIMG.font_italic,
                                   offset_x=0, offset_y=skip)
             draw.line(xy=[(x + 4, self.y + skip), (x + 4, y - skip//2)], fill="red", width=5)
-            self.draw_text(xy=(10, self.y + skip),
+            self.draw_text(xy=((self.days_count >= 3) * (self.final_img_width//2 - 80) + 30,
+                               self.y + skip),
                            text="{}\n{}".format(text[i+1].split('–')[0], text[i+1].split('–')[1]),
                            font=TimetableIMG.font_h3, offset_x=0, offset_y=0)
             self.x, self.y = x, y + skip
         self.y += TimetableIMG.font_reqular.size + skip
         self.x -= indent
+        self.days_count += 1
         image.save(self.path_final_img)
+
+    def crop_image(self):
+        if self.days_count < 3:
+            image = self.current_image
+            image.crop(box=(0, 0, self.final_img_width, self.y)).save(self.path_final_img)

@@ -1,5 +1,13 @@
 async def separating_long_str(string: str) -> str:
-    if len(string) > 45:
+    if len(string) > 90:
+        sep1 = string.find(' ', len(string) // 3 - 6, len(string) // 3 + 7)
+        sep2 = string.find(' ', 2 * len(string) // 3 - 6, 2 * len(string) // 3 + 7)
+        if sep1 != -1 and sep2 != -1:
+            first_part = string[0:sep1]
+            second_part = string[sep1 + 1:sep2]
+            third_part = string[sep2 + 1:len(string)]
+            string = first_part + '\n  ' + second_part + '\n  ' + third_part
+    elif len(string) > 45:
         sep = string.find(' ', len(string) // 2 - 6, len(string) // 2 + 7)
         if sep != -1:
             first_part = string[0:sep]
@@ -38,10 +46,10 @@ async def teacher_timetable_parser_day(day: dict) -> str:
         lesson_format = event.get("Subject").split(", ")[1]
         contingent = await separating_long_str(event.get("ContingentUnitName"))
         locations = "Онлайн" if event.get("LocationsDisplayText").find("С использованием инф") != -1\
-            else event.get("LocationsDisplayText")
+            else await separating_long_str(event.get("LocationsDisplayText"))
 
         timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"\
-                     f"  <b>{subject}</b>\n" \
+                     f"     <b>{subject}</b>\n" \
                      f"    🕟 <u>{time}</u>\n" \
                      f"    🎓 Группы: <b>{contingent}</b>\n" \
                      f"    ✍🏻 Формат: <i>{lesson_format}</i>\n" \

@@ -71,5 +71,5 @@ async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
             schedule_pic.insert_timetable(timetable=day_timetable)
     else:
         timetable += '\n<i>Занятий на этой неделе нет</i>'
-
+    schedule_pic.crop_image()
     return timetable
