@@ -28,7 +28,7 @@ class Settings(db_gino.Model):
     schedule_view_is_picture = Column(Boolean, default=False)
 
     def __repr__(self):
-        return "<Settings(id={}, user_id={}," \
+        return "<Settings(id={}, user_id={}, " \
                "daily_summary={}, notification_of_lesson={}, schedule_view_is_picture={})>".format(
                 self.id, self.user_id, self.daily_summary, self.notification_of_lesson, self.schedule_view_is_picture)
 
@@ -86,11 +86,21 @@ class DBCommands:
         await new_user.create()
         return new_user
 
+    async def get_settings(self, tg_user_id: int) -> Settings:
+        user_db = await self.get_user(tg_user_id)
+        old_settings = await Settings.query.where(Settings.user_id == user_db.id).gino.first()
+        if old_settings:
+            return old_settings
+        new_settings = Settings()
+        new_settings.user_id = user_db.id
+        await new_settings.create()
+        return new_settings
+
 
 async def create_db():
     await db_gino.set_bind(f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}')
 
     # Create tables
     # db.gino: GinoSchemaVisitor
-    await db_gino.gino.drop_all()
+    # await db_gino.gino.drop_all()
     await db_gino.gino.create_all()

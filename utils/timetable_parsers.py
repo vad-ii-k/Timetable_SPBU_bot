@@ -50,7 +50,7 @@ async def teacher_timetable_parser_day(day: dict) -> str:
         locations = "Онлайн" if event.get("LocationsDisplayText").find("С использованием инф") != -1\
             else await separating_long_str(event.get("LocationsDisplayText"))
 
-        timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"\
+        timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"\
                      f"     <b>{subject}</b>\n" \
                      f"    🕟 <u>{time}</u>\n" \
                      f"    🎓 Группы: <b>{contingent}</b>\n" \

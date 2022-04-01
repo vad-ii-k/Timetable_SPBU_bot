@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from keyboards.inline.callback_data import timetable_callback
 
 
-async def create_timetable_keyboard(user_type: str, tt_id: int, day_counter=0) -> InlineKeyboardMarkup:
+async def create_timetable_keyboard(user_type: str, tt_id: int, is_picture, day_counter=0) -> InlineKeyboardMarkup:
     if day_counter > 0:
         current_date = date.today() + timedelta(day_counter)
     else:
@@ -36,10 +36,15 @@ async def create_timetable_keyboard(user_type: str, tt_id: int, day_counter=0) -
                                                                                  type=user_type,
                                                                                  Id=tt_id))
     timetable_keyboard.row(this_week_button, next_week_button)
-    picture_button = InlineKeyboardButton(text="🖼 Картинкой 🖼",
-                                   callback_data=timetable_callback.new(button="3-1",
-                                                                        type='picture',
-                                                                        Id=0))
-    timetable_keyboard.row(picture_button)
+
+    if is_picture:
+        text = "📝 Текстом 📝"
+    else:
+        text = "🖼 Картинкой 🖼"
+    schedule_view = InlineKeyboardButton(text=text,
+                                         callback_data=timetable_callback.new(button="3-1",
+                                                                              type=user_type,
+                                                                              Id=tt_id))
+    timetable_keyboard.row(schedule_view)
 
     return timetable_keyboard
