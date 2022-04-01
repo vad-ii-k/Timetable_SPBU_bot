@@ -43,6 +43,8 @@ async def teacher_timetable_parser_day(day: dict) -> str:
     for event in events:
         time = event.get("TimeIntervalString")
         subject = await separating_long_str(event.get("Subject").split(", ")[0])
+        if event.get("IsCancelled"):
+            subject = f"<s>{subject}</s>"
         lesson_format = event.get("Subject").split(", ")[1]
         contingent = await separating_long_str(event.get("ContingentUnitName"))
         locations = "Онлайн" if event.get("LocationsDisplayText").find("С использованием инф") != -1\

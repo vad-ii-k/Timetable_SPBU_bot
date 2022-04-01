@@ -7,3 +7,7 @@ BOT_TOKEN = env.str("BOT_TOKEN")
 ADMINS = env.list("ADMINS")
 IP = env.str("ip")
 
+db_user = env.str("DB_USER")
+db_pass = env.str("DB_PASS")
+db_host = env.str("DB_HOST")
+db_name = env.str("DB_NAME")

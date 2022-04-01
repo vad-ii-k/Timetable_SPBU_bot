@@ -1,6 +1,7 @@
 from aiogram import executor
 from loader import dp
 import middlewares, filters, handlers
+from utils.db_api.database import create_db
 from utils.notify_admins import on_startup_notify
 from utils.set_bot_commands import set_default_commands
 
@@ -8,6 +9,9 @@ from utils.set_bot_commands import set_default_commands
 async def on_startup(dispatcher):
     # Setting default commands
     await set_default_commands(dispatcher)
+
+    # Creating a new DB
+    await create_db()
 
     # Launch Notification
     # await on_startup_notify(dispatcher)
