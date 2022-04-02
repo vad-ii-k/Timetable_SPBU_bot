@@ -6,15 +6,15 @@ from aiogram.types import CallbackQuery, InputMedia, InputFile
 from keyboards.inline.callback_data import timetable_callback
 from keyboards.inline.timetable_buttons import create_timetable_keyboard
 from loader import dp
-from utils.tt_api import teacher_timetable_week, teacher_timetable_day
+from utils.tt_api import teacher_timetable_week, teacher_timetable_day, group_timetable_day, group_timetable_week
 
 
 async def check_message_content_type(call: CallbackQuery) -> bool:
     is_picture = (call.message.content_type == 'photo')
     if is_picture:
-        await call.message.edit_caption("Получение расписания...")
+        await call.message.edit_caption("<i>Получение расписания...</i>")
     else:
-        await call.message.edit_text("Получение расписания...")
+        await call.message.edit_text("<i>Получение расписания...</i>")
     return is_picture
 
 
@@ -56,8 +56,11 @@ async def timetable_keyboard_handler_1_row(call: CallbackQuery, callback_data: d
 
     if data.get("week_counter"):
         data.pop("week_counter")
-    text = await teacher_timetable_day(teacher_id=callback_data["Id"],
-                                       day_counter=data.get("day_counter"))
+
+    if callback_data["type"] == "teacher":
+        text = await teacher_timetable_day(teacher_id=callback_data["Id"], day_counter=data.get("day_counter"))
+    else:
+        text = await group_timetable_day(group_id=callback_data["Id"], day_counter=data.get("day_counter"))
     await timetable_keyboard_handler_helper(call, callback_data, await state.get_data(), text)
 
 
@@ -71,14 +74,18 @@ async def timetable_keyboard_handler_2_row(call: CallbackQuery, callback_data: d
         await state.reset_data()
     if data.get("week_counter") is None:
         await state.update_data(week_counter=0)
+    data = await state.get_data()
 
     if callback_data["button"] == '2-1':
         await state.update_data(week_counter=0)
     elif callback_data["button"] == '2-2':
         await state.update_data(week_counter=data.get("week_counter") + 1)
     data = await state.get_data()
-    text = await teacher_timetable_week(teacher_id=callback_data["Id"],
-                                        week_counter=data.get("week_counter"))
+
+    if callback_data["type"] == "teacher":
+        text = await teacher_timetable_week(teacher_id=callback_data["Id"], week_counter=data.get("week_counter"))
+    else:
+        text = await group_timetable_week(group_id=callback_data["Id"], week_counter=data.get("week_counter"))
     await timetable_keyboard_handler_helper(call, callback_data, await state.get_data(), text)
 
 
@@ -88,12 +95,20 @@ async def timetable_keyboard_handler_3(call: CallbackQuery, callback_data: dict,
     logging.info(f"call = {callback_data}")
 
     data = await state.get_data()
-    if data.get("day_counter"):
-        text = await teacher_timetable_day(teacher_id=callback_data["Id"], day_counter=data.get("day_counter"))
-    elif data.get("week_counter"):
-        text = await teacher_timetable_week(teacher_id=callback_data["Id"], week_counter=data.get("week_counter"))
+    if callback_data["type"] == "teacher":
+        if data.get("day_counter"):
+            text = await teacher_timetable_day(teacher_id=callback_data["Id"], day_counter=data.get("day_counter"))
+        elif data.get("week_counter"):
+            text = await teacher_timetable_week(teacher_id=callback_data["Id"], week_counter=data.get("week_counter"))
+        else:
+            text = await teacher_timetable_week(teacher_id=callback_data["Id"])
     else:
-        text = await teacher_timetable_week(teacher_id=callback_data["Id"])
+        if data.get("day_counter"):
+            text = await group_timetable_day(group_id=callback_data["Id"], day_counter=data.get("day_counter"))
+        elif data.get("week_counter"):
+            text = await group_timetable_week(group_id=callback_data["Id"], week_counter=data.get("week_counter"))
+        else:
+            text = await group_timetable_week(group_id=callback_data["Id"])
 
     is_picture = not await check_message_content_type(call)
     if is_picture:

@@ -62,12 +62,13 @@ async def viewing_schedule(call: CallbackQuery, state: FSMContext, callback_data
     settings = await db.get_settings(call.from_user.id)
     is_picture = settings.schedule_view_is_picture
     await call.message.edit_text("<i>Получение расписания...</i>")
+
+    text = await teacher_timetable_week(callback_data.get("Id"))
     if is_picture:
-        await teacher_timetable_week(callback_data.get("Id"))
         answer = await call.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
         await call.message.delete()
     else:
-        answer = await call.message.edit_text(await teacher_timetable_week(callback_data.get("Id")))
+        answer = await call.message.edit_text(text)
     await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(user_type="teacher",
                                                                                 tt_id=callback_data.get("Id"),
                                                                                 is_picture=is_picture))

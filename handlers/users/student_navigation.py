@@ -1,14 +1,15 @@
 import logging
 
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, InputFile
 
 from keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, study_programs_callback, \
     admission_years_callback, groups_callback
 from keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard, create_study_programs_keyboard, \
     create_admission_years_keyboard, create_groups_keyboard
-from loader import dp
-from utils.tt_api import get_study_levels, get_groups
+from keyboards.inline.timetable_buttons import create_timetable_keyboard
+from loader import dp, db
+from utils.tt_api import get_study_levels, get_groups, group_timetable_week
 
 
 @dp.callback_query_handler(study_divisions_callback.filter())
@@ -71,4 +72,16 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
 async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
-    # TODO
+
+    settings = await db.get_settings(query.from_user.id)
+    is_picture = settings.schedule_view_is_picture
+    await query.message.edit_text("<i>Получение расписания...</i>")
+    text = await group_timetable_week(callback_data["group_id"])
+    if is_picture:
+        answer = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        await query.message.delete()
+    else:
+        answer = await query.message.edit_text(text)
+    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(user_type="student",
+                                                                                tt_id=callback_data["group_id"],
+                                                                                is_picture=is_picture))

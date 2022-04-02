@@ -10,12 +10,12 @@ choice_user_status = InlineKeyboardMarkup(
             ))
         ],
         [
-            InlineKeyboardButton(text="❌ Навигации по программам", callback_data=user_status_callback.new(
+            InlineKeyboardButton(text="Навигации по программам", callback_data=user_status_callback.new(
                 name="student navigation"
             ))
         ],
         [
-            InlineKeyboardButton(text="✅ ФИО преподавателя", callback_data=user_status_callback.new(
+            InlineKeyboardButton(text="ФИО преподавателя", callback_data=user_status_callback.new(
                 name="teacher"
             ))
         ]

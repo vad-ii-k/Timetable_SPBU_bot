@@ -50,11 +50,51 @@ async def teacher_timetable_parser_day(day: dict) -> str:
         locations = "Онлайн" if event.get("LocationsDisplayText").find("С использованием инф") != -1\
             else await separating_long_str(event.get("LocationsDisplayText"))
 
-        timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"\
+        timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
                      f"     <b>{subject}</b>\n" \
                      f"    🕟 <u>{time}</u>\n" \
                      f"    🎓 Группы: <b>{contingent}</b>\n" \
                      f"    ✍🏻 Формат: <i>{lesson_format}</i>\n" \
                      f"    🚩 Место: <i>{locations}</i>\n" \
 
+    return timetable
+
+
+async def add_event(old_dict: dict, new_list: list):
+    time = old_dict.get("TimeIntervalString")
+    subject = await separating_long_str(old_dict.get("Subject").split(", ")[0])
+    if old_dict.get("IsCancelled"):
+        subject = f"<s>{subject}</s>"
+    lesson_format = old_dict.get("Subject").split(", ")[1]
+    educator = await separating_long_str(old_dict.get("EducatorsDisplayText"))
+    locations = "Онлайн" if old_dict.get("LocationsDisplayText").find("С использованием инф") != -1 \
+        else await separating_long_str(old_dict.get("LocationsDisplayText"))
+    new_list.append({"time": time, "subject": subject, "lesson_format": lesson_format,
+                     "educator": educator, "locations": locations})
+
+
+async def group_timetable_parser_day(day: dict) -> str:
+    timetable = "\n\n{sticker} <b>{data}</b>\n".format(sticker=await get_weekday_sticker(day.get("DayString")),
+                                                       data=day.get("DayString"))
+    events = day["DayStudyEvents"]
+    events_set = []
+    if len(day["DayStudyEvents"]) >= 1:
+        await add_event(events[0], events_set)
+        for i in range(1, len(events)):
+            if events[i - 1]["TimeIntervalString"] != events[i]["TimeIntervalString"]\
+                    and events[i - 1]["Subject"] != events[i]["Subject"]:
+                await add_event(events[i], events_set)
+            else:
+                events_set[len(events_set) - 1]["educator"] += ";\n  " + events[i].get("EducatorsDisplayText")
+                if events_set[len(events_set) - 1]["locations"] != events[i].get("locations")\
+                        and events_set[len(events_set) - 1]["locations"] != "Онлайн":
+                    events_set[len(events_set) - 1]["locations"] += ";\n  " + events[i].get("LocationsDisplayText")
+
+    for event in events_set:
+        timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
+                     f"   <b>{event.get('subject')}</b>\n" \
+                     f"    🕟 <u>{event.get('time')}</u>\n" \
+                     f"    🧑‍🏫 Преподаватель: <i>{event.get('educator')}</i>\n" \
+                     f"    ✍🏻 Формат: <i>{event.get('lesson_format')}</i>\n" \
+                     f"    🚩 Место: <i>{event.get('locations')}</i>\n"
     return timetable

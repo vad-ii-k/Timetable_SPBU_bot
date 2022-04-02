@@ -2,7 +2,7 @@ from datetime import date, timedelta
 import aiohttp
 
 from utils.image_converter.converter import TimetableIMG
-from utils.timetable_parsers import teacher_timetable_parser_day
+from utils.timetable_parsers import teacher_timetable_parser_day, group_timetable_parser_day
 
 
 async def request(url: str) -> dict:
@@ -78,6 +78,69 @@ async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
             schedule_pic.insert_timetable(timetable=day_timetable)
     else:
         timetable += '\n<i>Занятий на этой неделе нет</i>'
+    schedule_pic.crop_image()
+    return timetable
+
+
+async def group_timetable_day(group_id: int, day_counter=0) -> str:
+    if day_counter > 0:
+        current_date = date.today() + timedelta(day_counter)
+    else:
+        current_date = date.today() - timedelta(-day_counter)
+    next_day = current_date + timedelta(days=1)
+    url = f"https://timetable.spbu.ru/api/v1/groups/{group_id}/events/{current_date}/{next_day}"
+    response = await request(url)
+
+    timetable = "<b>{group}</b>\n📆 <a href='{link}'>День: {current_date}</a>\n".format(
+        group=response.get("StudentGroupDisplayName"),
+        link=f"https://timetable.spbu.ru/MATH/StudentGroupEvents/Primary/{group_id}/{current_date}",
+        current_date=current_date.strftime("%d.%m")
+    )
+
+    schedule_pic = TimetableIMG("utils/image_converter/output.png")
+    schedule_pic.image_title(title=response.get("StudentGroupDisplayName"),
+                             date=current_date.strftime("%A, %d %B"))
+
+    if len(response["Days"]) > 0:
+        day_timetable = await group_timetable_parser_day(response["Days"][0])
+        schedule_pic.insert_timetable(timetable=day_timetable)
+    else:
+        day_timetable = '\n<i>Занятий в этот день нет</i>'
+    timetable += day_timetable
+    schedule_pic.crop_image()
+    return timetable
+
+
+async def group_timetable_week(group_id: int, week_counter=0) -> str:
+    current_date = date.today() + timedelta(week_counter * 7)
+    monday = current_date - timedelta(days=current_date.weekday())
+    sunday = monday + timedelta(days=6)
+    url = f"https://timetable.spbu.ru/api/v1/groups/{group_id}/events/{monday}/{sunday}"
+    response = await request(url)
+
+    timetable = "<b>{group}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
+        group=response.get("StudentGroupDisplayName"),
+        link=f"https://timetable.spbu.ru/MATH/StudentGroupEvents/Primary/{group_id}/{monday}",
+        monday=monday.strftime("%d.%m"),
+        sunday=sunday.strftime("%d.%m")
+    )
+    schedule_pic = TimetableIMG("utils/image_converter/output.png")
+    schedule_pic.image_title(title=response.get("StudentGroupDisplayName"),
+                             date="Неделя: {monday} — {sunday}".format(
+                                 monday=monday.strftime("%d.%m"),
+                                 sunday=sunday.strftime("%d.%m")))
+
+    if len(response["Days"]) > 0:
+        for day in response["Days"]:
+            day_timetable = await group_timetable_parser_day(day)
+            if len(timetable) + len(day_timetable) < 4000:
+                timetable += day_timetable
+            else:
+                timetable += "\n\nСообщение слишком длинное..."
+                break
+            schedule_pic.insert_timetable(timetable=day_timetable)
+    else:
+        timetable += '\n<i>Занятий в этот день нет</i>'
     schedule_pic.crop_image()
     return timetable
 
