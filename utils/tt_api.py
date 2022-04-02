@@ -80,3 +80,38 @@ async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
         timetable += '\n<i>Занятий на этой неделе нет</i>'
     schedule_pic.crop_image()
     return timetable
+
+
+async def get_study_divisions() -> list:
+    url = "https://timetable.spbu.ru/api/v1/study/divisions"
+    response = await request(url)
+
+    study_divisions = []
+    for division in response:
+        study_divisions.append({"Alias": division["Alias"], "Name": division["Name"]})
+
+    return study_divisions
+
+
+async def get_study_levels(alias: str) -> tuple:
+    url = f"https://timetable.spbu.ru/api/v1/study/divisions/{alias}/programs/levels"
+    response = await request(url)
+
+    study_levels = []
+    for serial, level in enumerate(response):
+        study_levels.append({"StudyLevelName": level["StudyLevelName"],
+                             "Serial": serial})
+
+    return study_levels, response
+
+
+async def get_groups(program_id: str) -> list:
+    url = f"https://timetable.spbu.ru/api/v1/progams/{program_id}/groups"
+    response = await request(url)
+
+    groups = []
+    for group in response["Groups"]:
+        groups.append({"StudentGroupId": group["StudentGroupId"],
+                       "StudentGroupName": group["StudentGroupName"]})
+
+    return groups
