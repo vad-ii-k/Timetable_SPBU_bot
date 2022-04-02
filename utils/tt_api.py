@@ -37,10 +37,17 @@ async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
         current_date=current_date.strftime("%d.%m")
     )
 
+    schedule_pic = TimetableIMG("utils/image_converter/output.png")
+    schedule_pic.image_title(title=response.get("EducatorDisplayText"),
+                             date=current_date.strftime("%A, %d %B"))
+
     if len(response["EducatorEventsDays"]) > 0:
-        timetable += await teacher_timetable_parser_day(response["EducatorEventsDays"][0])
+        day_timetable = await teacher_timetable_parser_day(response["EducatorEventsDays"][0])
+        schedule_pic.insert_timetable(timetable=day_timetable)
     else:
-        timetable += '\n<i>Занятий в этот день нет</i>'
+        day_timetable = '\n<i>Занятий в этот день нет</i>'
+    timetable += day_timetable
+    schedule_pic.crop_image()
     return timetable
 
 
