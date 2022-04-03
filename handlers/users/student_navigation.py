@@ -69,7 +69,7 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
 
 
 @dp.callback_query_handler(groups_callback.filter())
-async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
+async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
@@ -82,6 +82,5 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
         await query.message.delete()
     else:
         answer = await query.message.edit_text(text)
-    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(user_type="student",
-                                                                                tt_id=callback_data["group_id"],
-                                                                                is_picture=is_picture))
+    await state.update_data(user_type="student", tt_id=callback_data["group_id"])
+    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))

@@ -53,22 +53,22 @@ async def widespread_last_name(message: types.Message):
 
 
 @dp.callback_query_handler(choice_teacher_callback.filter(), state=TeacherChoice.choosing)
-async def viewing_schedule(call: CallbackQuery, state: FSMContext, callback_data: dict):
+async def viewing_schedule(query: CallbackQuery, state: FSMContext, callback_data: dict):
     await state.finish()
-    await call.message.chat.delete_message(call.message.message_id - 2)
-    await call.message.chat.delete_message(call.message.message_id - 1)
-    await call.answer(cache_time=5)
+    await query.message.chat.delete_message(query.message.message_id - 2)
+    await query.message.chat.delete_message(query.message.message_id - 1)
+    await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
-    settings = await db.get_settings(call.from_user.id)
-    is_picture = settings.schedule_view_is_picture
-    await call.message.edit_text("<i>Получение расписания...</i>")
 
-    text = await teacher_timetable_week(callback_data.get("Id"))
+    settings = await db.get_settings(query.from_user.id)
+    is_picture = settings.schedule_view_is_picture
+    await query.message.edit_text("<i>Получение расписания...</i>")
+
+    text = await teacher_timetable_week(callback_data.get("teacher_id"))
     if is_picture:
-        answer = await call.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
-        await call.message.delete()
+        answer = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        await query.message.delete()
     else:
-        answer = await call.message.edit_text(text)
-    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(user_type="teacher",
-                                                                                tt_id=callback_data.get("Id"),
-                                                                                is_picture=is_picture))
+        answer = await query.message.edit_text(text)
+    await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"))
+    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))

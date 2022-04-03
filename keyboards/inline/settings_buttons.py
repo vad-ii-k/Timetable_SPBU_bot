@@ -22,10 +22,7 @@ async def create_settings_keyboard(settings: Settings) -> InlineKeyboardMarkup:
     settings_keyboard.insert(notification_of_lesson)
 
     text = "Вид расписания по умолчанию: "
-    if settings.schedule_view_is_picture:
-        text += '🖼'
-    else:
-        text += '📝'
+    text += '🖼' if settings.schedule_view_is_picture else '📝'
     schedule_view = InlineKeyboardButton(text=text,
                                          callback_data=settings_callback.new(type='schedule_view'))
     settings_keyboard.insert(schedule_view)
