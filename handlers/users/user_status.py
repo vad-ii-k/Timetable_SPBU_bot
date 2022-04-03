@@ -10,18 +10,16 @@ from utils.tt_api import get_study_divisions
 
 
 @dp.callback_query_handler(user_status_callback.filter(name="student group"))
-async def handling_group_of_student(call: CallbackQuery):
-    await call.answer(cache_time=5)
-    callback_data = call.data
+async def handling_student_group_search(query: CallbackQuery, callback_data: dict):
+    await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
-    await call.message.edit_text("В разработке...")
+    await query.message.edit_text("В разработке...")
     # await call.message.edit_text("Введите название группы:\n*<i>например, 20Б.09-мм</i>")
 
 
 @dp.callback_query_handler(user_status_callback.filter(name="student navigation"))
-async def handling_group_of_student(call: CallbackQuery):
+async def handling_student_navigation(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=5)
-    callback_data = call.data
     logging.info(f"call = {callback_data}")
 
     await call.message.edit_text("Выберите направление: ")
@@ -30,11 +28,9 @@ async def handling_group_of_student(call: CallbackQuery):
 
 
 @dp.callback_query_handler(user_status_callback.filter(name="teacher"))
-async def handling_group_of_student(call: CallbackQuery):
-    await call.answer(cache_time=5)
-    callback_data = call.data
+async def handling_teacher_by_last_name(query: CallbackQuery, callback_data: dict):
+    await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
-    await call.message.edit_text("Введите Вашу фамилию:")
-
+    await query.message.edit_text("Введите Вашу фамилию:")
     await TeacherChoice.getting_choice.set()

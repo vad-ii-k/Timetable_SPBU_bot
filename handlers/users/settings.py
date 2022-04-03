@@ -8,7 +8,6 @@ from aiogram.types import CallbackQuery
 from keyboards.inline.callback_data import settings_callback
 from keyboards.inline.settings_buttons import create_settings_keyboard
 from loader import dp, db
-from utils.db_api.database import Settings
 
 
 @dp.message_handler(CommandSettings(), state="*")

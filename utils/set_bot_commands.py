@@ -6,6 +6,8 @@ async def set_default_commands(dp):
         [
             types.BotCommand("start", "🔄 Перезапустить бота"),
             types.BotCommand("help", "📒 Вывести справку"),
-            types.BotCommand("settings", "⚙️ Настройки")
+            types.BotCommand("settings", "⚙️ Настройки"),
+            types.BotCommand("educator", "🧑‍🏫️ Посмотреть расписание преподавателя"),
+            types.BotCommand("group", "👨‍👩‍👧‍👦 Посмотреть расписание группы")
         ]
     )
