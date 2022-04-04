@@ -91,6 +91,5 @@ class TimetableIMG:
         image.save(self.path_final_img)
 
     def crop_image(self):
-        if self.days_count < 3:
-            image = self.current_image
-            image.crop(box=(0, 0, self.final_img_width, self.y)).save(self.path_final_img)
+        image = self.current_image
+        image.crop(box=(0, 0, self.final_img_width, self.y)).save(self.path_final_img)

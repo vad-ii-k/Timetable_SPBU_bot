@@ -66,7 +66,7 @@ async def add_event(old_dict: dict, new_list: list):
     if old_dict.get("IsCancelled"):
         subject = f"<s>{subject}</s>"
     lesson_format = old_dict.get("Subject").split(", ")[1]
-    educator = await separating_long_str(old_dict.get("EducatorsDisplayText"))
+    educator = await separating_long_str(old_dict.get("EducatorsDisplayText").split(',')[0])
     locations = "Онлайн" if old_dict.get("LocationsDisplayText").find("С использованием инф") != -1 \
         else await separating_long_str(old_dict.get("LocationsDisplayText"))
     new_list.append({"time": time, "subject": subject, "lesson_format": lesson_format,
@@ -81,14 +81,14 @@ async def group_timetable_parser_day(day: dict) -> str:
     if len(day["DayStudyEvents"]) >= 1:
         await add_event(events[0], events_set)
         for i in range(1, len(events)):
-            if events[i - 1]["TimeIntervalString"] != events[i]["TimeIntervalString"]\
-                    and events[i - 1]["Subject"] != events[i]["Subject"]:
-                await add_event(events[i], events_set)
-            else:
-                events_set[len(events_set) - 1]["educator"] += ";\n  " + events[i].get("EducatorsDisplayText")
+            if events[i - 1]["TimeIntervalString"] == events[i]["TimeIntervalString"]\
+                    and events[i - 1]["Subject"] == events[i]["Subject"]:
+                events_set[len(events_set) - 1]["educator"] += ";\n  " + events[i].get("EducatorsDisplayText").split(',')[0]
                 if events_set[len(events_set) - 1]["locations"] != events[i].get("locations")\
                         and events_set[len(events_set) - 1]["locations"] != "Онлайн":
                     events_set[len(events_set) - 1]["locations"] += ";\n  " + events[i].get("LocationsDisplayText")
+            else:
+                await add_event(events[i], events_set)
 
     for event in events_set:
         timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
