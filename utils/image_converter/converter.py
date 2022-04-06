@@ -71,6 +71,8 @@ class TimetableIMG:
                               offset_x=indent, offset_y=skip)
         self.y += TimetableIMG.font_h2.size + skip
         for i in range(1, len(text), 5):
+            if y > self.final_img_height:
+                break
             x, y = self.draw_text(xy=(x, y), text=f"  {text[i]}", font=TimetableIMG.font_bold,
                                   offset_x=0, offset_y=skip)
             x, y = self.draw_text(xy=(x, y), text=f"  {text[i + 2]}", font=TimetableIMG.font_italic,

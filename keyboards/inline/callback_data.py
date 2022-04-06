@@ -8,6 +8,8 @@ timetable_callback = CallbackData("timetable", "button")
 
 settings_callback = CallbackData("settings", "type")
 
+schedule_subscription_callback = CallbackData("schedule_subscription", "answer")
+
 study_divisions_callback = CallbackData("study_divisions", "alias")
 
 study_levels_callback = CallbackData("study_levels", "serial")

@@ -5,6 +5,7 @@ from aiogram.types import CallbackQuery, InputFile
 
 from keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, study_programs_callback, \
     admission_years_callback, groups_callback
+from keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
 from keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard, create_study_programs_keyboard, \
     create_admission_years_keyboard, create_groups_keyboard
 from keyboards.inline.timetable_buttons import create_timetable_keyboard
@@ -84,3 +85,6 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, sta
         answer = await query.message.edit_text(text)
     await state.update_data(user_type="student", tt_id=callback_data["group_id"])
     await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
+
+    await answer.answer(text="Хотите сделать это расписание своим основным?",
+                        reply_markup=await create_schedule_subscription_keyboard())
