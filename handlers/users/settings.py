@@ -33,7 +33,8 @@ async def settings_keyboard_handler_3(query: CallbackQuery, callback_data: dict)
 async def schedule_subscription_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
     logging.info(f"call = {callback_data}")
     data = await state.get_data()
-    # TODO
+    if data["user_type"] == 'teacher':
+        teacher = await db.set_teacher(tt_id=int(data["tt_id"]), full_name=data["full_name"])
     if callback_data["answer"] == '1':
         text = "Вы подписались!"
     else:

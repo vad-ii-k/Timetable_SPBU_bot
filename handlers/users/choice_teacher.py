@@ -71,7 +71,9 @@ async def viewing_schedule(query: CallbackQuery, state: FSMContext, callback_dat
         await query.message.delete()
     else:
         answer = await query.message.edit_text(text)
-    await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"))
+
+    await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"),
+                            full_name=text.split('\n', 1)[0].split(' ', 1)[1])
     await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
     await answer.answer(text="Хотите сделать это расписание своим основным?",
