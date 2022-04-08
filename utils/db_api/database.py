@@ -86,9 +86,13 @@ class DBCommands:
         await new_user.create()
         return new_user
 
-    async def get_settings(self, tg_user_id: int) -> Settings:
+    async def get_settings(self, user_db: User) -> Settings:
+        settings = await Settings.query.where(Settings.user_id == user_db.user_id).gino.first()
+        return settings
+
+    async def set_settings(self, tg_user_id: int) -> Settings:
         user_db = await self.get_user(tg_user_id)
-        old_settings = await Settings.query.where(Settings.user_id == user_db.user_id).gino.first()
+        old_settings = await self.get_settings(user_db)
         if old_settings:
             return old_settings
         new_settings = Settings()
@@ -113,6 +117,38 @@ class DBCommands:
         new_teacher.full_name = full_name
         await new_teacher.create()
         return new_teacher
+
+    async def get_group(self, tt_id: int) -> Group:
+        group = await Group.query.where(Group.tt_id == tt_id).gino.first()
+        return group
+
+    async def set_group(self, tt_id: int, group_name: str) -> Group:
+        old_group = await self.get_group(tt_id)
+        if old_group:
+            return old_group
+        new_group = Group()
+        new_group.tt_id = tt_id
+        new_group.name = group_name
+        await new_group.create()
+        return new_group
+
+    async def get_student(self, user_db: User) -> Student:
+        student = await Student.query.where(Student.user_id == user_db.user_id).gino.first()
+        return student
+
+    async def set_student(self, tt_id: int, group_name: str) -> Student:
+        user_tg = types.User.get_current()
+        user_db = await self.get_user(user_tg.id)
+        old_student = await self.get_student(user_db)
+        group = await self.set_group(tt_id, group_name)
+        if old_student:
+            await old_student.update(group_id=group.group_id).apply()
+            return old_student
+        new_student = Student()
+        new_student.user_id = user_db.user_id
+        new_student.group_id = group.group_id
+        await new_student.create()
+        return new_student
 
 
 async def create_db():

@@ -13,7 +13,7 @@ from loader import dp, db
 @dp.message_handler(CommandSettings(), state="*")
 async def bot_settings(message: types.Message, state: FSMContext):
     await state.finish()
-    settings = await db.get_settings(tg_user_id=message.from_user.id)
+    settings = await db.set_settings(tg_user_id=message.from_user.id)
     await message.answer(text="Текущие настройки: ",
                          reply_markup=await create_settings_keyboard(settings))
 
@@ -22,7 +22,7 @@ async def bot_settings(message: types.Message, state: FSMContext):
 async def settings_keyboard_handler_3(query: CallbackQuery, callback_data: dict):
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
-    settings = await db.get_settings(tg_user_id=query.from_user.id)
+    settings = await db.set_settings(tg_user_id=query.from_user.id)
     await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
 
     await query.message.edit_text(text="Вид расписания по умолчанию успешно изменён!\n\nТекущие настройки:")
@@ -35,6 +35,8 @@ async def schedule_subscription_handler(query: CallbackQuery, callback_data: dic
     data = await state.get_data()
     if data["user_type"] == 'teacher':
         teacher = await db.set_teacher(tt_id=int(data["tt_id"]), full_name=data["full_name"])
+    else:
+        student = await db.set_student(tt_id=int(data["tt_id"]), group_name=data["group_name"])
     if callback_data["answer"] == '1':
         text = "Вы подписались!"
     else:

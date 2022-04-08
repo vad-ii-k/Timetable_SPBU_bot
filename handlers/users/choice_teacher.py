@@ -61,7 +61,7 @@ async def viewing_schedule(query: CallbackQuery, state: FSMContext, callback_dat
     await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
-    settings = await db.get_settings(query.from_user.id)
+    settings = await db.set_settings(query.from_user.id)
     is_picture = settings.schedule_view_is_picture
     await query.message.edit_text("<i>Получение расписания...</i>")
 
