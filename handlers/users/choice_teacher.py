@@ -61,7 +61,7 @@ async def viewing_schedule(query: CallbackQuery, state: FSMContext, callback_dat
     await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
-    settings = await db.set_settings(query.from_user.id)
+    settings = await db.set_settings()
     is_picture = settings.schedule_view_is_picture
     await query.message.edit_text("<i>Получение расписания...</i>")
 
@@ -76,5 +76,5 @@ async def viewing_schedule(query: CallbackQuery, state: FSMContext, callback_dat
                             full_name=text.split('\n', 1)[0].split(' ', 1)[1])
     await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
-    await answer.answer(text="Хотите сделать это расписание своим основным?",
+    await answer.answer(text="⚙️ Хотите сделать это расписание своим основным?",
                         reply_markup=await create_schedule_subscription_keyboard())

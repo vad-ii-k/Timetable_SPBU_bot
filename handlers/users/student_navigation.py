@@ -74,7 +74,7 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, sta
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
-    settings = await db.set_settings(query.from_user.id)
+    settings = await db.set_settings()
     is_picture = settings.schedule_view_is_picture
     await query.message.edit_text("<i>Получение расписания...</i>")
     text = await group_timetable_week(callback_data["group_id"])
@@ -87,5 +87,5 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, sta
                             group_name=text.split('\n', 1)[0])
     await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
-    await answer.answer(text="Хотите сделать это расписание своим основным?",
+    await answer.answer(text="⚙️ Хотите сделать это расписание своим основным?",
                         reply_markup=await create_schedule_subscription_keyboard())
