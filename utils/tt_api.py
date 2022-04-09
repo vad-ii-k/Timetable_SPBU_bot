@@ -11,9 +11,11 @@ async def request(url: str) -> dict:
             if resp.status == 200:
                 return await resp.json()
 
+tt_api_url = "https://timetable.spbu.ru/api/v1"
+
 
 async def teacher_search(last_name: str) -> list:
-    url = f"https://timetable.spbu.ru/api/v1/educators/search/{last_name}"
+    url = tt_api_url + f"/educators/search/{last_name}"
     response = await request(url)
     teachers = []
     for teacher in response["Educators"]:
@@ -22,13 +24,25 @@ async def teacher_search(last_name: str) -> list:
     return teachers
 
 
-async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
+async def calculator_of_days(day_counter: int) -> tuple:
     if day_counter > 0:
         current_date = date.today() + timedelta(day_counter)
     else:
         current_date = date.today() - timedelta(-day_counter)
     next_day = current_date + timedelta(days=1)
-    url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{current_date}/{next_day}"
+    return current_date, next_day
+
+
+async def calculator_of_week_days(week_counter: int) -> tuple:
+    current_date = date.today() + timedelta(week_counter * 7)
+    monday = current_date - timedelta(days=current_date.weekday())
+    sunday = monday + timedelta(days=6)
+    return monday, sunday
+
+
+async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
+    current_date, next_day = await calculator_of_days(day_counter)
+    url = tt_api_url + f"/educators/{teacher_id}/events/{current_date}/{next_day}"
     response = await request(url)
 
     timetable = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>День: {current_date}</a> \n".format(
@@ -52,10 +66,8 @@ async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
 
 
 async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
-    current_date = date.today() + timedelta(week_counter * 7)
-    monday = current_date - timedelta(days=current_date.weekday())
-    sunday = monday + timedelta(days=6)
-    url = f"https://timetable.spbu.ru/api/v1/educators/{teacher_id}/events/{monday}/{sunday}"
+    monday, sunday = calculator_of_week_days(week_counter)
+    url = tt_api_url + f"/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await request(url)
 
     timetable = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
@@ -83,12 +95,8 @@ async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
 
 
 async def group_timetable_day(group_id: int, day_counter=0) -> str:
-    if day_counter > 0:
-        current_date = date.today() + timedelta(day_counter)
-    else:
-        current_date = date.today() - timedelta(-day_counter)
-    next_day = current_date + timedelta(days=1)
-    url = f"https://timetable.spbu.ru/api/v1/groups/{group_id}/events/{current_date}/{next_day}"
+    current_date, next_day = await calculator_of_days(day_counter)
+    url = tt_api_url + f"/groups/{group_id}/events/{current_date}/{next_day}"
     response = await request(url)
 
     timetable = "<b>{group}</b>\n📆 <a href='{link}'>День: {current_date}</a>\n".format(
@@ -112,10 +120,8 @@ async def group_timetable_day(group_id: int, day_counter=0) -> str:
 
 
 async def group_timetable_week(group_id: int, week_counter=0) -> str:
-    current_date = date.today() + timedelta(week_counter * 7)
-    monday = current_date - timedelta(days=current_date.weekday())
-    sunday = monday + timedelta(days=6)
-    url = f"https://timetable.spbu.ru/api/v1/groups/{group_id}/events/{monday}/{sunday}"
+    monday, sunday = calculator_of_week_days(week_counter)
+    url = tt_api_url + f"/groups/{group_id}/events/{monday}/{sunday}"
     response = await request(url)
 
     timetable = "<b>{group}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
@@ -146,7 +152,7 @@ async def group_timetable_week(group_id: int, week_counter=0) -> str:
 
 
 async def get_study_divisions() -> list:
-    url = "https://timetable.spbu.ru/api/v1/study/divisions"
+    url = tt_api_url + "/study/divisions"
     response = await request(url)
 
     study_divisions = []
@@ -157,24 +163,20 @@ async def get_study_divisions() -> list:
 
 
 async def get_study_levels(alias: str) -> tuple:
-    url = f"https://timetable.spbu.ru/api/v1/study/divisions/{alias}/programs/levels"
+    url = tt_api_url + f"/study/divisions/{alias}/programs/levels"
     response = await request(url)
 
     study_levels = []
     for serial, level in enumerate(response):
-        study_levels.append({"StudyLevelName": level["StudyLevelName"],
-                             "Serial": serial})
-
+        study_levels.append({"StudyLevelName": level["StudyLevelName"], "Serial": serial})
     return study_levels, response
 
 
 async def get_groups(program_id: str) -> list:
-    url = f"https://timetable.spbu.ru/api/v1/progams/{program_id}/groups"
+    url = tt_api_url + f"/progams/{program_id}/groups"
     response = await request(url)
 
     groups = []
     for group in response["Groups"]:
-        groups.append({"StudentGroupId": group["StudentGroupId"],
-                       "StudentGroupName": group["StudentGroupName"]})
-
+        groups.append({"StudentGroupId": group["StudentGroupId"], "StudentGroupName": group["StudentGroupName"]})
     return groups

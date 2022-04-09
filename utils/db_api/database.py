@@ -154,7 +154,6 @@ class DBCommands:
         old_student = await self.get_student(user_db)
         if old_student:
             students_list = await self.get_group_students(old_student.group_id)
-            print(len(students_list))
             if len(students_list) == 1:
                 group = await self.get_group(old_student.group_id)
                 await group.delete()
@@ -181,5 +180,5 @@ async def create_db():
 
     # Create tables
     # db.gino: GinoSchemaVisitor
-    await db_gino.gino.drop_all()
+    # await db_gino.gino.drop_all()
     await db_gino.gino.create_all()
