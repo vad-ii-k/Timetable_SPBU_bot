@@ -7,3 +7,4 @@ from . import timetable
 from . import student_navigation
 from . import educator
 from . import group
+from . import choice_group

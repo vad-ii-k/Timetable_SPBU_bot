@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
 
+from loader import db
 from utils.tt_api import tt_api_url
 
 
@@ -69,9 +70,8 @@ async def collecting_groups_info():
         await asyncio.gather(*tasks)
 
 
-async def collecting_test():
+async def adding_groups_to_db():
     await collecting_program_ids()
-    print(program_ids)
-
     await collecting_groups_info()
-    print(groups)
+    for group in groups:
+        await db.add_new_group(tt_id=group["GroupId"], group_name=group["GroupName"])

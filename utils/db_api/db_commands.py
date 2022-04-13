@@ -1,70 +1,7 @@
-from gino import Gino
-from sqlalchemy import (Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time)
 from aiogram import types
-from data.config import db_user, db_password, db_host, db_name
 
-db_gino = Gino()
-
-
-class User(db_gino.Model):
-    __tablename__ = "user"
-    user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
-    tg_id = Column(BigInteger)
-    full_name = Column(String(100))
-    language = Column(String(2))
-    username = Column(String(50))
-
-    def __repr__(self):
-        return "<User(id={}, tg_id={}, fullname={}, username={})>".format(
-            self.user_id, self.tg_id, self.full_name, self.username)
-
-
-class Settings(db_gino.Model):
-    __tablename__ = "settings"
-    settings_id = Column(Integer, Sequence("settings_id_seq"), primary_key=True)
-    user_id = Column(None, ForeignKey("user.user_id"))
-    daily_summary = Column(Time)
-    notification_of_lesson = Column(Time)
-    schedule_view_is_picture = Column(Boolean, default=False)
-
-    def __repr__(self):
-        return "<Settings(id={}, user_id={}, " \
-               "daily_summary={}, notification_of_lesson={}, schedule_view_is_picture={})>".format(
-                self.settings_id, self.user_id, self.daily_summary, self.notification_of_lesson, self.schedule_view_is_picture)
-
-
-class Teacher(db_gino.Model):
-    __tablename__ = "teacher"
-    teacher_id = Column(Integer, Sequence("teacher_id_seq"), primary_key=True)
-    user_id = Column(None, ForeignKey("user.user_id"))
-    tt_id = Column(Integer)
-    full_name = Column(String(100))
-
-    def __repr__(self):
-        return "<Teacher(id={}, tt_id={}, user_id={}, full_name={})>".format(
-            self.teacher_id, self.tt_id, self.user_id, self.full_name)
-
-
-class Group(db_gino.Model):
-    __tablename__ = "group"
-    group_id = Column(Integer, Sequence("group_id_seq"), primary_key=True)
-    tt_id = Column(Integer)
-    name = Column(String(100))
-
-    def __repr__(self):
-        return "<Group(id={}, tt_id={}, name={})>".format(
-            self.group_id, self.tt_id, self.name)
-
-
-class Student(db_gino.Model):
-    __tablename__ = "student"
-    student_id = Column(Integer, Sequence("student_id_seq"), primary_key=True)
-    user_id = Column(None, ForeignKey("user.user_id"))
-    group_id = Column(None, ForeignKey("group.group_id"))
-
-    def __repr__(self):
-        return "<Student(id={}, user_id={}, group_id={})>".format(
-            self.student_id, self.user_id, self.group_id)
+from data.config import db_user, db_password, db_name
+from utils.db_api.db_models import User, Settings, Teacher, Group, Student, db_gino
 
 
 class DBCommands:
@@ -132,6 +69,10 @@ class DBCommands:
         group = await Group.query.where(Group.tt_id == tt_id).gino.first()
         return group
 
+    async def get_groups_by_name(self, group_name: str) -> list:
+        group = await Group.query.where(Group.name == group_name).gino.first()
+        return [group]
+
     async def get_group_students(self, group_id: int) -> list:
         students = await Student.query.where(Student.group_id == group_id).gino.all()
         return students
@@ -140,6 +81,10 @@ class DBCommands:
         old_group = await self.get_group_by_tt_id(tt_id)
         if old_group:
             return old_group
+        new_group = await self.add_new_group(tt_id, group_name)
+        return new_group
+
+    async def add_new_group(self, tt_id: int, group_name: str) -> Group:
         new_group = Group()
         new_group.tt_id = tt_id
         new_group.name = group_name
@@ -153,10 +98,6 @@ class DBCommands:
     async def clear_student(self, user_db: User):
         old_student = await self.get_student(user_db)
         if old_student:
-            students_list = await self.get_group_students(old_student.group_id)
-            if len(students_list) == 1:
-                group = await self.get_group(old_student.group_id)
-                await group.delete()
             await old_student.delete()
 
     async def set_student(self, tt_id: int, group_name: str) -> Student:
@@ -176,7 +117,7 @@ class DBCommands:
 
 
 async def create_db():
-    await db_gino.set_bind(f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}')
+    await db_gino.set_bind(f'postgresql://{db_user}:{db_password}@localhost:5432/{db_name}')
 
     # Create tables
     # db.gino: GinoSchemaVisitor

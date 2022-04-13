@@ -12,7 +12,7 @@ from loader import dp, db
 async def bot_start(message: Message, state: FSMContext):
     await state.finish()
     logging.info(f"start: id{message.from_user.id}")
-    await message.answer(text=f"Добро пожаловать, {message.from_user.full_name}!\n"
+    await message.answer(text=f"👋🏻 <b>Добро пожаловать, {message.from_user.full_name}!</b>\n"
                               f"Следуйте инструкциям для настройки бота.\n"
                               f"Получить расписание по:",
                          reply_markup=choice_user_status)

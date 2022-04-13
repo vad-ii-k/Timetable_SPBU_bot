@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from keyboards.inline.callback_data import settings_callback
-from utils.db_api.database import Settings
+from utils.db_api.db_commands import Settings
 
 
 async def create_settings_keyboard(settings: Settings) -> InlineKeyboardMarkup:
