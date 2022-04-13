@@ -66,7 +66,7 @@ async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
 
 
 async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
-    monday, sunday = calculator_of_week_days(week_counter)
+    monday, sunday = await calculator_of_week_days(week_counter)
     url = tt_api_url + f"/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await request(url)
 
@@ -120,7 +120,7 @@ async def group_timetable_day(group_id: int, day_counter=0) -> str:
 
 
 async def group_timetable_week(group_id: int, week_counter=0) -> str:
-    monday, sunday = calculator_of_week_days(week_counter)
+    monday, sunday = await calculator_of_week_days(week_counter)
     url = tt_api_url + f"/groups/{group_id}/events/{monday}/{sunday}"
     response = await request(url)
 
