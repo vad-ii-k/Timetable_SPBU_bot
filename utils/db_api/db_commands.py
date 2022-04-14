@@ -1,4 +1,5 @@
 from aiogram import types
+from sqlalchemy.sql.operators import contains
 
 from data.config import db_user, db_password, db_name
 from utils.db_api.db_models import User, Settings, Teacher, Group, Student, db_gino
@@ -70,8 +71,8 @@ class DBCommands:
         return group
 
     async def get_groups_by_name(self, group_name: str) -> list:
-        group = await Group.query.where(Group.name == group_name).gino.first()
-        return [group]
+        groups = await Group.query.where(Group.name.contains(group_name)).gino.all()
+        return groups
 
     async def get_group_students(self, group_id: int) -> list:
         students = await Student.query.where(Student.group_id == group_id).gino.all()

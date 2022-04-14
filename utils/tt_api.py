@@ -10,6 +10,8 @@ async def request(url: str) -> dict:
         async with session.get(url) as resp:
             if resp.status == 200:
                 return await resp.json()
+            else:
+                return {}
 
 tt_api_url = "https://timetable.spbu.ru/api/v1"
 

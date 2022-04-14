@@ -21,7 +21,8 @@ async def check_message_content_type(call: CallbackQuery) -> bool:
 async def timetable_keyboard_handler_helper(call: CallbackQuery, state_data: dict, text: str):
     is_picture = await check_message_content_type(call)
     if is_picture:
-        media = InputMedia(media=InputFile("utils/image_converter/output.png"), caption=text.split('\n')[1])
+        media = InputMedia(media=InputFile("utils/image_converter/output.png"),
+                           caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
         await call.message.edit_media(media=media)
     else:
         await call.message.edit_text(text=text)
@@ -106,7 +107,8 @@ async def timetable_keyboard_handler_3(call: CallbackQuery, callback_data: dict,
     is_picture = not await check_message_content_type(call)
     if is_picture:
         media = InputFile("utils/image_converter/output.png")
-        answer = await call.message.answer_photo(photo=media, caption=text.split('\n')[1])
+        answer = await call.message.answer_photo(photo=media,
+                                                 caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
     else:
         answer = await call.message.answer(text=text)
     await call.message.delete()

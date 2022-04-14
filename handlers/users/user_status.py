@@ -14,7 +14,7 @@ from utils.tt_api import get_study_divisions
 async def handling_student_group_search(query: CallbackQuery, callback_data: dict):
     await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
-    await query.message.edit_text("Введите название группы:\n*<i>например, 20Б.09-мм</i>")
+    await query.message.edit_text("Введите название группы:\n*<i>например, 20.Б09-мм</i>")
     await GroupChoice.getting_choice.set()
 
 

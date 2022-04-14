@@ -5,7 +5,7 @@ from keyboards.inline.callback_data import user_status_callback
 choice_user_status = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="❌ Названию группы", callback_data=user_status_callback.new(
+            InlineKeyboardButton(text="Названию группы", callback_data=user_status_callback.new(
                 name="student group"
             ))
         ],
