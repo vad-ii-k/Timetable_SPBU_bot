@@ -1,7 +1,7 @@
 from aiogram import types
 from sqlalchemy.sql.operators import contains
 
-from data.config import db_user, db_password, db_name
+from data.config import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_HOST, POSTGRES_NAME
 from utils.db_api.db_models import User, Settings, Teacher, Group, Student, db_gino
 
 
@@ -118,7 +118,8 @@ class DBCommands:
 
 
 async def create_db():
-    await db_gino.set_bind(f'postgresql://{db_user}:{db_password}@localhost:5432/{db_name}')
+    pg_url = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_NAME}'
+    await db_gino.set_bind(pg_url)
 
     # Create tables
     # db.gino: GinoSchemaVisitor
