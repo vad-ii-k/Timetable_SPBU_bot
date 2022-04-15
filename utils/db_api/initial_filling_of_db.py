@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 
 from loader import db
-from utils.tt_api import tt_api_url
+from utils.timetable.api import tt_api_url
 
 
 async def request(session: aiohttp.ClientSession, url: str) -> dict:
@@ -42,9 +42,9 @@ async def get_study_levels(session: aiohttp.ClientSession, alias: str):
     url = tt_api_url + f"/study/divisions/{alias}/programs/levels"
     response = await request(session, url)
     for level in response:
-        program_combinatons = level['StudyProgramCombinations']
-        for program_combinaton in program_combinatons:
-            years = program_combinaton['AdmissionYears']
+        program_combinations = level['StudyProgramCombinations']
+        for program_combination in program_combinations:
+            years = program_combination['AdmissionYears']
             for year in years:
                 program_ids.append(year['StudyProgramId'])
 

@@ -1,16 +1,15 @@
 import logging
 
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InputFile
+from aiogram.types import CallbackQuery
 
+from handlers.users.helpers import send_group_schedule
 from keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, study_programs_callback, \
     admission_years_callback, groups_callback
-from keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
 from keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard, create_study_programs_keyboard, \
     create_admission_years_keyboard, create_groups_keyboard
-from keyboards.inline.timetable_buttons import create_timetable_keyboard
-from loader import dp, db
-from utils.tt_api import get_study_levels, get_groups, group_timetable_week
+from loader import dp
+from utils.timetable.api import get_study_levels, get_groups
 
 
 @dp.callback_query_handler(study_divisions_callback.filter())
@@ -73,19 +72,4 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
 async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
-
-    settings = await db.set_settings()
-    is_picture = settings.schedule_view_is_picture
-    await query.message.edit_text("<i>Получение расписания...</i>")
-    text = await group_timetable_week(callback_data["group_id"])
-    if is_picture:
-        answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
-        await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
-        await query.message.delete()
-    else:
-        answer_msg = await query.message.edit_text(text)
-    await state.update_data(user_type="student", tt_id=callback_data["group_id"], group_name=text.split('\n', 1)[0])
-    await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
-
-    answer_sub = await answer_msg.answer(text="⚙️ Хотите сделать это расписание своим основным?")
-    await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())
+    await send_group_schedule(query, callback_data, state)
