@@ -3,7 +3,7 @@ from aiogram.types import Message
 
 from keyboards.inline.student_navigaton_buttons import create_study_divisions_keyboard
 from loader import dp
-from utils.tt_api import get_study_divisions
+from utils.timetable.api import get_study_divisions
 
 
 @dp.message_handler(commands='group', state="*")

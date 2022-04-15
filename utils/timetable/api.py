@@ -1,8 +1,9 @@
-from datetime import date, timedelta
 import aiohttp
 
 from utils.image_converter.converter import TimetableIMG
-from utils.timetable_parsers import teacher_timetable_parser_day, group_timetable_parser_day
+from utils.timetable.helpers import calculator_of_days, calculator_of_week_days
+from utils.timetable.parsers import teacher_timetable_parser_day, group_timetable_parser_day, \
+    group_timetable_week_header, group_timetable_day_header, teacher_timetable_week_header, teacher_timetable_day_header
 
 
 async def request(url: str) -> dict:
@@ -26,32 +27,12 @@ async def teacher_search(last_name: str) -> list:
     return teachers
 
 
-async def calculator_of_days(day_counter: int) -> tuple:
-    if day_counter > 0:
-        current_date = date.today() + timedelta(day_counter)
-    else:
-        current_date = date.today() - timedelta(-day_counter)
-    next_day = current_date + timedelta(days=1)
-    return current_date, next_day
-
-
-async def calculator_of_week_days(week_counter: int) -> tuple:
-    current_date = date.today() + timedelta(week_counter * 7)
-    monday = current_date - timedelta(days=current_date.weekday())
-    sunday = monday + timedelta(days=6)
-    return monday, sunday
-
-
-async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
+async def get_teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
     current_date, next_day = await calculator_of_days(day_counter)
     url = tt_api_url + f"/educators/{teacher_id}/events/{current_date}/{next_day}"
     response = await request(url)
 
-    timetable = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>День: {current_date}</a> \n".format(
-        educator=response.get("EducatorDisplayText"),
-        link=f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}/{current_date}",
-        current_date=current_date.strftime("%d.%m")
-    )
+    timetable = await teacher_timetable_day_header(teacher_id, current_date, response)
 
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
     schedule_pic.image_title(title=response.get("EducatorDisplayText"),
@@ -67,17 +48,12 @@ async def teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
     return timetable
 
 
-async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
+async def get_teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
     monday, sunday = await calculator_of_week_days(week_counter)
     url = tt_api_url + f"/educators/{teacher_id}/events/{monday}/{sunday}"
     response = await request(url)
 
-    timetable = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
-        educator=response.get("EducatorDisplayText"),
-        link=f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}/{monday}",
-        monday=monday.strftime("%d.%m"),
-        sunday=sunday.strftime("%d.%m")
-    )
+    timetable = await teacher_timetable_week_header(teacher_id, monday, sunday, response)
 
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
     schedule_pic.image_title(title=response.get("EducatorDisplayText"),
@@ -96,16 +72,12 @@ async def teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
     return timetable
 
 
-async def group_timetable_day(group_id: int, day_counter=0) -> str:
+async def get_group_timetable_day(group_id: int, day_counter=0) -> str:
     current_date, next_day = await calculator_of_days(day_counter)
     url = tt_api_url + f"/groups/{group_id}/events/{current_date}/{next_day}"
     response = await request(url)
 
-    timetable = "<b>{group}</b>\n📆 <a href='{link}'>День: {current_date}</a>\n".format(
-        group=response.get("StudentGroupDisplayName"),
-        link=f"https://timetable.spbu.ru/MATH/StudentGroupEvents/Primary/{group_id}/{current_date}",
-        current_date=current_date.strftime("%d.%m")
-    )
+    timetable = await group_timetable_day_header(group_id, current_date, response)
 
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
     schedule_pic.image_title(title=response.get("StudentGroupDisplayName"),
@@ -121,17 +93,13 @@ async def group_timetable_day(group_id: int, day_counter=0) -> str:
     return timetable
 
 
-async def group_timetable_week(group_id: int, week_counter=0) -> str:
+async def get_group_timetable_week(group_id: int, week_counter=0) -> str:
     monday, sunday = await calculator_of_week_days(week_counter)
     url = tt_api_url + f"/groups/{group_id}/events/{monday}/{sunday}"
     response = await request(url)
 
-    timetable = "<b>{group}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
-        group=response.get("StudentGroupDisplayName"),
-        link=f"https://timetable.spbu.ru/MATH/StudentGroupEvents/Primary/{group_id}/{monday}",
-        monday=monday.strftime("%d.%m"),
-        sunday=sunday.strftime("%d.%m")
-    )
+    timetable = await group_timetable_week_header(group_id, monday, sunday, response)
+
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
     schedule_pic.image_title(title=response.get("StudentGroupDisplayName"),
                              date="Неделя: {monday} — {sunday}".format(

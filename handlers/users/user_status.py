@@ -7,7 +7,7 @@ from keyboards.inline.student_navigaton_buttons import create_study_divisions_ke
 from loader import dp
 from states.choice_group import GroupChoice
 from states.choice_teacher import TeacherChoice
-from utils.tt_api import get_study_divisions
+from utils.timetable.api import get_study_divisions
 
 
 @dp.callback_query_handler(user_status_callback.filter(name="student group"))
