@@ -32,12 +32,12 @@ async def study_levels_keyboard_handler(query: CallbackQuery, callback_data: dic
 
     await query.message.edit_text("Выберите программу подготовки: ")
     data = await state.get_data()
-    program_combinatons = data["levels_response"][int(callback_data["serial"])]["StudyProgramCombinations"]
+    program_combinations = data["levels_response"][int(callback_data["serial"])]["StudyProgramCombinations"]
     await state.reset_data()
-    await state.update_data(program_combinatons=program_combinatons)
+    await state.update_data(program_combinatons=program_combinations)
 
     programs = []
-    for serial, program in enumerate(program_combinatons):
+    for serial, program in enumerate(program_combinations):
         programs.append({"Name": program["Name"], "Serial": serial})
     await query.message.edit_reply_markup(reply_markup=await create_study_programs_keyboard(programs))
 
@@ -79,13 +79,13 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, sta
     await query.message.edit_text("<i>Получение расписания...</i>")
     text = await group_timetable_week(callback_data["group_id"])
     if is_picture:
-        answer = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
         await query.message.delete()
     else:
-        answer = await query.message.edit_text(text)
-    await state.update_data(user_type="student", tt_id=callback_data["group_id"],
-                            group_name=text.split('\n', 1)[0])
-    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
+        answer_msg = await query.message.edit_text(text)
+    await state.update_data(user_type="student", tt_id=callback_data["group_id"], group_name=text.split('\n', 1)[0])
+    await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
-    await answer.answer(text="⚙️ Хотите сделать это расписание своим основным?",
-                        reply_markup=await create_schedule_subscription_keyboard())
+    answer_sub = await answer_msg.answer(text="⚙️ Хотите сделать это расписание своим основным?")
+    await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())

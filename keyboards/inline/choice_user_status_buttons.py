@@ -2,6 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from keyboards.inline.callback_data import user_status_callback
 
+
 choice_user_status = InlineKeyboardMarkup(
     inline_keyboard=[
         [

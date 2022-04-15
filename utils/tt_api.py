@@ -19,10 +19,10 @@ tt_api_url = "https://timetable.spbu.ru/api/v1"
 async def teacher_search(last_name: str) -> list:
     url = tt_api_url + f"/educators/search/{last_name}"
     response = await request(url)
+
     teachers = []
     for teacher in response["Educators"]:
         teachers.append({"Id": teacher["Id"], "FullName": teacher["FullName"]})
-
     return teachers
 
 
@@ -160,7 +160,6 @@ async def get_study_divisions() -> list:
     study_divisions = []
     for division in response:
         study_divisions.append({"Alias": division["Alias"], "Name": division["Name"]})
-
     return study_divisions
 
 

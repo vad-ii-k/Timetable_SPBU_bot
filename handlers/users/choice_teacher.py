@@ -24,9 +24,9 @@ async def getting_choice_for_teacher(message: types.Message):
         await TeacherChoice.widespread_last_name.set()
         await widespread_last_name(message)
     else:
-        answer = await message.answer("<i>Получение списка преподавателей...</i>")
-        await answer.edit_text("Выберите преподавателя из списка:",
-                               reply_markup=await create_teachers_keyboard(teachers_list))
+        answer_msg = await message.answer("<i>Получение списка преподавателей...</i>")
+        await answer_msg.edit_text("Выберите преподавателя из списка:")
+        await answer_msg.edit_reply_markup(reply_markup=await create_teachers_keyboard(teachers_list))
         await TeacherChoice.choosing.set()
 
 
@@ -67,14 +67,14 @@ async def viewing_schedule(query: CallbackQuery, state: FSMContext, callback_dat
 
     text = await teacher_timetable_week(callback_data.get("teacher_id"))
     if is_picture:
-        answer = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
         await query.message.delete()
     else:
-        answer = await query.message.edit_text(text)
-
+        answer_msg = await query.message.edit_text(text)
     await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"),
                             full_name=text.split('\n', 1)[0].split(' ', 1)[1])
-    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
+    await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
-    await answer.answer(text="⚙️ Хотите сделать это расписание своим основным?",
-                        reply_markup=await create_schedule_subscription_keyboard())
+    answer_sub = await answer_msg.answer(text="⚙️ Хотите сделать это расписание своим основным?")
+    await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())

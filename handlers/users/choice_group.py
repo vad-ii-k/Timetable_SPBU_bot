@@ -17,8 +17,8 @@ from utils.tt_api import group_timetable_week
 async def getting_choice_for_student(message: types.Message):
     groups_list = await db.get_groups_by_name(message.text)
     if len(groups_list) > 0:
-        answer = await message.answer("Выберите группу из списка:")
-        await answer.edit_reply_markup(reply_markup=await create_choice_groups_keyboard(groups_list))
+        answer_msg = await message.answer("Выберите группу из списка:")
+        await answer_msg.edit_reply_markup(reply_markup=await create_choice_groups_keyboard(groups_list))
         await GroupChoice.choosing.set()
     else:
         await GroupChoice.wrong_group.set()
@@ -29,7 +29,7 @@ async def getting_choice_for_student(message: types.Message):
 async def groups_not_found_handler(message: Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
-    await message.answer(f"Группа не найдена!\n"
+    await message.answer(f"Группа <i>{message.text}</i> не найдена!\n"
                          "Попробуйте ещё раз или воспользуйтесь навигацией:")
     await GroupChoice.getting_choice.set()
 
@@ -45,13 +45,14 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, sta
     await query.message.edit_text("<i>Получение расписания...</i>")
     text = await group_timetable_week(callback_data["group_id"])
     if is_picture:
-        answer = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
         await query.message.delete()
     else:
-        answer = await query.message.edit_text(text)
+        answer_msg = await query.message.edit_text(text)
     await state.update_data(user_type="student", tt_id=callback_data["group_id"],
                             group_name=text.split('\n', 1)[0])
-    await answer.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
+    await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
-    await answer.answer(text="⚙️ Хотите сделать это расписание своим основным?",
-                        reply_markup=await create_schedule_subscription_keyboard())
+    answer_sub = await answer_msg.answer(text="⚙️ Хотите сделать это расписание своим основным?")
+    await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())
