@@ -1,4 +1,6 @@
 import asyncio
+import os
+
 import aiohttp
 
 from loader import db
@@ -46,18 +48,21 @@ async def get_study_levels(session: aiohttp.ClientSession, alias: str):
         for program_combination in program_combinations:
             years = program_combination['AdmissionYears']
             for year in years:
-                program_ids.append(year['StudyProgramId'])
+                program_ids.append(str(year['StudyProgramId']))
 
 groups = []
+remaining_program_ids = []
 
 
 async def get_groups(session: aiohttp.ClientSession, program_id: str):
     url = tt_api_url + f"/progams/{program_id}/groups"
     response = await request(session, url)
-    if response.get("Groups"):
+    try:
         for group in response["Groups"]:
             if len(group) != 0:
                 groups.append({"GroupId": group["StudentGroupId"], "GroupName": group["StudentGroupName"]})
+    except KeyError:
+        remaining_program_ids.append(program_id)
 
 
 async def collecting_groups_info():
@@ -71,7 +76,19 @@ async def collecting_groups_info():
 
 
 async def adding_groups_to_db():
-    await collecting_program_ids()
-    await collecting_groups_info()
-    for group in groups:
-        await db.add_new_group(tt_id=group["GroupId"], group_name=group["GroupName"])
+    with open("data/program_ids.txt", 'r+') as file:
+        global program_ids
+        file_size = os.stat(file.name).st_size
+        if file_size == 0:
+            await collecting_program_ids()
+        elif file_size != 1:
+            [program_ids.append(program_id) for program_id in file.readline().split(' ')]
+    if file_size != 1:
+        await collecting_groups_info()
+        for group in groups:
+            await db.add_new_group(tt_id=group["GroupId"], group_name=group["GroupName"])
+
+        with open("data/program_ids.txt", 'w') as file:
+            [file.write(program_id + ' ') for program_id in remaining_program_ids]
+            if len(remaining_program_ids) == 0:
+                file.write(' ')

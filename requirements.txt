@@ -2,3 +2,4 @@ aiogram<3.0
 environs==9.5.0
 pillow==9.1.0
 gino==1.0.1
+aioredis==2.0.1

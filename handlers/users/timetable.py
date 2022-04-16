@@ -33,7 +33,8 @@ async def timetable_days_handler(query: CallbackQuery, callback_data: dict, stat
     async with state.proxy() as state_data:
         state_data["week_counter"] = None
         try:
-            state_data["day_counter"]
+            if state_data["day_counter"] is None:
+                state_data["day_counter"] = 0
         except KeyError:
             state_data["day_counter"] = 0
 
@@ -61,7 +62,8 @@ async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, sta
     async with state.proxy() as state_data:
         state_data["day_counter"] = None
         try:
-            state_data["week_counter"]
+            if state_data["week_counter"] is None:
+                state_data["week_counter"] = 0
         except KeyError:
             state_data["week_counter"] = 0
 
