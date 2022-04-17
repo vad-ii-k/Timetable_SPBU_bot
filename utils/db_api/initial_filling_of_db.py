@@ -89,6 +89,7 @@ async def adding_groups_to_db():
             await db.add_new_group(tt_id=group["GroupId"], group_name=group["GroupName"])
 
         with open("data/program_ids.txt", 'w') as file:
-            [file.write(program_id + ' ') for program_id in remaining_program_ids]
+            str_to_write = ''.join([program_id + ' ' for program_id in remaining_program_ids])
+            file.write(str_to_write[:-1])
             if len(remaining_program_ids) == 0:
                 file.write(' ')

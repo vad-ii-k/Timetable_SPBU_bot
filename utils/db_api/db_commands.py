@@ -1,8 +1,10 @@
+import datetime
+from sqlalchemy import and_
+
 from aiogram import types
-from sqlalchemy.sql.operators import contains
 
 from data.config import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_HOST, POSTGRES_NAME
-from utils.db_api.db_models import User, Settings, Teacher, Group, Student, db_gino
+from utils.db_api.db_models import User, Settings, Teacher, Group, Student, StudentStudyEvent, db_gino
 
 
 class DBCommands:
@@ -78,13 +80,6 @@ class DBCommands:
         students = await Student.query.where(Student.group_id == group_id).gino.all()
         return students
 
-    async def set_group(self, tt_id: int, group_name: str) -> Group:
-        old_group = await self.get_group_by_tt_id(tt_id)
-        if old_group:
-            return old_group
-        new_group = await self.add_new_group(tt_id, group_name)
-        return new_group
-
     async def add_new_group(self, tt_id: int, group_name: str) -> Group:
         new_group = Group()
         new_group.tt_id = tt_id
@@ -106,7 +101,7 @@ class DBCommands:
         await self.clear_teacher(user_db)
         await self.clear_student(user_db)
         old_student = await self.get_student(user_db)
-        group = await self.set_group(tt_id, group_name)
+        group = await self.get_group_by_tt_id(tt_id)
         if old_student:
             await old_student.update(group_id=group.group_id).apply()
             return old_student
@@ -115,6 +110,37 @@ class DBCommands:
         new_student.group_id = group.group_id
         await new_student.create()
         return new_student
+
+    async def get_study_event(self, group_id: int, date: datetime.date, start_time: datetime.time,
+                              subject_name: str, educator: str) -> StudentStudyEvent:
+        study_event = await StudentStudyEvent.query.where(and_(
+            StudentStudyEvent.group_id == group_id,
+            StudentStudyEvent.date == date,
+            StudentStudyEvent.start_time == start_time,
+            StudentStudyEvent.subject_name == subject_name,
+            StudentStudyEvent.educator == educator)).gino.first()
+        return study_event
+
+    async def add_new_study_event(
+            self, tt_id: int, date: datetime.date, start_time: datetime.time, end_time: datetime.time, subject_name: str,
+            subject_format: str, educator: str, locations: str, is_canceled: bool) -> StudentStudyEvent:
+
+        group = await self.get_group_by_tt_id(tt_id)
+        old_study_event = await self.get_study_event(group.group_id, date, start_time, subject_name, educator)
+        if old_study_event:
+            return old_study_event
+        new_study_event = StudentStudyEvent()
+        new_study_event.group_id = group.group_id
+        new_study_event.date = date
+        new_study_event.start_time = start_time
+        new_study_event.end_time = end_time
+        new_study_event.subject_name = subject_name
+        new_study_event.subject_format = subject_format
+        new_study_event.educator = educator
+        new_study_event.locations = locations
+        new_study_event.is_canceled = is_canceled
+        await new_study_event.create()
+        return new_study_event
 
 
 async def create_db():

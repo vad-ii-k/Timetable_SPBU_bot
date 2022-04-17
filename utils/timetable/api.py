@@ -84,8 +84,9 @@ async def get_group_timetable_day(group_id: int, day_counter=0) -> str:
                              date=current_date.strftime("%A, %d %B"))
 
     if len(response["Days"]) > 0:
-        day_timetable = await group_timetable_parser_day(response["Days"][0])
-        schedule_pic.insert_timetable(timetable=day_timetable)
+        day_timetable = await group_timetable_parser_day(response["Days"][0], group_id)
+        # TODO
+        # schedule_pic.insert_timetable(timetable=day_timetable)
     else:
         day_timetable = '\n<i>Занятий в этот день нет</i>'
     timetable += day_timetable
@@ -108,15 +109,16 @@ async def get_group_timetable_week(group_id: int, week_counter=0) -> str:
 
     if len(response["Days"]) > 0:
         for day in response["Days"]:
-            day_timetable = await group_timetable_parser_day(day)
+            day_timetable = await group_timetable_parser_day(day, group_id)
             if len(timetable) + len(day_timetable) < 4000:
                 timetable += day_timetable
             else:
                 timetable += "\n\nСообщение слишком длинное..."
                 break
-            schedule_pic.insert_timetable(timetable=day_timetable)
+            # TODO
+            # schedule_pic.insert_timetable(timetable=day_timetable)
     else:
-        timetable += '\n<i>Занятий в этот день нет</i>'
+        timetable += '\n<i>Занятий на этой неделе нет</i>'
     schedule_pic.crop_image()
     return timetable
 

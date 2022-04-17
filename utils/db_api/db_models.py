@@ -1,5 +1,5 @@
 from gino import Gino
-from sqlalchemy import (Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time)
+from sqlalchemy import (Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Date)
 
 db_gino = Gino()
 
@@ -26,9 +26,10 @@ class Settings(db_gino.Model):
     schedule_view_is_picture = Column(Boolean, default=False)
 
     def __repr__(self):
-        return "<Settings(id={}, user_id={}, " \
-               "daily_summary={}, notification_of_lesson={}, schedule_view_is_picture={})>".format(
-                self.settings_id, self.user_id, self.daily_summary, self.notification_of_lesson, self.schedule_view_is_picture)
+        return "<Settings(id={}, user_id={}, daily_summary={}," \
+               "notification_of_lesson={}, schedule_view_is_picture={})>".format(
+                self.settings_id, self.user_id, self.daily_summary,
+                self.notification_of_lesson, self.schedule_view_is_picture)
 
 
 class Teacher(db_gino.Model):
@@ -63,3 +64,21 @@ class Student(db_gino.Model):
     def __repr__(self):
         return "<Student(id={}, user_id={}, group_id={})>".format(
             self.student_id, self.user_id, self.group_id)
+
+
+class StudentStudyEvent(db_gino.Model):
+    __tablename__ = "student_study_event"
+    student_event_id = Column(Integer, Sequence("student_event_id_seq"), primary_key=True)
+    group_id = Column(None, ForeignKey("group.group_id"))
+    date = Column(Date)
+    start_time = Column(Time)
+    end_time = Column(Time)
+    subject_name = Column(String(150))
+    subject_format = Column(String(50))
+    educator = Column(String(50))
+    locations = Column(String(150))
+    is_canceled = Column(Boolean)
+
+    def __repr__(self):
+        return "<StudentStudyEvent(id={}, group_id={}, date={}, subject_name={}, is_canceled={})>".format(
+            self.student_event_id, self.group_id, self.date, self.subject_name, self.is_canceled)
