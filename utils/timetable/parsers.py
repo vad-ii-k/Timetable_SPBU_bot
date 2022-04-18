@@ -1,6 +1,5 @@
-from datetime import date, datetime
+from datetime import date
 
-import loader
 from utils.timetable.helpers import separating_long_str, get_weekday_sticker
 
 
@@ -52,7 +51,7 @@ async def add_event(old_dict: dict, new_list: list):
                      "educator": educator, "locations": locations})
 
 
-async def group_timetable_parser_day(day: dict, tt_id: int) -> str:
+async def group_timetable_parser_day(day: dict) -> str:
     timetable = await timetable_day_header(day.get("DayString"))
     events = day["DayStudyEvents"]
     events_set = []
@@ -75,19 +74,6 @@ async def group_timetable_parser_day(day: dict, tt_id: int) -> str:
                      f"    🧑‍🏫 Преподаватель: <i>{event.get('educator')}</i>\n" \
                      f"    ✍🏻 Формат: <i>{event.get('lesson_format')}</i>\n" \
                      f"    🚩 Место: <i>{event.get('locations')}</i>\n"
-
-    # TODO
-    for event in events:
-        start: datetime = datetime.strptime(event.get("Start"), "%Y-%m-%dT%H:%M:%S")
-        end: datetime = datetime.strptime(event.get("End"), "%Y-%m-%dT%H:%M:%S")
-        event_date: date = start.date()
-        subject: str = event.get("Subject")
-        subject_name, subject_format = subject.rsplit(sep=", ", maxsplit=1)
-        educator: str = event.get("EducatorsDisplayText").rsplit(sep=", ", maxsplit=1)[0]
-        locations: str = event.get("LocationsDisplayText")
-        is_cancelled: bool = event.get("IsCancelled")
-        await loader.db.add_new_study_event(int(tt_id), event_date, start, end,
-                                            subject_name, subject_format, educator, locations, is_cancelled)
 
     return timetable
 

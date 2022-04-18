@@ -49,10 +49,11 @@ class Group(db_gino.Model):
     group_id = Column(Integer, Sequence("group_id_seq"), primary_key=True)
     tt_id = Column(Integer)
     name = Column(String(150))
+    is_received_schedule = Column(Boolean, default=False)
 
     def __repr__(self):
-        return "<Group(id={}, tt_id={}, name={})>".format(
-            self.group_id, self.tt_id, self.name)
+        return "<Group(id={}, tt_id={}, name={}, is_received_schedule={})>".format(
+            self.group_id, self.tt_id, self.name, self.is_received_schedule)
 
 
 class Student(db_gino.Model):
@@ -66,6 +67,14 @@ class Student(db_gino.Model):
             self.student_id, self.user_id, self.group_id)
 
 
+class Subject(db_gino.Model):
+    __tablename__ = "subject"
+    subject_id = Column(Integer, Sequence("subject_id_seq"), primary_key=True)
+    subject_name = Column(String(150))
+    subject_format = Column(String(50))
+    locations = Column(String(200))
+
+
 class StudentStudyEvent(db_gino.Model):
     __tablename__ = "student_study_event"
     student_event_id = Column(Integer, Sequence("student_event_id_seq"), primary_key=True)
@@ -73,12 +82,10 @@ class StudentStudyEvent(db_gino.Model):
     date = Column(Date)
     start_time = Column(Time)
     end_time = Column(Time)
-    subject_name = Column(String(150))
-    subject_format = Column(String(50))
+    subject_id = Column(None, ForeignKey("subject.subject_id"))
     educator = Column(String(50))
-    locations = Column(String(150))
     is_canceled = Column(Boolean)
 
     def __repr__(self):
-        return "<StudentStudyEvent(id={}, group_id={}, date={}, subject_name={}, is_canceled={})>".format(
-            self.student_event_id, self.group_id, self.date, self.subject_name, self.is_canceled)
+        return "<StudentStudyEvent(id={}, group_id={}, date={}, subject_id={}, is_canceled={})>".format(
+            self.student_event_id, self.group_id, self.date, self.subject_id, self.is_canceled)

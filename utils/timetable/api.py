@@ -1,9 +1,11 @@
 import aiohttp
 
+from utils.db_api.db_timetable import add_group_timetable_to_db
 from utils.image_converter.converter import TimetableIMG
 from utils.timetable.helpers import calculator_of_days, calculator_of_week_days
 from utils.timetable.parsers import teacher_timetable_parser_day, group_timetable_parser_day, \
-    group_timetable_week_header, group_timetable_day_header, teacher_timetable_week_header, teacher_timetable_day_header
+    group_timetable_week_header, group_timetable_day_header, teacher_timetable_week_header, \
+    teacher_timetable_day_header
 
 
 async def request(url: str) -> dict:
@@ -42,7 +44,7 @@ async def get_teacher_timetable_day(teacher_id: int, day_counter=0) -> str:
         day_timetable = await teacher_timetable_parser_day(response["EducatorEventsDays"][0])
         schedule_pic.insert_timetable(timetable=day_timetable)
     else:
-        day_timetable = '\n<i>Занятий в этот день нет</i>'
+        day_timetable = '\n🏖 <i>Занятий в этот день нет</i>'
     timetable += day_timetable
     schedule_pic.crop_image()
     return timetable
@@ -67,7 +69,7 @@ async def get_teacher_timetable_week(teacher_id: int, week_counter=0) -> str:
             timetable += day_timetable
             schedule_pic.insert_timetable(timetable=day_timetable)
     else:
-        timetable += '\n<i>Занятий на этой неделе нет</i>'
+        timetable += '\n🏖 <i>Занятий на этой неделе нет</i>'
     schedule_pic.crop_image()
     return timetable
 
@@ -84,11 +86,12 @@ async def get_group_timetable_day(group_id: int, day_counter=0) -> str:
                              date=current_date.strftime("%A, %d %B"))
 
     if len(response["Days"]) > 0:
-        day_timetable = await group_timetable_parser_day(response["Days"][0], group_id)
+        await add_group_timetable_to_db(response["Days"][0]["DayStudyEvents"], group_id)
+        day_timetable = await group_timetable_parser_day(response["Days"][0])
         # TODO
         # schedule_pic.insert_timetable(timetable=day_timetable)
     else:
-        day_timetable = '\n<i>Занятий в этот день нет</i>'
+        day_timetable = '\n🏖 <i>Занятий в этот день нет</i>'
     timetable += day_timetable
     schedule_pic.crop_image()
     return timetable
@@ -109,7 +112,8 @@ async def get_group_timetable_week(group_id: int, week_counter=0) -> str:
 
     if len(response["Days"]) > 0:
         for day in response["Days"]:
-            day_timetable = await group_timetable_parser_day(day, group_id)
+            await add_group_timetable_to_db(day["DayStudyEvents"], group_id)
+            day_timetable = await group_timetable_parser_day(day)
             if len(timetable) + len(day_timetable) < 4000:
                 timetable += day_timetable
             else:
@@ -118,7 +122,7 @@ async def get_group_timetable_week(group_id: int, week_counter=0) -> str:
             # TODO
             # schedule_pic.insert_timetable(timetable=day_timetable)
     else:
-        timetable += '\n<i>Занятий на этой неделе нет</i>'
+        timetable += '\n🏖 <i>Занятий на этой неделе нет</i>'
     schedule_pic.crop_image()
     return timetable
 
@@ -151,3 +155,13 @@ async def get_groups(program_id: str) -> list:
     for group in response["Groups"]:
         groups.append({"StudentGroupId": group["StudentGroupId"], "StudentGroupName": group["StudentGroupName"]})
     return groups
+
+
+async def fill_group_timetable_from_tt(group_id: int):
+    monday, sunday = await calculator_of_week_days(week_counter=-1)
+    url = tt_api_url + f"/groups/{group_id}/events/{monday}/2022-08-01"  # TODO
+    response = await request(url)
+
+    if len(response["Days"]) > 0:
+        for day in response["Days"]:
+            await add_group_timetable_to_db(day["DayStudyEvents"], group_id)

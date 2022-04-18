@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from aiogram import types
 
 from data.config import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_HOST, POSTGRES_NAME
-from utils.db_api.db_models import User, Settings, Teacher, Group, Student, StudentStudyEvent, db_gino
+from utils.db_api.db_models import User, Settings, Teacher, Group, Student, StudentStudyEvent, db_gino, Subject
 
 
 class DBCommands:
@@ -111,22 +111,38 @@ class DBCommands:
         await new_student.create()
         return new_student
 
+    async def get_subject(self, subject_name: str, subject_format: str, locations: str) -> Subject:
+        subject = await Subject.query.where(and_(
+            Subject.subject_name == subject_name,
+            Subject.subject_format == subject_format,
+            Subject.locations == locations)).gino.first()
+        return subject
+
+    async def add_new_subject(self, subject_name: str, subject_format: str, locations: str):
+        old_subject = await self.get_subject(subject_name, subject_format, locations)
+        if old_subject:
+            return old_subject
+        new_subject = Subject()
+        new_subject.subject_name = subject_name
+        new_subject.subject_format = subject_format
+        new_subject.locations = locations
+        await new_subject.create()
+        return new_subject
+
     async def get_study_event(self, group_id: int, date: datetime.date, start_time: datetime.time,
-                              subject_name: str, educator: str) -> StudentStudyEvent:
+                              subject_id: int, educator: str) -> StudentStudyEvent:
         study_event = await StudentStudyEvent.query.where(and_(
             StudentStudyEvent.group_id == group_id,
             StudentStudyEvent.date == date,
             StudentStudyEvent.start_time == start_time,
-            StudentStudyEvent.subject_name == subject_name,
+            StudentStudyEvent.subject_id == subject_id,
             StudentStudyEvent.educator == educator)).gino.first()
         return study_event
 
-    async def add_new_study_event(
-            self, tt_id: int, date: datetime.date, start_time: datetime.time, end_time: datetime.time, subject_name: str,
-            subject_format: str, educator: str, locations: str, is_canceled: bool) -> StudentStudyEvent:
-
+    async def add_new_study_event(self, tt_id: int, subject_id: int, date: datetime.date, start_time: datetime.time,
+                                  end_time: datetime.time, educator: str, is_canceled: bool) -> StudentStudyEvent:
         group = await self.get_group_by_tt_id(tt_id)
-        old_study_event = await self.get_study_event(group.group_id, date, start_time, subject_name, educator)
+        old_study_event = await self.get_study_event(group.group_id, date, start_time, subject_id, educator)
         if old_study_event:
             return old_study_event
         new_study_event = StudentStudyEvent()
@@ -134,13 +150,24 @@ class DBCommands:
         new_study_event.date = date
         new_study_event.start_time = start_time
         new_study_event.end_time = end_time
-        new_study_event.subject_name = subject_name
-        new_study_event.subject_format = subject_format
+        new_study_event.subject_id = subject_id
         new_study_event.educator = educator
-        new_study_event.locations = locations
         new_study_event.is_canceled = is_canceled
         await new_study_event.create()
         return new_study_event
+
+    async def get_group_timetable_day(self, group_id, day: datetime.date) -> list:
+        study_events = await StudentStudyEvent.query.where(and_(
+            StudentStudyEvent.group_id == group_id,
+            StudentStudyEvent.date == day)).gino.all()
+        return study_events
+
+    async def get_group_timetable_week(self, group_id, monday: datetime.date, sunday: datetime.date) -> list:
+        study_events = await StudentStudyEvent.query.where(and_(
+            StudentStudyEvent.group_id == group_id,
+            StudentStudyEvent.date >= monday,
+            StudentStudyEvent.date <= sunday)).gino.all()
+        return study_events
 
 
 async def create_db():
