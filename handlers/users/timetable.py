@@ -7,8 +7,8 @@ from handlers.users.helpers import check_message_content_type
 from keyboards.inline.callback_data import timetable_callback
 from keyboards.inline.timetable_buttons import create_timetable_keyboard
 from loader import dp
-from utils.timetable.api import get_teacher_timetable_week, get_teacher_timetable_day, get_group_timetable_day, \
-    get_group_timetable_week
+from utils.timetable.api import get_teacher_timetable_week, get_teacher_timetable_day
+from utils.timetable.get_timetable import get_group_timetable
 
 
 async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: dict, text: str):
@@ -50,7 +50,7 @@ async def timetable_days_handler(query: CallbackQuery, callback_data: dict, stat
     if data["user_type"] == "teacher":
         text = await get_teacher_timetable_day(teacher_id=data["tt_id"], day_counter=data.get("day_counter"))
     else:
-        text = await get_group_timetable_day(group_id=data["tt_id"], day_counter=data.get("day_counter"))
+        text = await get_group_timetable(tt_id=int(data["tt_id"]), day_counter=data.get("day_counter"))
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
@@ -77,7 +77,7 @@ async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, sta
     if data["user_type"] == "teacher":
         text = await get_teacher_timetable_week(teacher_id=data["tt_id"], week_counter=data.get("week_counter"))
     else:
-        text = await get_group_timetable_week(group_id=data["tt_id"], week_counter=data.get("week_counter"))
+        text = await get_group_timetable(tt_id=int(data["tt_id"]), week_counter=data.get("week_counter"))
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
@@ -98,11 +98,11 @@ async def timetable_type_handler(query: CallbackQuery, callback_data: dict, stat
             text = await get_teacher_timetable_week(teacher_id=data["tt_id"])
     else:
         if data.get("day_counter") is not None:
-            text = await get_group_timetable_day(group_id=data["tt_id"], day_counter=data.get("day_counter"))
+            text = await get_group_timetable(tt_id=int(data["tt_id"]), day_counter=data.get("day_counter"))
         elif data.get("week_counter") is not None:
-            text = await get_group_timetable_week(group_id=data["tt_id"], week_counter=data.get("week_counter"))
+            text = await get_group_timetable(tt_id=int(data["tt_id"]), week_counter=data.get("week_counter"))
         else:
-            text = await get_group_timetable_week(group_id=data["tt_id"])
+            text = await get_group_timetable(tt_id=int(data["tt_id"]), week_counter=0)
 
     if is_picture:
         answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))

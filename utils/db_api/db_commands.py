@@ -161,7 +161,7 @@ class DBCommands:
         await new_study_event.create()
         return new_study_event
 
-    async def get_group_timetable_day(self, group_id, day: datetime.date) -> list:
+    async def get_group_timetable_day(self, group_id: int, day: datetime.date) -> list:
         study_events = await StudentStudyEvent.query.where(and_(
             StudentStudyEvent.group_id == group_id,
             StudentStudyEvent.date == day)).gino.all()

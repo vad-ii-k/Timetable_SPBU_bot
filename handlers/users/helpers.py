@@ -4,7 +4,8 @@ from aiogram.types import Message, CallbackQuery, InputFile
 from keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
 from keyboards.inline.timetable_buttons import create_timetable_keyboard
 from loader import db
-from utils.timetable.api import get_group_timetable_week, get_teacher_timetable_week
+from utils.timetable.api import get_teacher_timetable_week
+from utils.timetable.get_timetable import get_group_timetable
 
 
 async def change_message_to_progress(message: Message):
@@ -16,7 +17,7 @@ async def send_group_schedule(query: CallbackQuery, callback_data: dict, state: 
     is_picture = settings.schedule_view_is_picture
     await change_message_to_progress(query.message)
 
-    text = await get_group_timetable_week(callback_data["group_id"])
+    text = await get_group_timetable(tt_id=int(callback_data["group_id"]), week_counter=0)
     answer_msg = await create_answer_based_on_content(query, text, is_picture)
 
     await state.update_data(user_type="student", tt_id=callback_data["group_id"],

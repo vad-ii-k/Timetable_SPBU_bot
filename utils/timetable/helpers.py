@@ -38,18 +38,18 @@ async def separating_long_str(string: str) -> str:
 async def get_weekday_sticker(day: str):
     weekday_sticker = ''
     match day.split(",")[0]:
-        case 'понедельник':
+        case 'понедельник' | 'Monday':
             weekday_sticker = '1️⃣'
-        case 'вторник':
+        case 'вторник' | 'Tuesday':
             weekday_sticker = '2️⃣'
-        case 'среда':
+        case 'среда' | 'Wednesday':
             weekday_sticker = '3️⃣'
-        case 'четверг':
+        case 'четверг' | 'Thursday':
             weekday_sticker = '4️⃣'
-        case 'пятница':
+        case 'пятница' | 'Friday':
             weekday_sticker = '5️⃣'
-        case 'суббота':
+        case 'суббота' | 'Saturday':
             weekday_sticker = '6️⃣'
-        case 'воскресенье':
+        case 'воскресенье' | 'Sunday':
             weekday_sticker = '7️⃣'
     return weekday_sticker

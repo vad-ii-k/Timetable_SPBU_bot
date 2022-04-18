@@ -59,7 +59,8 @@ async def get_group_timetable_day_from_db(group_db_id: int, current_date: dateti
 async def get_group_timetable_week_from_db(group_db_id: int, monday: datetime.date, sunday: datetime.date):
     timetable_info = []
     study_events = await loader.db.get_group_timetable_week(group_db_id, monday, sunday)
-    for i in range(len(study_events)):
+    i = 0
+    while i < len(study_events):
         day = study_events[i].date
         timetable_one_day = StudentTimetableOneDay(date=day, events=[])
         while i < len(study_events) and day == study_events[i].date:
