@@ -74,6 +74,10 @@ class Subject(db_gino.Model):
     subject_format = Column(String(50))
     locations = Column(String(200))
 
+    def __repr__(self):
+        return "<Subject(id={}, subject_name={}, subject_format={}, locations={})>".format(
+            self.subject_id, self.subject_name, self.subject_format, self.locations)
+
 
 class StudentStudyEvent(db_gino.Model):
     __tablename__ = "student_study_event"

@@ -1,4 +1,5 @@
 import datetime
+
 from sqlalchemy import and_
 
 from aiogram import types
@@ -111,7 +112,11 @@ class DBCommands:
         await new_student.create()
         return new_student
 
-    async def get_subject(self, subject_name: str, subject_format: str, locations: str) -> Subject:
+    async def get_subject(self, subject_id: int) -> Subject:
+        subject = await Subject.query.where(Subject.subject_id == subject_id).gino.first()
+        return subject
+
+    async def get_subject_from_full_info(self, subject_name: str, subject_format: str, locations: str) -> Subject:
         subject = await Subject.query.where(and_(
             Subject.subject_name == subject_name,
             Subject.subject_format == subject_format,
@@ -119,7 +124,7 @@ class DBCommands:
         return subject
 
     async def add_new_subject(self, subject_name: str, subject_format: str, locations: str):
-        old_subject = await self.get_subject(subject_name, subject_format, locations)
+        old_subject = await self.get_subject_from_full_info(subject_name, subject_format, locations)
         if old_subject:
             return old_subject
         new_subject = Subject()
@@ -162,7 +167,7 @@ class DBCommands:
             StudentStudyEvent.date == day)).gino.all()
         return study_events
 
-    async def get_group_timetable_week(self, group_id, monday: datetime.date, sunday: datetime.date) -> list:
+    async def get_group_timetable_week(self, group_id: int, monday: datetime.date, sunday: datetime.date) -> list:
         study_events = await StudentStudyEvent.query.where(and_(
             StudentStudyEvent.group_id == group_id,
             StudentStudyEvent.date >= monday,
