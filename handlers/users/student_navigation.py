@@ -3,7 +3,7 @@ import logging
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from handlers.users.helpers import send_group_schedule
+from handlers.users.helpers import send_group_schedule, change_message_to_progress
 from keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, study_programs_callback, \
     admission_years_callback, groups_callback
 from keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard, create_study_programs_keyboard, \
@@ -17,7 +17,7 @@ async def study_divisions_keyboard_handler(query: CallbackQuery, callback_data: 
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
-    await query.message.edit_text("<i>Подождите...</i>")
+    await change_message_to_progress(query.message)
     study_levels, response = await get_study_levels(callback_data["alias"])
     await query.message.edit_text("Выберите уровень подготовки:")
     await query.message.edit_reply_markup(reply_markup=await create_study_levels_keyboard(study_levels))
@@ -62,7 +62,7 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
-    await query.message.edit_text("<i>Подождите...</i>")
+    await change_message_to_progress(query.message)
     groups = await get_groups(callback_data["program_id"])
     await query.message.edit_text("Выберите группу:")
     await query.message.edit_reply_markup(reply_markup=await create_groups_keyboard(groups))

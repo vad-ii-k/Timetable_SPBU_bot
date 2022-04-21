@@ -2,7 +2,7 @@ from datetime import date
 
 import loader
 from utils.db_api.db_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db
-from utils.image_converter.converter import TimetableIMG
+from utils.image_converter.new_converter import TimetableIMG
 from utils.timetable.api import fill_group_timetable_from_tt
 from utils.timetable.helpers import calculator_of_week_days, calculator_of_days
 from utils.timetable.parsers import group_timetable_day_header, group_timetable_week_header, timetable_day_header
@@ -33,6 +33,7 @@ async def get_text_group_timetable_day(group_id: int, group_name: str, current_d
 
     if len(timetable_db[0].events) > 0:
         timetable += await group_timetable_parser_day(timetable_db[0].date, timetable_db[0].events)
+        schedule_pic.insert_timetable(timetable_db[0].date.strftime('%A, %d %B'), timetable_db[0].events)
     else:
         timetable += '\n🏖 <i>Занятий в этот день нет</i>'
     schedule_pic.crop_image()
@@ -49,6 +50,7 @@ async def get_text_group_timetable_week(group_id: int, group_name: str, monday: 
     if len(timetable_db) > 0:
         for day in timetable_db:
             day_timetable = await group_timetable_parser_day(day.date, day.events)
+            schedule_pic.insert_timetable(day.date.strftime('%A, %d %B'), day.events)
             if len(timetable) + len(day_timetable) < 4000:
                 timetable += day_timetable
             else:

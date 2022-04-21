@@ -89,20 +89,19 @@ async def timetable_type_handler(query: CallbackQuery, callback_data: dict, stat
     is_picture = not await check_message_content_type(query)
 
     data = await state.get_data()
+    day_counter, week_counter = data.get("day_counter"), data.get("week_counter")
     if data["user_type"] == "teacher":
-        if data.get("day_counter") is not None:
-            text = await get_teacher_timetable_day(teacher_id=data["tt_id"], day_counter=data.get("day_counter"))
-        elif data.get("week_counter") is not None:
-            text = await get_teacher_timetable_week(teacher_id=data["tt_id"], week_counter=data.get("week_counter"))
+        if day_counter is not None:
+            text = await get_teacher_timetable_day(teacher_id=data["tt_id"], day_counter=day_counter)
+        elif week_counter is not None:
+            text = await get_teacher_timetable_week(teacher_id=data["tt_id"], week_counter=week_counter)
         else:
             text = await get_teacher_timetable_week(teacher_id=data["tt_id"])
     else:
-        if data.get("day_counter") is not None:
-            text = await get_group_timetable(tt_id=int(data["tt_id"]), day_counter=data.get("day_counter"))
-        elif data.get("week_counter") is not None:
-            text = await get_group_timetable(tt_id=int(data["tt_id"]), week_counter=data.get("week_counter"))
-        else:
-            text = await get_group_timetable(tt_id=int(data["tt_id"]), week_counter=0)
+        text = await get_group_timetable(
+            tt_id=int(data["tt_id"]),
+            day_counter=day_counter,
+            week_counter=0 if day_counter is None and week_counter is None else week_counter)
 
     if is_picture:
         answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))

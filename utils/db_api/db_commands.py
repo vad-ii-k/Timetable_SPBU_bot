@@ -4,7 +4,7 @@ from sqlalchemy import and_
 
 from aiogram import types
 
-from data.config import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_HOST, POSTGRES_NAME
+from data.config import PG_USER, PG_PASSWORD, PG_HOST, PG_PORT, PG_NAME
 from utils.db_api.db_models import User, Settings, Teacher, Group, Student, StudentStudyEvent, db_gino, Subject
 
 
@@ -176,7 +176,7 @@ class DBCommands:
 
 
 async def create_db():
-    pg_url = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_NAME}'
+    pg_url = f'postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_NAME}'
     await db_gino.set_bind(pg_url)
 
     # Create tables
