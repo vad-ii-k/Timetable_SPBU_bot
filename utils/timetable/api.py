@@ -1,5 +1,9 @@
-import aiohttp
+import random
 
+import aiohttp
+from aiohttp_socks import ProxyConnector
+
+from data.config import PROXY_LOGIN, PROXY_PASSWORD, PROXY_IPS
 from utils.db_api.db_timetable import add_group_timetable_to_db
 from utils.image_converter.converter import TimetableIMG
 from utils.timetable.helpers import calculator_of_days, calculator_of_week_days
@@ -8,7 +12,9 @@ from utils.timetable.parsers import teacher_timetable_parser_day, teacher_timeta
 
 
 async def request(url: str) -> dict:
-    async with aiohttp.ClientSession() as session:
+    ip = PROXY_IPS[random.randint(0, 100) % len(PROXY_IPS)]
+    connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{ip}')
+    async with aiohttp.ClientSession(connector=connector) as session:
         async with session.get(url) as resp:
             if resp.status == 200:
                 return await resp.json()

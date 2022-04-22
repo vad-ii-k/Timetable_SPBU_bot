@@ -1,10 +1,19 @@
 import asyncio
 import os
+import random
 
 import aiohttp
+from aiohttp_socks import ProxyConnector
 
+from data.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
 from loader import db
 from utils.timetable.api import tt_api_url
+
+
+async def get_proxy_connector() -> ProxyConnector:
+    ip = PROXY_IPS[random.randint(0, 100) % len(PROXY_IPS)]
+    connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{ip}')
+    return connector
 
 
 async def request(session: aiohttp.ClientSession, url: str) -> dict:
@@ -32,7 +41,8 @@ program_ids = []
 
 async def collecting_program_ids():
     aliases = [item['Alias'] for item in (await get_study_divisions())]
-    async with aiohttp.ClientSession() as session:
+    connector = await get_proxy_connector()
+    async with aiohttp.ClientSession(connector=connector) as session:
         tasks = []
         for alias in aliases:
             task = asyncio.create_task(get_study_levels(session, alias))
@@ -65,14 +75,22 @@ async def get_groups(session: aiohttp.ClientSession, program_id: str):
         remaining_program_ids.append(program_id)
 
 
+def chunks_generator(lst: list, chuck_size: int):
+    for i in range(0, len(lst), chuck_size):
+        yield lst[i: i + chuck_size]
+
+
 async def collecting_groups_info():
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for program_id in program_ids:
-            task = asyncio.create_task(get_groups(session, program_id))
-            tasks.append(task)
-            await asyncio.sleep(0.1)
-        await asyncio.gather(*tasks)
+    program_ids_by_parts = list(chunks_generator(program_ids, 400))
+    for chunk in program_ids_by_parts:
+        connector = await get_proxy_connector()
+        async with aiohttp.ClientSession(connector=connector) as session:
+            tasks = []
+            for program_id in chunk:
+                task = asyncio.create_task(get_groups(session, program_id))
+                tasks.append(task)
+                await asyncio.sleep(0.06)
+            await asyncio.gather(*tasks)
 
 
 async def adding_groups_to_db():
