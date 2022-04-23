@@ -70,8 +70,8 @@ class Student(db_gino.Model):
 class Subject(db_gino.Model):
     __tablename__ = "subject"
     subject_id = Column(Integer, Sequence("subject_id_seq"), primary_key=True)
-    subject_name = Column(String(150))
-    subject_format = Column(String(150))
+    subject_name = Column(String(200))
+    subject_format = Column(String(200))
     locations = Column(String(300))
 
     def __repr__(self):
@@ -87,7 +87,7 @@ class StudentStudyEvent(db_gino.Model):
     start_time = Column(Time)
     end_time = Column(Time)
     subject_id = Column(None, ForeignKey("subject.subject_id"))
-    educator = Column(String(150))
+    educator = Column(String(200))
     is_canceled = Column(Boolean)
 
     def __repr__(self):

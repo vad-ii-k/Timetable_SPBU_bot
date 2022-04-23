@@ -9,7 +9,7 @@ from utils.timetable.get_timetable import get_group_timetable
 
 
 async def change_message_to_progress(message: Message):
-    await message.edit_text("🕒 <i>Получение расписания...</i>")
+    await message.edit_text("🕒 <i>Загрузка...</i>")
 
 
 async def send_group_schedule(query: CallbackQuery, callback_data: dict, state: FSMContext):
@@ -60,7 +60,7 @@ async def send_subscription_question(answer_msg: Message):
 async def check_message_content_type(query: CallbackQuery) -> bool:
     is_picture = (query.message.content_type == 'photo')
     if is_picture:
-        await query.message.edit_caption("🕒 <i>Получение расписания...</i>")
+        await query.message.edit_caption("🕒 <i>Загрузка...</i>")
     else:
         await change_message_to_progress(query.message)
     return is_picture

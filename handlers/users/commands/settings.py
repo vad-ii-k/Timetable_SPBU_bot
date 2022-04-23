@@ -13,10 +13,10 @@ from loader import dp, db
 @dp.message_handler(CommandSettings(), state="*")
 async def bot_settings(message: types.Message, state: FSMContext):
     await state.finish()
-    settings = await db.set_settings()
+    user_db = await db.get_user()
+    settings = await db.get_settings(user_db)
 
     text = "📅 Основное расписание:\n — "
-    user_db = await db.get_user()
     student = await db.get_student(user_db)
     if student:
         group = await db.get_group(student.group_id)

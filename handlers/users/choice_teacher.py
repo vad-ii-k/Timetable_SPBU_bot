@@ -38,7 +38,7 @@ async def choosing_teacher(message: types.Message):
 async def wrong_last_name(message: types.Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
-    await message.answer(f"Преподаватель <i>{message.text}</i> не найден!\n"
+    await message.answer(f"Преподаватель \"<i>{message.text}</i>\" не найден!\n"
                          "Пожалуйста, введите другую фамилию:")
     await TeacherChoice.getting_choice.set()
 
@@ -47,7 +47,7 @@ async def wrong_last_name(message: types.Message):
 async def widespread_last_name(message: types.Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
-    await message.answer(f"Фамилия <i>{message.text}</i> очень распространена\n"
+    await message.answer(f"Фамилия \"<i>{message.text}</i>\" очень распространена\n"
                          "Попробуйте ввести фамилию и первую букву имени:")
     await TeacherChoice.getting_choice.set()
 

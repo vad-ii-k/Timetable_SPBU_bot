@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, time
 from dataclasses import dataclass
 from typing import List
 
@@ -7,8 +7,8 @@ import loader
 
 @dataclass
 class Event:
-    start_time: datetime.time
-    end_time: datetime.time
+    start_time: time
+    end_time: time
     subject_name: str
     subject_format: str
     locations: str
@@ -18,7 +18,7 @@ class Event:
 
 @dataclass
 class StudentTimetableOneDay:
-    date: datetime.date
+    date: date
     events: List[Event]
 
 
@@ -38,7 +38,7 @@ async def add_group_timetable_to_db(events: dict, tt_id: int):
                                             end, educator, is_cancelled)
 
 
-async def get_group_timetable_day_from_db(group_db_id: int, current_date: datetime.date):
+async def get_group_timetable_day_from_db(group_db_id: int, current_date: date) -> List[StudentTimetableOneDay]:
     timetable_info = []
     study_events = await loader.db.get_group_timetable_day(group_db_id, current_date)
     timetable_one_day = StudentTimetableOneDay(date=current_date, events=[])
@@ -56,7 +56,7 @@ async def get_group_timetable_day_from_db(group_db_id: int, current_date: dateti
     return timetable_info
 
 
-async def get_group_timetable_week_from_db(group_db_id: int, monday: datetime.date, sunday: datetime.date):
+async def get_group_timetable_week_from_db(group_db_id: int, monday: date, sunday: date) -> List[StudentTimetableOneDay]:
     timetable_info = []
     study_events = await loader.db.get_group_timetable_week(group_db_id, monday, sunday)
     i = 0

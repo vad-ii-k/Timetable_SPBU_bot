@@ -10,7 +10,8 @@ from utils.db_api.db_models import User, Settings, Teacher, Group, Student, Stud
 
 class DBCommands:
 
-    async def get_user(self) -> User:
+    @staticmethod
+    async def get_user() -> User:
         user_tg = types.User.get_current()
         user = await User.query.where(User.tg_id == user_tg.id).gino.first()
         return user
@@ -28,7 +29,8 @@ class DBCommands:
         await new_user.create()
         return new_user
 
-    async def get_settings(self, user_db: User) -> Settings:
+    @staticmethod
+    async def get_settings(user_db: User) -> Settings:
         settings = await Settings.query.where(Settings.user_id == user_db.user_id).gino.first()
         return settings
 
@@ -42,13 +44,14 @@ class DBCommands:
         await new_settings.create()
         return new_settings
 
-    async def get_teacher(self, user_db: User) -> Teacher:
+    @staticmethod
+    async def get_teacher(user_db: User) -> Teacher:
         teacher = await Teacher.query.where(Teacher.user_id == user_db.user_id).gino.first()
         return teacher
 
     async def set_teacher(self, tt_id: int, full_name: str) -> Teacher:
         user_db = await self.get_user()
-        await self.clear_student(user_db)
+        await self._clear_student(user_db)
         old_teacher = await self.get_teacher(user_db)
         if old_teacher:
             await old_teacher.update(tt_id=tt_id, full_name=full_name).apply()
@@ -60,47 +63,53 @@ class DBCommands:
         await new_teacher.create()
         return new_teacher
 
-    async def clear_teacher(self, user_db: User):
+    async def _clear_teacher(self, user_db: User):
         old_teacher = await self.get_teacher(user_db)
         if old_teacher:
             await old_teacher.delete()
 
-    async def get_group(self, group_id: int) -> Group:
+    @staticmethod
+    async def get_group(group_id: int) -> Group:
         group = await Group.query.where(Group.group_id == group_id).gino.first()
         return group
 
-    async def get_group_by_tt_id(self, tt_id: int) -> Group:
+    @staticmethod
+    async def get_group_by_tt_id(tt_id: int) -> Group:
         group = await Group.query.where(Group.tt_id == tt_id).gino.first()
         return group
 
-    async def get_groups_by_name(self, group_name: str) -> list:
+    @staticmethod
+    async def get_groups_by_name(group_name: str) -> list:
         groups = await Group.query.where(Group.name.contains(group_name)).gino.all()
         return groups
 
-    async def get_group_students(self, group_id: int) -> list:
+    @staticmethod
+    async def get_group_students(group_id: int) -> list:
         students = await Student.query.where(Student.group_id == group_id).gino.all()
         return students
 
-    async def add_new_group(self, tt_id: int, group_name: str) -> Group:
+    @staticmethod
+    async def add_new_group(tt_id: int, group_name: str) -> Group:
         new_group = Group()
         new_group.tt_id = tt_id
         new_group.name = group_name
         await new_group.create()
         return new_group
 
-    async def get_student(self, user_db: User) -> Student:
+    @staticmethod
+    async def get_student(user_db: User) -> Student:
         student = await Student.query.where(Student.user_id == user_db.user_id).gino.first()
         return student
 
-    async def clear_student(self, user_db: User):
+    async def _clear_student(self, user_db: User):
         old_student = await self.get_student(user_db)
         if old_student:
             await old_student.delete()
 
-    async def set_student(self, tt_id: int, group_name: str) -> Student:
+    async def set_student(self, tt_id: int) -> Student:
         user_db = await self.get_user()
-        await self.clear_teacher(user_db)
-        await self.clear_student(user_db)
+        await self._clear_teacher(user_db)
+        await self._clear_student(user_db)
         old_student = await self.get_student(user_db)
         group = await self.get_group_by_tt_id(tt_id)
         if old_student:
@@ -112,11 +121,13 @@ class DBCommands:
         await new_student.create()
         return new_student
 
-    async def get_subject(self, subject_id: int) -> Subject:
+    @staticmethod
+    async def get_subject(subject_id: int) -> Subject:
         subject = await Subject.query.where(Subject.subject_id == subject_id).gino.first()
         return subject
 
-    async def get_subject_from_full_info(self, subject_name: str, subject_format: str, locations: str) -> Subject:
+    @staticmethod
+    async def get_subject_from_full_info(subject_name: str, subject_format: str, locations: str) -> Subject:
         subject = await Subject.query.where(and_(
             Subject.subject_name == subject_name,
             Subject.subject_format == subject_format,
@@ -134,7 +145,8 @@ class DBCommands:
         await new_subject.create()
         return new_subject
 
-    async def get_study_event(self, group_id: int, date: datetime.date, start_time: datetime.time,
+    @staticmethod
+    async def get_study_event(group_id: int, date: datetime.date, start_time: datetime.time,
                               subject_id: int, educator: str) -> StudentStudyEvent:
         study_event = await StudentStudyEvent.query.where(and_(
             StudentStudyEvent.group_id == group_id,
@@ -161,13 +173,15 @@ class DBCommands:
         await new_study_event.create()
         return new_study_event
 
-    async def get_group_timetable_day(self, group_id: int, day: datetime.date) -> list:
+    @staticmethod
+    async def get_group_timetable_day(group_id: int, day: datetime.date) -> list:
         study_events = await StudentStudyEvent.query.where(and_(
             StudentStudyEvent.group_id == group_id,
             StudentStudyEvent.date == day)).gino.all()
         return study_events
 
-    async def get_group_timetable_week(self, group_id: int, monday: datetime.date, sunday: datetime.date) -> list:
+    @staticmethod
+    async def get_group_timetable_week(group_id: int, monday: datetime.date, sunday: datetime.date) -> list:
         study_events = await StudentStudyEvent.query.where(and_(
             StudentStudyEvent.group_id == group_id,
             StudentStudyEvent.date >= monday,

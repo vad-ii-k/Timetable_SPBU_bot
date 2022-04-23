@@ -35,7 +35,7 @@ async def separating_long_str(string: str) -> str:
     return string
 
 
-async def get_weekday_sticker(day: str):
+async def get_weekday_sticker(day: str) -> str:
     weekday_sticker = ''
     match day.split(",")[0]:
         case 'понедельник' | 'Monday':

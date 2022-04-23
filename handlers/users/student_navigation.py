@@ -64,8 +64,12 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
 
     await change_message_to_progress(query.message)
     groups = await get_groups(callback_data["program_id"])
-    await query.message.edit_text("Выберите группу:")
-    await query.message.edit_reply_markup(reply_markup=await create_groups_keyboard(groups))
+    if len(groups) > 0:
+        await query.message.edit_text("Выберите группу:")
+        await query.message.edit_reply_markup(reply_markup=await create_groups_keyboard(groups))
+    else:
+        await query.message.edit_text("По данной программе группы не найдены!")
+        await query.message.edit_reply_markup()
 
 
 @dp.callback_query_handler(groups_callback.filter())

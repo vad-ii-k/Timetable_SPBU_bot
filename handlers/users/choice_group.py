@@ -14,20 +14,32 @@ from states.choice_group import GroupChoice
 @dp.message_handler(state=GroupChoice.getting_choice)
 async def getting_choice_for_student(message: types.Message):
     groups_list = await db.get_groups_by_name(message.text)
-    if len(groups_list) > 0:
+    if len(groups_list) == 0:
+        await GroupChoice.wrong_group.set()
+        await groups_not_found_handler(message)
+    elif len(groups_list) > 60:
+        await GroupChoice.too_many_groups.set()
+        await groups_are_too_many_handler(message)
+    else:
         answer_msg = await message.answer("Выберите группу из списка:")
         await answer_msg.edit_reply_markup(reply_markup=await create_choice_groups_keyboard(groups_list))
         await GroupChoice.choosing.set()
-    else:
-        await GroupChoice.wrong_group.set()
-        await groups_not_found_handler(message)
+
+
+@dp.message_handler(state=GroupChoice.too_many_groups)
+async def groups_are_too_many_handler(message: Message):
+    await message.chat.delete_message(message.message_id - 1)
+    await message.delete()
+    await message.answer(f"Групп, содержащих в названии \"<i>{message.text}</i>\" слишком много!\n"
+                         "Попробуйте ввести подробнее:")
+    await GroupChoice.getting_choice.set()
 
 
 @dp.message_handler(state=GroupChoice.wrong_group)
 async def groups_not_found_handler(message: Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
-    await message.answer(f"Группа <i>{message.text}</i> не найдена!\n"
+    await message.answer(f"Группа \"<i>{message.text}</i>\" не найдена!\n"
                          "Попробуйте ещё раз или воспользуйтесь навигацией:")
     await GroupChoice.getting_choice.set()
 

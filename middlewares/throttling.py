@@ -1,5 +1,3 @@
-import asyncio
-
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import DEFAULT_RATE_LIMIT
 from aiogram.dispatcher.handler import CancelHandler, current_handler
@@ -26,10 +24,10 @@ class ThrottlingMiddleware(BaseMiddleware):
         try:
             await dispatcher.throttle(key, rate=limit)
         except Throttled as t:
-            await self.message_throttled(message, t)
+            await self.message_throttled(message=message, throttled=t)
             raise CancelHandler()
 
     @staticmethod
-    async def message_throttled(self, message: types.Message, throttled: Throttled):
+    async def message_throttled(message: types.Message, throttled: Throttled):
         if throttled.exceeded_count <= 2:
             await message.reply("Too many requests!")
