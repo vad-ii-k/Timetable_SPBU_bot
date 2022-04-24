@@ -1,4 +1,5 @@
 from datetime import date
+from babel.dates import format_date, format_datetime, format_time
 
 import loader
 from utils.db_api.db_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db
@@ -29,11 +30,12 @@ async def get_text_group_timetable_day(group_id: int, group_name: str, current_d
     timetable = await group_timetable_day_header(group_id, current_date, group_name)
 
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
-    schedule_pic.image_title(title=group_name, date=current_date.strftime("%A, %d %B"))
+    schedule_pic.image_title(title=group_name, date=format_date(current_date, 'EEEE, d MMMM', locale='ru_RU'))
 
     if len(timetable_db[0].events) > 0:
-        timetable += await group_timetable_parser_day(timetable_db[0].date, timetable_db[0].events)
-        schedule_pic.insert_timetable(timetable_db[0].date.strftime('%A, %d %B'), timetable_db[0].events)
+        timetable += await group_timetable_parser_day(day=timetable_db[0].date, events=timetable_db[0].events)
+        schedule_pic.insert_timetable(date=format_date(timetable_db[0].date, 'EEEE, d MMMM', locale='ru_RU'),
+                                      events=timetable_db[0].events)
     else:
         timetable += '\n🏖 <i>Занятий в этот день нет</i>'
     schedule_pic.crop_image()
@@ -49,8 +51,9 @@ async def get_text_group_timetable_week(group_id: int, group_name: str, monday: 
 
     if len(timetable_db) > 0:
         for day in timetable_db:
-            day_timetable = await group_timetable_parser_day(day.date, day.events)
-            schedule_pic.insert_timetable(day.date.strftime('%A, %d %B'), day.events)
+            day_timetable = await group_timetable_parser_day(day=day.date, events=day.events)
+            schedule_pic.insert_timetable(date=format_date(day.date, 'EEEE, d MMMM', locale='ru_RU'),
+                                          events=day.events)
             if len(timetable) + len(day_timetable) < 4000:
                 timetable += day_timetable
             else:
@@ -63,7 +66,7 @@ async def get_text_group_timetable_week(group_id: int, group_name: str, monday: 
 
 
 async def group_timetable_parser_day(day: date, events: list):
-    day_timetable = await timetable_day_header(day.strftime('%A, %d %B'))
+    day_timetable = await timetable_day_header(format_date(day, 'EEEE, d MMMM', locale='ru_RU'))
     for event in events:
         day_timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
                      f"   <b>{event.subject_name}</b>\n" \
