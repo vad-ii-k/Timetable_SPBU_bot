@@ -15,7 +15,7 @@ async def create_timetable_keyboard(is_picture, day_counter=0) -> InlineKeyboard
     timetable_keyboard = InlineKeyboardMarkup()
     prev_day_button = InlineKeyboardButton(text="⬅ " + prev_day_date.strftime("%d.%m"),
                                            callback_data=timetable_callback.new(button="1-1"))
-    today_button = InlineKeyboardButton(text="—Сегодня—",
+    today_button = InlineKeyboardButton(text="Сегодня",
                                         callback_data=timetable_callback.new(button="1-2"))
     next_day_button = InlineKeyboardButton(text=next_day_date.strftime("%d.%m") + " ➡️",
                                            callback_data=timetable_callback.new(button="1-3"))

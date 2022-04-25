@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import and_
+from sqlalchemy import and_, asc
 
 from aiogram import types
 
@@ -80,7 +80,7 @@ class DBCommands:
 
     @staticmethod
     async def get_groups_by_name(group_name: str) -> list:
-        groups = await Group.query.where(Group.name.contains(group_name)).gino.all()
+        groups = await Group.query.where(Group.name.contains(group_name)).order_by(asc(Group.name)).gino.all()
         return groups
 
     @staticmethod
