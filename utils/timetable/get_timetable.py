@@ -30,12 +30,16 @@ async def get_text_group_timetable_day(group_id: int, group_name: str, current_d
     timetable = await group_timetable_day_header(group_id, current_date, group_name)
 
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
-    schedule_pic.image_title(title=group_name, date=format_date(current_date, 'EEEE, d MMMM', locale='ru_RU'))
+    schedule_pic.create_image_title(title=group_name, date=format_date(current_date, 'EEEE, d MMMM', locale='ru_RU'))
 
     if len(timetable_db[0].events) > 0:
-        timetable += await group_timetable_parser_day(day=timetable_db[0].date, events=timetable_db[0].events)
+        day_timetable = await group_timetable_parser_day(day=timetable_db[0].date, events=timetable_db[0].events)
         schedule_pic.insert_timetable(date=format_date(timetable_db[0].date, 'EEEE, d MMMM', locale='ru_RU'),
                                       events=timetable_db[0].events)
+        if len(timetable) + len(day_timetable) < 4096:
+            timetable += day_timetable
+        else:
+            timetable += "\n\n📛 Сообщение слишком длинное..."
     else:
         timetable += '\n🏖 <i>Занятий в этот день нет</i>'
     schedule_pic.crop_image()
@@ -46,19 +50,21 @@ async def get_text_group_timetable_week(group_id: int, group_name: str, monday: 
     timetable = await group_timetable_week_header(group_id, monday, sunday, group_name)
 
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
-    schedule_pic.image_title(title=group_name, date="Неделя: {monday} — {sunday}".format(
+    schedule_pic.create_image_title(title=group_name, date="Неделя: {monday} — {sunday}".format(
                                                     monday=monday.strftime("%d.%m"), sunday=sunday.strftime("%d.%m")))
-
     if len(timetable_db) > 0:
         for day in timetable_db:
             day_timetable = await group_timetable_parser_day(day=day.date, events=day.events)
-            schedule_pic.insert_timetable(date=format_date(day.date, 'EEEE, d MMMM', locale='ru_RU'),
-                                          events=day.events)
-            if len(timetable) + len(day_timetable) < 4000:
+            if len(timetable) + len(day_timetable) < 4096:
                 timetable += day_timetable
             else:
-                timetable += "\n\nСообщение слишком длинное..."
+                timetable += "\n\n📛 Сообщение слишком длинное..."
                 break
+        '''
+        for day in timetable_db:
+            schedule_pic.insert_timetable(date=format_date(day.date, 'EEEE, d MMMM', locale='ru_RU'),
+                                          events=day.events)
+        '''
     else:
         timetable += '\n🏖 <i>Занятий на этой неделе нет</i>'
     schedule_pic.crop_image()

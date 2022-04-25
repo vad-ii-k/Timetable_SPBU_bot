@@ -53,7 +53,7 @@ async def schedule_subscription_handler(query: CallbackQuery, callback_data: dic
         if data["user_type"] == 'teacher':
             teacher = await db.set_teacher(tt_id=int(data["tt_id"]), full_name=data["full_name"])
         else:
-            student = await db.set_student(tt_id=int(data["tt_id"]), group_name=data["group_name"])
+            student = await db.set_student(tt_id=int(data["tt_id"]))
         text = "Вы подписались на расписание! ✅"
     else:
         text = "Вы отказались от подписки! ❌"

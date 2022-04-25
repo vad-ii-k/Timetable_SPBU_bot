@@ -19,7 +19,10 @@ async def create_timetable_keyboard(is_picture, day_counter=0) -> InlineKeyboard
                                         callback_data=timetable_callback.new(button="1-2"))
     next_day_button = InlineKeyboardButton(text=next_day_date.strftime("%d.%m") + " ➡️",
                                            callback_data=timetable_callback.new(button="1-3"))
-    timetable_keyboard.row(prev_day_button, today_button, next_day_button)
+    if day_counter > -7:
+        timetable_keyboard.row(prev_day_button, today_button, next_day_button)
+    else:
+        timetable_keyboard.row(today_button, next_day_button)
 
     this_week_button = InlineKeyboardButton(text="⏹ Эта неделя", callback_data=timetable_callback.new(button="2-1"))
     next_week_button = InlineKeyboardButton(text="След. неделя ⏩", callback_data=timetable_callback.new(button="2-2"))
