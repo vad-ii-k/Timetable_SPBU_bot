@@ -49,4 +49,4 @@ async def group_viewing_schedule_handler(query: CallbackQuery, callback_data: di
     await state.finish()
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
-    await send_group_schedule(query, callback_data, state)
+    await send_group_schedule(query.message, callback_data, state, subscription=True)

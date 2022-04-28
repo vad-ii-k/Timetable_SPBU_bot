@@ -11,8 +11,7 @@ from loader import dp, db
 
 
 @dp.message_handler(CommandSettings(), state="*")
-async def bot_settings(message: types.Message, state: FSMContext):
-    await state.finish()
+async def bot_settings(message: types.Message):
     user_db = await db.get_user()
     settings = await db.get_settings(user_db)
 
@@ -26,7 +25,7 @@ async def bot_settings(message: types.Message, state: FSMContext):
         if teacher:
             text += '🧑‍🏫 ' + teacher.full_name
         else:
-            text += "🚫 Отстутствует"
+            text += "🚫 Отсутствует"
 
     text += "\n\n⚙️ Текущие настройки:"
     await message.answer(text=text, reply_markup=await create_settings_keyboard(settings))
@@ -51,9 +50,9 @@ async def schedule_subscription_handler(query: CallbackQuery, callback_data: dic
     if callback_data["answer"] == '1':
         data = await state.get_data()
         if data["user_type"] == 'teacher':
-            teacher = await db.set_teacher(tt_id=int(data["tt_id"]), full_name=data["full_name"])
+            await db.set_teacher(tt_id=int(data["tt_id"]), full_name=data["full_name"])
         else:
-            student = await db.set_student(tt_id=int(data["tt_id"]))
+            await db.set_student(tt_id=int(data["tt_id"]))
         text = "Вы подписались на расписание! ✅"
     else:
         text = "Вы отказались от подписки! ❌"

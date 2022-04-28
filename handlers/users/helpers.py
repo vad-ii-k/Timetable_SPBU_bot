@@ -12,43 +12,45 @@ async def change_message_to_progress(message: Message):
     await message.edit_text("🕒 <i>Загрузка...</i>")
 
 
-async def send_group_schedule(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def send_group_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
     settings = await db.set_settings()
     is_picture = settings.schedule_view_is_picture
-    await change_message_to_progress(query.message)
+    await change_message_to_progress(message)
 
     text = await get_group_timetable(tt_id=int(callback_data["group_id"]), week_counter=0)
-    answer_msg = await create_answer_based_on_content(query, text, is_picture)
+    answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
     await state.update_data(user_type="student", tt_id=callback_data["group_id"],
                             group_name=text.split('\n', 1)[0])
     await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
-    await send_subscription_question(answer_msg)
+    if subscription:
+        await send_subscription_question(answer_msg)
 
 
-async def send_teacher_schedule(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def send_teacher_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
     settings = await db.set_settings()
     is_picture = settings.schedule_view_is_picture
-    await change_message_to_progress(query.message)
+    await change_message_to_progress(message)
 
     text = await get_teacher_timetable_week(callback_data.get("teacher_id"))
-    answer_msg = await create_answer_based_on_content(query, text, is_picture)
+    answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
     await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"),
                             full_name=text.split('\n', 1)[0].split(' ', 1)[1])
     await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
-    await send_subscription_question(answer_msg)
+    if subscription:
+        await send_subscription_question(answer_msg)
 
 
-async def create_answer_based_on_content(query: CallbackQuery, text: str, is_picture: bool) -> Message:
+async def create_answer_based_on_content(message: Message, text: str, is_picture: bool) -> Message:
     if is_picture:
-        answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        answer_msg = await message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
         await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
-        await query.message.delete()
+        await message.delete()
     else:
-        answer_msg = await query.message.edit_text(text)
+        answer_msg = await message.edit_text(text)
     return answer_msg
 
 

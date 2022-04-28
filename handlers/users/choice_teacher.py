@@ -60,4 +60,4 @@ async def teacher_viewing_schedule_handler(query: CallbackQuery, state: FSMConte
     await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
-    await send_teacher_schedule(query, callback_data, state)
+    await send_teacher_schedule(query.message, callback_data, state, subscription=True)

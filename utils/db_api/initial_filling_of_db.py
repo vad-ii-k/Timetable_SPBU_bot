@@ -4,6 +4,7 @@ import random
 
 import aiohttp
 from aiohttp_socks import ProxyConnector
+from python_socks import ProxyConnectionError
 
 from data.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
 from loader import db
@@ -11,19 +12,22 @@ from utils.timetable.api import tt_api_url
 
 
 async def get_proxy_connector() -> ProxyConnector:
-    ip = PROXY_IPS[random.randint(0, 100) % len(PROXY_IPS)]
+    ip = PROXY_IPS[random.randint(0, len(PROXY_IPS) - 1)]
     connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{ip}')
     return connector
 
 
 async def request(session: aiohttp.ClientSession, url: str) -> dict:
-    async with session.get(url) as response:
-        print(url)
-        if response.status == 200:
-            return await response.json()
-        else:
-            print(response.status)
-            return {}
+    try:
+        async with session.get(url) as response:
+            print(url)
+            if response.status == 200:
+                return await response.json()
+            else:
+                print(response.status)
+                return {}
+    except ProxyConnectionError as e:
+        return {}  # TODO
 
 
 async def get_study_divisions() -> list:
@@ -81,7 +85,7 @@ def chunks_generator(lst: list, chuck_size: int):
 
 
 async def collecting_groups_info():
-    program_ids_by_parts = list(chunks_generator(program_ids, 400))
+    program_ids_by_parts = list(chunks_generator(program_ids, 100))
     for chunk in program_ids_by_parts:
         connector = await get_proxy_connector()
         async with aiohttp.ClientSession(connector=connector) as session:
