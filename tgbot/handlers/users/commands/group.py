@@ -1,7 +1,7 @@
 from aiogram.types import Message
 
-from keyboards.inline.student_navigaton_buttons import create_study_divisions_keyboard
-from loader import dp
+from tgbot.keyboards.inline.student_navigaton_buttons import create_study_divisions_keyboard
+from tgbot.loader import dp
 from utils.timetable.api import get_study_divisions
 
 

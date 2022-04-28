@@ -2,12 +2,12 @@ import asyncio
 import sys
 
 from aiogram import executor
-from loader import dp
-import middlewares, filters, handlers
+
+from tgbot.notify_admins import on_startup_notify
+from tgbot.loader import dp
+from tgbot.set_bot_commands import set_default_commands
 from utils.db_api.db_commands import create_db
 from utils.db_api.initial_filling_of_db import adding_groups_to_db
-from utils.notify_admins import on_startup_notify
-from utils.set_bot_commands import set_default_commands
 
 
 async def on_startup(dispatcher):

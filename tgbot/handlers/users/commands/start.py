@@ -4,8 +4,8 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram.dispatcher.filters.builtin import CommandStart
 
-from keyboards.inline.choice_user_status_buttons import choice_user_status
-from loader import dp, db
+from tgbot.loader import dp, db
+from tgbot.keyboards.inline.choice_user_status_buttons import choice_user_status
 
 
 @dp.message_handler(CommandStart(), state="*")

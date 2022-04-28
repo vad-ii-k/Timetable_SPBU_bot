@@ -2,11 +2,11 @@ import logging
 
 from aiogram.types import CallbackQuery
 
-from keyboards.inline.callback_data import user_status_callback
-from keyboards.inline.student_navigaton_buttons import create_study_divisions_keyboard
-from loader import dp
-from states.choice_group import GroupChoice
-from states.choice_teacher import TeacherChoice
+from tgbot.keyboards.inline.callback_data import user_status_callback
+from tgbot.keyboards.inline.student_navigaton_buttons import create_study_divisions_keyboard
+from tgbot.loader import dp
+from tgbot.states.choice_group import GroupChoice
+from tgbot.states.choice_teacher import TeacherChoice
 from utils.timetable.api import get_study_divisions
 
 

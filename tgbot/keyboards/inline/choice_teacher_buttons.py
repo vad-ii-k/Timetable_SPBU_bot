@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from keyboards.inline.callback_data import choice_teacher_callback
+from tgbot.keyboards.inline.callback_data import choice_teacher_callback
 
 
 async def create_teachers_keyboard(teachers: list) -> InlineKeyboardMarkup:

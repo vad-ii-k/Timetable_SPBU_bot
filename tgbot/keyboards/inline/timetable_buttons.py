@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import date, timedelta
 
-from keyboards.inline.callback_data import timetable_callback
+from tgbot.keyboards.inline.callback_data import timetable_callback
 
 
 async def create_timetable_keyboard(is_picture, day_counter=0) -> InlineKeyboardMarkup:

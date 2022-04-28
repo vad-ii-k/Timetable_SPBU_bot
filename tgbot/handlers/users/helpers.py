@@ -1,9 +1,9 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery, InputFile
 
-from keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
-from keyboards.inline.timetable_buttons import create_timetable_keyboard
-from loader import db
+from tgbot.keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
+from tgbot.keyboards.inline.timetable_buttons import create_timetable_keyboard
+from tgbot.loader import db
 from utils.timetable.api import get_teacher_timetable_week
 from utils.timetable.get_timetable import get_group_timetable
 

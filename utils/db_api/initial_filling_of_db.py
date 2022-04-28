@@ -6,8 +6,8 @@ import aiohttp
 from aiohttp_socks import ProxyConnector
 from python_socks import ProxyConnectionError
 
-from data.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
-from loader import db
+from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
+from tgbot.loader import db
 from utils.timetable.api import tt_api_url
 
 

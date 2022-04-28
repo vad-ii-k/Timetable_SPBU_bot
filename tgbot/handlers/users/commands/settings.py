@@ -5,9 +5,9 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import CommandSettings
 from aiogram.types import CallbackQuery
 
-from keyboards.inline.callback_data import settings_callback, schedule_subscription_callback
-from keyboards.inline.settings_buttons import create_settings_keyboard
-from loader import dp, db
+from tgbot.keyboards.inline.callback_data import settings_callback, schedule_subscription_callback
+from tgbot.keyboards.inline.settings_buttons import create_settings_keyboard
+from tgbot.loader import dp, db
 
 
 @dp.message_handler(CommandSettings(), state="*")

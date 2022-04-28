@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from keyboards.inline.callback_data import schedule_subscription_callback
+from tgbot.keyboards.inline.callback_data import schedule_subscription_callback
 
 
 async def create_schedule_subscription_keyboard() -> InlineKeyboardMarkup:

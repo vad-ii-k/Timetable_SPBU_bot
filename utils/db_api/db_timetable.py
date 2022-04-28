@@ -2,7 +2,7 @@ from datetime import datetime, date, time
 from dataclasses import dataclass
 from typing import List
 
-import loader
+from tgbot import loader
 
 
 @dataclass

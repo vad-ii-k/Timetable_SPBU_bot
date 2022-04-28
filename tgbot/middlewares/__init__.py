@@ -1,4 +1,4 @@
-from loader import dp
+from tgbot.loader import dp
 from .throttling import ThrottlingMiddleware
 
 

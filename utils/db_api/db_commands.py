@@ -4,7 +4,7 @@ from sqlalchemy import and_, asc
 
 from aiogram import types
 
-from data.config import PG_USER, PG_PASSWORD, PG_HOST, PG_PORT, PG_NAME
+from tgbot.config import PG_USER, PG_PASSWORD, PG_HOST, PG_PORT, PG_NAME
 from utils.db_api.db_models import User, Settings, Teacher, Group, Student, StudentStudyEvent, db_gino, Subject
 
 

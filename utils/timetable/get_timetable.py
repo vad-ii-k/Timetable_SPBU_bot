@@ -1,7 +1,7 @@
 from datetime import date
-from babel.dates import format_date, format_datetime, format_time
+from babel.dates import format_date
 
-import loader
+from tgbot import loader
 from utils.db_api.db_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db
 from utils.image_converter.new_converter import TimetableIMG
 from utils.timetable.api import fill_group_timetable_from_tt

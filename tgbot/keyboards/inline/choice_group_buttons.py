@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from keyboards.inline.callback_data import choice_group_callback
+from tgbot.keyboards.inline.callback_data import choice_group_callback
 from utils.db_api.db_models import Group
 
 

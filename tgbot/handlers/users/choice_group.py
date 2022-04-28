@@ -4,11 +4,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from handlers.users.helpers import send_group_schedule
-from keyboards.inline.callback_data import choice_group_callback
-from keyboards.inline.choice_group_buttons import create_choice_groups_keyboard
-from loader import dp, db
-from states.choice_group import GroupChoice
+from tgbot.handlers.users.helpers import send_group_schedule
+from tgbot.keyboards.inline.callback_data import choice_group_callback
+from tgbot.keyboards.inline.choice_group_buttons import create_choice_groups_keyboard
+from tgbot.loader import dp, db
+from tgbot.states.choice_group import GroupChoice
 
 
 @dp.message_handler(state=GroupChoice.getting_choice)

@@ -4,11 +4,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from handlers.users.helpers import send_teacher_schedule
-from keyboards.inline.callback_data import choice_teacher_callback
-from keyboards.inline.choice_teacher_buttons import create_teachers_keyboard
-from loader import dp
-from states.choice_teacher import TeacherChoice
+from tgbot.handlers.users.helpers import send_teacher_schedule
+from tgbot.keyboards.inline.callback_data import choice_teacher_callback
+from tgbot.keyboards.inline.choice_teacher_buttons import create_teachers_keyboard
+from tgbot.loader import dp
+from tgbot.states.choice_teacher import TeacherChoice
 from utils.timetable.api import teacher_search
 
 

@@ -1,7 +1,7 @@
 from aiogram.types import Message
 
-from loader import dp
-from states.choice_teacher import TeacherChoice
+from tgbot.loader import dp
+from tgbot.states.choice_teacher import TeacherChoice
 
 
 @dp.message_handler(commands='educator', state="*")

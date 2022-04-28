@@ -3,12 +3,12 @@ import logging
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from handlers.users.helpers import send_group_schedule, change_message_to_progress
-from keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, study_programs_callback, \
-    admission_years_callback, groups_callback
-from keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard, create_study_programs_keyboard, \
-    create_admission_years_keyboard, create_groups_keyboard
-from loader import dp
+from tgbot.handlers.users.helpers import send_group_schedule, change_message_to_progress
+from tgbot.keyboards.inline.callback_data import study_divisions_callback, study_levels_callback,\
+    study_programs_callback, admission_years_callback, groups_callback
+from tgbot.keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard,\
+    create_study_programs_keyboard, create_admission_years_keyboard, create_groups_keyboard
+from tgbot.loader import dp
 from utils.timetable.api import get_study_levels, get_groups
 
 

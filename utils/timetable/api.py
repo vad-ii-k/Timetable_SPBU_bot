@@ -3,7 +3,7 @@ import random
 import aiohttp
 from aiohttp_socks import ProxyConnector
 
-from data.config import PROXY_LOGIN, PROXY_PASSWORD, PROXY_IPS
+from tgbot.config import PROXY_LOGIN, PROXY_PASSWORD, PROXY_IPS
 from utils.db_api.db_timetable import add_group_timetable_to_db
 from utils.image_converter.converter import TimetableIMG
 from utils.timetable.helpers import calculator_of_days, calculator_of_week_days

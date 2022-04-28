@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, \
+from tgbot.keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, \
     study_programs_callback, admission_years_callback, groups_callback
 
 

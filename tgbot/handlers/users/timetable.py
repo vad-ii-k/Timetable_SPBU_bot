@@ -3,10 +3,10 @@ import logging
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputMedia, InputFile
 
-from handlers.users.helpers import check_message_content_type
-from keyboards.inline.callback_data import timetable_callback
-from keyboards.inline.timetable_buttons import create_timetable_keyboard
-from loader import dp
+from tgbot.handlers.users.helpers import check_message_content_type
+from tgbot.keyboards.inline.callback_data import timetable_callback
+from tgbot.keyboards.inline.timetable_buttons import create_timetable_keyboard
+from tgbot.loader import dp
 from utils.timetable.api import get_teacher_timetable_week, get_teacher_timetable_day
 from utils.timetable.get_timetable import get_group_timetable
 

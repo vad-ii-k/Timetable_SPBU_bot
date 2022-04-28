@@ -1,8 +1,8 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from handlers.users.helpers import send_teacher_schedule, send_group_schedule
-from loader import dp, db
+from tgbot.handlers.users.helpers import send_teacher_schedule, send_group_schedule
+from tgbot.loader import dp, db
 
 
 @dp.message_handler(commands='my_schedule', state="*")
