@@ -1,7 +1,5 @@
 import logging
-from aiogram.utils.exceptions import (TelegramAPIError,
-                                      MessageNotModified,
-                                      CantParseEntities)
+from aiogram.utils.exceptions import TelegramAPIError, MessageNotModified, CantParseEntities, MessageToDeleteNotFound
 from tgbot.loader import dp
 
 
@@ -18,6 +16,10 @@ async def errors_handler(update, exception):
 
     if isinstance(exception, TelegramAPIError):
         logging.exception(f'TelegramAPIError: {exception} \nUpdate: {update}')
+        return True
+
+    if isinstance(exception, MessageToDeleteNotFound):
+        logging.exception(f'MessageToDeleteNotFound: {exception} \nUpdate: {update}')
         return True
 
     logging.exception(f'Update: {update} \n{exception}')

@@ -60,11 +60,9 @@ async def get_text_group_timetable_week(group_id: int, group_name: str, monday: 
             else:
                 timetable += "\n\n📛 Сообщение слишком длинное..."
                 break
-        '''
         for day in timetable_db:
             schedule_pic.insert_timetable(date=format_date(day.date, 'EEEE, d MMMM', locale='ru_RU'),
                                           events=day.events)
-        '''
     else:
         timetable += '\n🏖 <i>Занятий на этой неделе нет</i>'
     schedule_pic.crop_image()
