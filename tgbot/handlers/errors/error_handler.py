@@ -2,7 +2,7 @@ import logging
 from aiogram.utils.exceptions import (TelegramAPIError,
                                       MessageNotModified,
                                       CantParseEntities)
-from loader import dp
+from tgbot.loader import dp
 
 
 @dp.errors_handler()

@@ -74,10 +74,10 @@ async def get_text_group_timetable_week(group_id: int, group_name: str, monday: 
 async def group_timetable_parser_day(day: date, events: list):
     day_timetable = await timetable_day_header(format_date(day, 'EEEE, d MMMM', locale='ru_RU'))
     for event in events:
-        day_timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
-                     f"   <b>{event.subject_name}</b>\n" \
-                     f"    🕟 <u>{event.start_time.strftime('%H:%M')}-{event.end_time.strftime('%H:%M')}</u>\n" \
-                     f"    🧑‍🏫 Преподаватель: <i>{event.educator}</i>\n" \
-                     f"    ✍🏻 Формат: <i>{event.subject_format}</i>\n" \
-                     f"    🚩 Место: <i>{event.locations}</i>\n"
+        day_timetable += "   ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
+                         f"   <b>{event.subject_name}</b>\n" \
+                         f"    🕟 <u>{event.start_time.strftime('%H:%M')}-{event.end_time.strftime('%H:%M')}</u>\n" \
+                         f"    🧑‍🏫 Преподаватель: <i>{event.educator}</i>\n" \
+                         f"    ✍🏻 Формат: <i>{event.subject_format}</i>\n" \
+                         f"    🚩 Место: <i>{event.locations}</i>\n"
     return day_timetable

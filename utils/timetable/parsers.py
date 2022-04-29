@@ -1,6 +1,6 @@
 from datetime import date
 
-from utils.timetable.helpers import separating_long_str, get_weekday_sticker
+from utils.timetable.helpers import get_weekday_sticker
 
 
 async def timetable_day_header(day_string: str) -> str:
@@ -10,16 +10,10 @@ async def timetable_day_header(day_string: str) -> str:
 
 
 async def get_subject(subject_data: str, is_cancelled: bool) -> str:
-    subject_name = await separating_long_str(subject_data.rsplit(sep=", ", maxsplit=1)[0])
+    subject_name = subject_data.rsplit(sep=", ", maxsplit=1)[0]
     if is_cancelled:
         subject_name = f"<s>{subject_name}</s>"
     return subject_name
-
-
-async def get_locations(locations_data: str) -> str:
-    locations = "Онлайн" if locations_data.find("С использованием инф") != -1\
-            else await separating_long_str(locations_data)
-    return locations
 
 
 async def teacher_timetable_parser_day(day: dict) -> str:
@@ -29,10 +23,10 @@ async def teacher_timetable_parser_day(day: dict) -> str:
         time = event.get("TimeIntervalString")
         subject = await get_subject(subject_data=event.get("Subject"), is_cancelled=event.get("IsCancelled"))
         lesson_format = event.get("Subject").rsplit(sep=", ", maxsplit=1)[1]
-        contingent = await separating_long_str(event.get("ContingentUnitName"))
-        locations = await get_locations(locations_data=event.get("LocationsDisplayText"))
+        contingent = event.get("ContingentUnitName")
+        locations = event.get("LocationsDisplayText")
 
-        timetable += "  ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
+        timetable += "   ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
                      f"     <b>{subject}</b>\n" \
                      f"    🕟 <u>{time}</u>\n" \
                      f"    🎓 Группы: <b>{contingent}</b>\n" \

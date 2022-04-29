@@ -87,7 +87,7 @@ class StudentStudyEvent(db_gino.Model):
     start_time = Column(Time)
     end_time = Column(Time)
     subject_id = Column(None, ForeignKey("subject.subject_id"))
-    educator = Column(String(500))
+    educator = Column(String(300))
     is_canceled = Column(Boolean)
 
     def __repr__(self):

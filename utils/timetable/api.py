@@ -1,4 +1,5 @@
 import random
+from datetime import date
 
 import aiohttp
 from aiohttp_socks import ProxyConnector
@@ -12,7 +13,7 @@ from utils.timetable.parsers import teacher_timetable_parser_day, teacher_timeta
 
 
 async def request(url: str) -> dict:
-    ip = PROXY_IPS[random.randint(0, 100) % len(PROXY_IPS)]
+    ip = PROXY_IPS[random.randint(0, len(PROXY_IPS) - 1)]
     connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{ip}')
     async with aiohttp.ClientSession(connector=connector) as session:
         async with session.get(url) as resp:
@@ -110,8 +111,11 @@ async def get_groups(program_id: str) -> list:
 
 
 async def fill_group_timetable_from_tt(group_id: int):
+    """ We get the schedule for the rest of the current half-year """
     monday, sunday = await calculator_of_week_days(week_counter=-1)
-    url = tt_api_url + f"/groups/{group_id}/events/{monday}/2022-08-01"  # TODO
+    url = tt_api_url + f"/groups/{group_id}/events/{monday}/"
+    august_of_current_year = date(monday.year, 8, 1)
+    url += f"{monday.year}-08-01" if monday < august_of_current_year else f"{monday.year+1}-02-01"
     response = await request(url)
 
     if len(response["Days"]) > 0:
