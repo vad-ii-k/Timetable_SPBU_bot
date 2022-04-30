@@ -8,16 +8,19 @@ from utils.timetable.api import get_teacher_timetable_week
 from utils.timetable.get_timetable import get_group_timetable
 
 
-async def change_message_to_progress(message: Message):
-    await message.edit_text("🕒 <i>Загрузка...</i>")
+async def change_message_to_progress(message: Message, is_picture: bool = False):
+    if is_picture:
+        await message.edit_caption("🕒 <i>Загрузка...</i>")
+    else:
+        await message.edit_text("🕒 <i>Загрузка...</i>")
 
 
 async def send_group_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
     settings = await db.set_settings()
-    is_picture = settings.schedule_view_is_picture
-    await change_message_to_progress(message)
+    is_picture: bool = settings.schedule_view_is_picture
+    await change_message_to_progress(message, is_picture)
 
-    text = await get_group_timetable(tt_id=int(callback_data["group_id"]), week_counter=0)
+    text = await get_group_timetable(tt_id=int(callback_data["group_id"]), is_picture=is_picture, week_counter=0)
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
     await state.update_data(user_type="student", tt_id=callback_data["group_id"],
@@ -31,7 +34,7 @@ async def send_group_schedule(message: Message, callback_data: dict, state: FSMC
 async def send_teacher_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
     settings = await db.set_settings()
     is_picture = settings.schedule_view_is_picture
-    await change_message_to_progress(message)
+    await change_message_to_progress(message, is_picture)
 
     text = await get_teacher_timetable_week(callback_data.get("teacher_id"))
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
@@ -61,8 +64,4 @@ async def send_subscription_question(answer_msg: Message):
 
 async def check_message_content_type(query: CallbackQuery) -> bool:
     is_picture = (query.message.content_type == 'photo')
-    if is_picture:
-        await query.message.edit_caption("🕒 <i>Загрузка...</i>")
-    else:
-        await change_message_to_progress(query.message)
     return is_picture

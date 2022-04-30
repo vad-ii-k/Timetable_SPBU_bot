@@ -42,7 +42,8 @@ class TimetableIMG:
         y += TimetableIMG._font_h2.size + 40
         draw.line(xy=[(x, y), (image.width-x, y)], fill="black", width=5)
         y += 20
-        self._x, self._y, self._y_foundation = x, y, y
+        self._x = x
+        self._y = self._y_foundation = self._y_max = y
         image.save(self._path_final_img)
 
     def _draw_text(self, xy: tuple, text: str, font: ImageFont, offset_x: int = 0) -> tuple:
