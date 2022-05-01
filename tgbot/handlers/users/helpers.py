@@ -4,8 +4,8 @@ from aiogram.types import Message, CallbackQuery, InputFile
 from tgbot.keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
 from tgbot.keyboards.inline.timetable_buttons import create_timetable_keyboard
 from tgbot.loader import db
-from utils.timetable.api import get_teacher_timetable_week
-from utils.timetable.get_timetable import get_group_timetable
+from utils.timetable.get_group_timetable import get_group_timetable
+from utils.timetable.get_teacher_timetable import get_teacher_timetable
 
 
 async def change_message_to_progress(message: Message, is_picture: bool = False):
@@ -36,7 +36,7 @@ async def send_teacher_schedule(message: Message, callback_data: dict, state: FS
     is_picture = settings.schedule_view_is_picture
     await change_message_to_progress(message, is_picture)
 
-    text = await get_teacher_timetable_week(callback_data.get("teacher_id"))
+    text = await get_teacher_timetable(tt_id=int(callback_data["teacher_id"]), is_picture=is_picture, week_counter=0)
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
     await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"),

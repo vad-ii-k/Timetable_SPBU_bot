@@ -32,16 +32,15 @@ class Settings(db_gino.Model):
                 self.notification_of_lesson, self.schedule_view_is_picture)
 
 
-class Teacher(db_gino.Model):
-    __tablename__ = "teacher"
-    teacher_id = Column(Integer, Sequence("teacher_id_seq"), primary_key=True)
-    user_id = Column(None, ForeignKey("user.user_id"))
+class TeacherSPBU(db_gino.Model):
+    __tablename__ = "teacher_spbu"
+    teacher_spbu_id = Column(Integer, Sequence("teacher_spbu_id_seq"), primary_key=True)
     tt_id = Column(Integer)
     full_name = Column(String(100))
 
     def __repr__(self):
-        return "<Teacher(id={}, tt_id={}, user_id={}, full_name={})>".format(
-            self.teacher_id, self.tt_id, self.user_id, self.full_name)
+        return "<TeacherSPBU(id={}, tt_id={}, user_id={}, full_name={})>".format(
+            self.teacher_spbu_id, self.tt_id, self.user_id, self.full_name)
 
 
 class Group(db_gino.Model):
@@ -54,6 +53,17 @@ class Group(db_gino.Model):
     def __repr__(self):
         return "<Group(id={}, tt_id={}, name={}, is_received_schedule={})>".format(
             self.group_id, self.tt_id, self.name, self.is_received_schedule)
+
+
+class TeacherUser(db_gino.Model):
+    __tablename__ = "teacher_user"
+    teacher_user_id = Column(Integer, Sequence("teacher_user_id_seq"), primary_key=True)
+    user_id = Column(None, ForeignKey("user.user_id"))
+    teacher_spbu_id = Column(None, ForeignKey("teacher_spbu.teacher_spbu_id"))
+
+    def __repr__(self):
+        return "<TeacherUser(id={}, user_id={}, teacher_spbu_id={})>".format(
+            self.teacher_user_id, self.user_id, self.teacher_spbu_id)
 
 
 class Student(db_gino.Model):
@@ -98,7 +108,7 @@ class GroupStudyEvent(db_gino.Model):
 class TeacherStudyEvent(db_gino.Model):
     __tablename__ = "teacher_study_event"
     teacher_event_id = Column(Integer, Sequence("teacher_event_id_seq"), primary_key=True)
-    teacher_id = Column(None, ForeignKey("teacher.teacher_id"))
+    teacher_id = Column(None, ForeignKey("teacher_spbu.teacher_spbu_id"))
     date = Column(Date)
     start_time = Column(Time)
     end_time = Column(Time)

@@ -1,2 +1,2 @@
 from . import api
-from . import get_timetable
+from . import get_group_timetable

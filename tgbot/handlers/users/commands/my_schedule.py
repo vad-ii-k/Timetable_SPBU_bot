@@ -14,9 +14,10 @@ async def bot_my_schedule_command(query: CallbackQuery, state: FSMContext):
         group = await db.get_group(student.group_id)
         await send_group_schedule(message, {"group_id": group.tt_id, "group_name": group.name}, state, False)
     else:
-        teacher = await db.get_teacher(user_db)
-        if teacher:
-            await send_teacher_schedule(message, {"teacher_id": teacher.tt_id}, state, subscription=False)
+        teacher_user = await db.get_teacher_user(user_db)
+        if teacher_user:
+            teacher_spbu = await db.get_teacher_spbu(teacher_user.teacher_spbu_id)
+            await send_teacher_schedule(message, {"teacher_id": teacher_spbu.tt_id}, state, subscription=False)
         else:
             text = "🚫 Основное расписание отсутствует"
             await message.answer(text)

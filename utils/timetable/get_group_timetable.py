@@ -2,7 +2,7 @@ from datetime import date
 from babel.dates import format_date
 
 from tgbot import loader
-from utils.db_api.db_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db, Event
+from utils.db_api.db_group_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db, GroupEvent
 from utils.image_converter.new_converter import TimetableIMG
 from utils.timetable.api import fill_group_timetable_from_tt
 from utils.timetable.helpers import calculator_of_week_days, calculator_of_days
@@ -91,7 +91,7 @@ async def get_image_group_timetable_week(group_id: int, group_name: str, monday:
     return timetable
 
 
-async def group_timetable_parser_day(day: date, events: list[Event]):
+async def group_timetable_parser_day(day: date, events: list[GroupEvent]):
     day_timetable = await timetable_day_header(format_date(day, 'EEEE, d MMMM', locale='ru_RU'))
     for event in events:
         day_timetable += "   ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"

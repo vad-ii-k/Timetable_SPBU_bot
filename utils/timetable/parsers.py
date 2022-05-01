@@ -54,18 +54,18 @@ async def group_timetable_week_header(group_id: int, monday: date, sunday: date,
     return header
 
 
-async def teacher_timetable_day_header(teacher_id: int, current_date: date, response: dict) -> str:
-    header = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>День: {current_date}</a> \n".format(
-        educator=response.get("EducatorDisplayText"),
+async def teacher_timetable_day_header(teacher_id: int, current_date: date, teacher_surname: str) -> str:
+    header = "🧑‍🏫 Преподаватель: <b>{surname}</b>\n📆 <a href='{link}'>День: {current_date}</a> \n".format(
+        surname=teacher_surname,
         link=f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}/{current_date}",
         current_date=current_date.strftime("%d.%m")
     )
     return header
 
 
-async def teacher_timetable_week_header(teacher_id: int, monday: date, sunday: date, response: dict) -> str:
-    header = "Преподаватель: <b>{educator}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
-        educator=response.get("EducatorDisplayText"),
+async def teacher_timetable_week_header(teacher_id: int, monday: date, sunday: date, teacher_surname: str) -> str:
+    header = "🧑‍🏫 Преподаватель: <b>{surname}</b>\n📆 <a href='{link}'>Неделя: {monday} — {sunday}</a>\n".format(
+        surname=teacher_surname,
         link=f"https://timetable.spbu.ru/WeekEducatorEvents/{teacher_id}/{monday}",
         monday=monday.strftime("%d.%m"),
         sunday=sunday.strftime("%d.%m")

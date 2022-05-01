@@ -21,9 +21,10 @@ async def bot_settings(message: types.Message):
         group = await db.get_group(student.group_id)
         text += '👨‍👩‍👧‍👦 ' + group.name
     else:
-        teacher = await db.get_teacher(user_db)
-        if teacher:
-            text += '🧑‍🏫 ' + teacher.full_name
+        teacher_user = await db.get_teacher_user(user_db)
+        if teacher_user:
+            teacher_spbu = await db.get_teacher_spbu(teacher_user.teacher_spbu_id)
+            text += '🧑‍🏫 ' + teacher_spbu.full_name
         else:
             text += "🚫 Отсутствует"
 
@@ -50,7 +51,7 @@ async def schedule_subscription_handler(query: CallbackQuery, callback_data: dic
     if callback_data["answer"] == '1':
         data = await state.get_data()
         if data["user_type"] == 'teacher':
-            await db.set_teacher(tt_id=int(data["tt_id"]), full_name=data["full_name"])
+            await db.set_teacher_user(tt_id=int(data["tt_id"]))
         else:
             await db.set_student(tt_id=int(data["tt_id"]))
         text = "Вы подписались на расписание! ✅"

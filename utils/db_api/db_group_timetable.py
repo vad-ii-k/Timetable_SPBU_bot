@@ -6,7 +6,7 @@ from tgbot import loader
 
 
 @dataclass
-class Event:
+class GroupEvent:
     start_time: time
     end_time: time
     subject_name: str
@@ -17,9 +17,9 @@ class Event:
 
 
 @dataclass
-class StudentTimetableOneDay:
+class GroupTimetableOneDay:
     date: date
-    events: List[Event]
+    events: List[GroupEvent]
 
 
 async def add_group_timetable_to_db(events: dict, tt_id: int):
@@ -39,40 +39,40 @@ async def add_group_timetable_to_db(events: dict, tt_id: int):
                                                   end, educator, is_cancelled)
 
 
-async def get_group_timetable_day_from_db(group_db_id: int, current_date: date) -> List[StudentTimetableOneDay]:
+async def get_group_timetable_day_from_db(group_db_id: int, current_date: date) -> List[GroupTimetableOneDay]:
     timetable_info = []
     study_events = await loader.db.get_group_timetable_day(group_db_id, current_date)
-    timetable_one_day = StudentTimetableOneDay(date=current_date, events=[])
+    timetable_one_day = GroupTimetableOneDay(date=current_date, events=[])
     for study_event in study_events:
         subject = await loader.db.get_subject(study_event.subject_id)
-        event = Event(start_time=study_event.start_time,
-                      end_time=study_event.end_time,
-                      subject_name=subject.subject_name,
-                      subject_format=subject.subject_format,
-                      locations=subject.locations,
-                      educator=study_event.educator,
-                      is_canceled=study_event.is_canceled)
+        event = GroupEvent(start_time=study_event.start_time,
+                           end_time=study_event.end_time,
+                           subject_name=subject.subject_name,
+                           subject_format=subject.subject_format,
+                           locations=subject.locations,
+                           educator=study_event.educator,
+                           is_canceled=study_event.is_canceled)
         timetable_one_day.events.append(event)
     timetable_info.append(timetable_one_day)
     return timetable_info
 
 
-async def get_group_timetable_week_from_db(group_db_id: int, monday: date, sunday: date) -> List[StudentTimetableOneDay]:
+async def get_group_timetable_week_from_db(group_db_id: int, monday: date, sunday: date) -> List[GroupTimetableOneDay]:
     timetable_info = []
     study_events = await loader.db.get_group_timetable_week(group_db_id, monday, sunday)
     i = 0
     while i < len(study_events):
         day = study_events[i].date
-        timetable_one_day = StudentTimetableOneDay(date=day, events=[])
+        timetable_one_day = GroupTimetableOneDay(date=day, events=[])
         while i < len(study_events) and day == study_events[i].date:
             subject = await loader.db.get_subject(study_events[i].subject_id)
-            event = Event(start_time=study_events[i].start_time,
-                          end_time=study_events[i].end_time,
-                          subject_name=subject.subject_name,
-                          subject_format=subject.subject_format,
-                          locations=subject.locations,
-                          educator=study_events[i].educator,
-                          is_canceled=study_events[i].is_canceled)
+            event = GroupEvent(start_time=study_events[i].start_time,
+                               end_time=study_events[i].end_time,
+                               subject_name=subject.subject_name,
+                               subject_format=subject.subject_format,
+                               locations=subject.locations,
+                               educator=study_events[i].educator,
+                               is_canceled=study_events[i].is_canceled)
             timetable_one_day.events.append(event)
             i += 1
         timetable_info.append(timetable_one_day)
