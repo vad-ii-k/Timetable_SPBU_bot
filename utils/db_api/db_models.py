@@ -79,7 +79,7 @@ class Subject(db_gino.Model):
             self.subject_id, self.subject_name, self.subject_format, self.locations)
 
 
-class StudentStudyEvent(db_gino.Model):
+class GroupStudyEvent(db_gino.Model):
     __tablename__ = "student_study_event"
     student_event_id = Column(Integer, Sequence("student_event_id_seq"), primary_key=True)
     group_id = Column(None, ForeignKey("group.group_id"))
@@ -93,3 +93,19 @@ class StudentStudyEvent(db_gino.Model):
     def __repr__(self):
         return "<StudentStudyEvent(id={}, group_id={}, date={}, subject_id={}, is_canceled={})>".format(
             self.student_event_id, self.group_id, self.date, self.subject_id, self.is_canceled)
+
+
+class TeacherStudyEvent(db_gino.Model):
+    __tablename__ = "teacher_study_event"
+    teacher_event_id = Column(Integer, Sequence("teacher_event_id_seq"), primary_key=True)
+    teacher_id = Column(None, ForeignKey("teacher.teacher_id"))
+    date = Column(Date)
+    start_time = Column(Time)
+    end_time = Column(Time)
+    subject_id = Column(None, ForeignKey("subject.subject_id"))
+    groups = Column(String(300))
+    is_canceled = Column(Boolean)
+
+    def __repr__(self):
+        return "<TeacherStudyEvent(id={}, teacher_id={}, date={}, subject_id={}, is_canceled={})>".format(
+            self.teacher_event_id, self.teacher_id, self.date, self.subject_id, self.is_canceled)

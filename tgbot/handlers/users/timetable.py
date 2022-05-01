@@ -95,6 +95,7 @@ async def timetable_type_handler(query: CallbackQuery, callback_data: dict, stat
     logging.info(f"call = {callback_data}")
 
     is_picture = not await check_message_content_type(query)
+    await change_message_to_progress(query.message, not is_picture)
 
     data = await state.get_data()
     day_counter, week_counter = data.get("day_counter"), data.get("week_counter")

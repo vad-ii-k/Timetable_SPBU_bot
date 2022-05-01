@@ -12,7 +12,7 @@ async def change_message_to_progress(message: Message, is_picture: bool = False)
     if is_picture:
         await message.edit_caption("🕒 <i>Загрузка...</i>")
     else:
-        await message.edit_text("🕒 <i>Загрузка...</i>")
+        await message.edit_text("⏳")
 
 
 async def send_group_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):

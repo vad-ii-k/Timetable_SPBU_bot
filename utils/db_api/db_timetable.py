@@ -35,8 +35,8 @@ async def add_group_timetable_to_db(events: dict, tt_id: int):
         educator: str = ''.join(educator.rsplit(sep=", ", maxsplit=1)[0] + ', '
                                 for educator in event.get("EducatorsDisplayText").split(sep=";"))[:-2]
         is_cancelled: bool = event.get("IsCancelled")
-        await loader.db.add_new_study_event(int(tt_id), db_subject.subject_id, event_date, start,
-                                            end, educator, is_cancelled)
+        await loader.db.add_new_group_study_event(int(tt_id), db_subject.subject_id, event_date, start,
+                                                  end, educator, is_cancelled)
 
 
 async def get_group_timetable_day_from_db(group_db_id: int, current_date: date) -> List[StudentTimetableOneDay]:
