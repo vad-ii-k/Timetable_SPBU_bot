@@ -50,7 +50,7 @@ async def send_teacher_schedule(message: Message, callback_data: dict, state: FS
 async def create_answer_based_on_content(message: Message, text: str, is_picture: bool) -> Message:
     if is_picture:
         answer_msg = await message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
-        await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
+        await answer_msg.edit_caption(caption=text.split('\n')[1])
         await message.delete()
     else:
         answer_msg = await message.edit_text(text)

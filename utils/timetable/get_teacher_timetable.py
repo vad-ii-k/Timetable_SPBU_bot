@@ -18,11 +18,17 @@ async def get_teacher_timetable(tt_id: id, is_picture: bool, week_counter: int =
     if week_counter is not None:
         monday, sunday = await calculator_of_week_days(week_counter)
         timetable_db = await get_teacher_timetable_week_from_db(teacher_spbu_db.teacher_spbu_id, monday, sunday)
-        timetable_text = await get_text_teacher_timetable_week(tt_id, teacher_spbu_db.full_name, monday, sunday, timetable_db)
+        if is_picture:
+            timetable_text = await get_image_teacher_timetable_week(tt_id, teacher_spbu_db.full_name, monday, sunday, timetable_db)
+        else:
+            timetable_text = await get_text_teacher_timetable_week(tt_id, teacher_spbu_db.full_name, monday, sunday, timetable_db)
     else:
         current_date, next_day = await calculator_of_days(day_counter)
         timetable_db = await get_teacher_timetable_day_from_db(teacher_spbu_db.teacher_spbu_id, current_date)
-        timetable_text = await get_text_teacher_timetable_day(tt_id, teacher_spbu_db.full_name, current_date, timetable_db)
+        if is_picture:
+            timetable_text = await get_image_teacher_timetable_day(tt_id, teacher_spbu_db.full_name, current_date, timetable_db)
+        else:
+            timetable_text = await get_text_teacher_timetable_day(tt_id, teacher_spbu_db.full_name, current_date, timetable_db)
     return timetable_text
 
 
@@ -40,6 +46,19 @@ async def get_text_teacher_timetable_day(teacher_id: int, teacher_name: str, cur
     return timetable
 
 
+async def get_image_teacher_timetable_day(group_id: int, group_name: str, current_date: date, timetable_db) -> str:
+    timetable = await teacher_timetable_day_header(group_id, current_date, group_name)
+
+    schedule_pic = TimetableIMG("utils/image_converter/output.png")
+    schedule_pic.create_image_title(title=group_name, date=format_date(current_date, 'EEEE, d MMMM', locale='ru_RU'))
+
+    if len(timetable_db[0].events) > 0:
+        schedule_pic.insert_timetable(date=format_date(timetable_db[0].date, 'EEEE, d MMMM', locale='ru_RU'),
+                                      events=timetable_db[0].events)
+    schedule_pic.crop_image()
+    return timetable
+
+
 async def get_text_teacher_timetable_week(teacher_id: int, teacher_name: str, monday: date, sunday: date,
                                           timetable_db) -> str:
     timetable = await teacher_timetable_week_header(teacher_id, monday, sunday, teacher_name)
@@ -54,6 +73,20 @@ async def get_text_teacher_timetable_week(teacher_id: int, teacher_name: str, mo
                 break
     else:
         timetable += '\n🏖 <i>Занятий на этой неделе нет</i>'
+    return timetable
+
+
+async def get_image_teacher_timetable_week(group_id: int, group_name: str, monday: date, sunday: date, timetable_db) -> str:
+    timetable = await teacher_timetable_week_header(group_id, monday, sunday, group_name)
+
+    schedule_pic = TimetableIMG("utils/image_converter/output.png")
+    schedule_pic.create_image_title(title=group_name, date="Неделя: {monday} — {sunday}".format(
+        monday=monday.strftime("%d.%m"), sunday=sunday.strftime("%d.%m")))
+    if len(timetable_db) > 0:
+        for day in timetable_db:
+            schedule_pic.insert_timetable(date=format_date(day.date, 'EEEE, d MMMM', locale='ru_RU'),
+                                          events=day.events)
+    schedule_pic.crop_image()
     return timetable
 
 

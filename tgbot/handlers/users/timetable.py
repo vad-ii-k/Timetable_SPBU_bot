@@ -16,7 +16,7 @@ async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: di
     if is_picture:
         answer_msg = await query.message.edit_media(media=InputMedia(
             media=InputFile("utils/image_converter/output.png")))
-        await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
+        await answer_msg.edit_caption(caption=text.split('\n')[1])
     else:
         answer_msg = await query.message.edit_text(text=text)
 
@@ -116,7 +116,7 @@ async def timetable_type_handler(query: CallbackQuery, callback_data: dict, stat
 
     if is_picture:
         answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
-        await answer_msg.edit_caption(caption=text.split('\n')[1] + "\nТЕСТОВЫЙ РЕЖИМ!!!")
+        await answer_msg.edit_caption(caption=text.split('\n')[1])
     else:
         answer_msg = await query.message.answer(text=text)
     await query.message.delete()

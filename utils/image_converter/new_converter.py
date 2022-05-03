@@ -46,35 +46,41 @@ class TimetableIMG:
         self._y = self._y_foundation = self._y_max = y
         image.save(self._path_final_img)
 
-    def _draw_text(self, xy: tuple, text: str, font: ImageFont, offset_x: int = 0) -> tuple:
+    def _draw_text(self, xy: tuple, text: str, font: ImageFont, event_cancelled: bool = False) -> tuple:
         image = self._current_image
         draw = ImageDraw.Draw(image)
         x, y = xy
         lines = textwrap.wrap(text, width=self._final_img_width * 0.9 // font.size)
         for line in lines:
             width, height = font.getsize(line)
-            draw.text((x, y), f"  {line}", font=font, fill="black")
+            draw.text((x, y), f"  {line}", font=font, fill="grey" if event_cancelled else "black")
             y += height
-        x += offset_x
         return x, y
 
     def insert_timetable(self, date: str, events: list):
         image = self._current_image
         draw = ImageDraw.Draw(image)
         skip, indent = 10, 80
-        x, y = self._draw_text(xy=(self._x, self._y), text=date, font=TimetableIMG._font_h3, offset_x=indent)
+        x, y = self._draw_text(xy=(self._x, self._y), text=date, font=TimetableIMG._font_h3)
+        x += indent
         self._y += TimetableIMG._font_h3.size + skip
         for event in events:
-            x, y = self._draw_text(xy=(x, y), text=event.subject_name, font=TimetableIMG._font_bold, offset_x=0)
-            x, y = self._draw_text(xy=(x, y), text=event.educator, font=TimetableIMG._font_italic, offset_x=0)
-            x, y = self._draw_text(xy=(x, y), text=event.locations, font=TimetableIMG._font_reqular, offset_x=0)
-            x, y = self._draw_text(xy=(x, y), text=event.subject_format, font=TimetableIMG._font_italic, offset_x=0)
+            x, y = self._draw_text(xy=(x, y), text=event.subject_name,
+                                   font=TimetableIMG._font_bold, event_cancelled=event.is_canceled)
+            x, y = self._draw_text(xy=(x, y), text=event.educator if hasattr(event, "educator") else event.groups,
+                                   font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
+            x, y = self._draw_text(xy=(x, y), text=event.locations,
+                                   font=TimetableIMG._font_reqular, event_cancelled=event.is_canceled)
+            x, y = self._draw_text(xy=(x, y), text=event.subject_format,
+                                   font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
             draw.line(xy=[(x + 4, self._y + skip), (x + 4, y - skip // 2)], fill="red", width=5)
             draw.text(xy=(x - 100, self._y + skip),
                       text="{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M")),
                       font=TimetableIMG._font_reqular, fill="black")
             if y > self._y_max:
                 self._y_max = y
+            if y > self._final_img_width - 300 and x >= self._final_img_width // 2:
+                break
             if y > self._final_img_width - 300:
                 x, y = self._final_img_width // 2, self._y_foundation
             self._x, self._y = x, y + skip
