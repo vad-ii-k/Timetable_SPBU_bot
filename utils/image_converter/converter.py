@@ -1,6 +1,7 @@
 import textwrap
 from PIL import Image, ImageDraw, ImageFont
 
+
 class TimetableIMG:
     """Class for creating a schedule image from text"""
     _final_img_width, _final_img_height = 3800, 5500
@@ -54,14 +55,11 @@ class TimetableIMG:
             y += height
         return x, y
 
-    def insert_timetable(self, date: str, events: list):
-        image = self._current_image
-        draw = ImageDraw.Draw(image)
-        skip, indent = 10, 90
-        x, y = self._draw_text(xy=(self._x, self._y), text=date, font=TimetableIMG._font_h3)
-        x += indent
-        self._y += TimetableIMG._font_h3.size + skip
+    def _insert_events(self, draw: ImageDraw, skip: int, indent: int, x: int, y: int, events: list):
         for event in events:
+            event_time = "{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M"))
+            draw.text(xy=(x - indent, y + skip), text=event_time,
+                      font=TimetableIMG._font_reqular, fill="black")
             x, y = self._draw_text(xy=(x, y), text=event.subject_name,
                                    font=TimetableIMG._font_bold, event_cancelled=event.is_canceled)
             x, y = self._draw_text(xy=(x, y), text=event.educator if hasattr(event, "educator") else event.groups,
@@ -71,9 +69,6 @@ class TimetableIMG:
             x, y = self._draw_text(xy=(x, y), text=event.subject_format,
                                    font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
             draw.line(xy=[(x + 10, self._y + skip), (x + 10, y - skip // 2)], fill="red", width=5)
-            draw.text(xy=(x - indent, self._y + skip),
-                      text="{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M")),
-                      font=TimetableIMG._font_reqular, fill="black")
             if y > self._y_max:
                 self._y_max = y
             if y > self._final_img_width - 300 and x >= self._final_img_width // 2:
@@ -81,6 +76,16 @@ class TimetableIMG:
             if y > self._final_img_width - 300:
                 x, y = self._final_img_width // 2, self._y_foundation
             self._x, self._y = x, y + skip
+
+    def insert_timetable(self, date: str, events: list):
+        image = self._current_image
+        draw = ImageDraw.Draw(image)
+        skip, indent = 10, 90
+        x, y = self._draw_text(xy=(self._x, self._y), text=date, font=TimetableIMG._font_h3)
+        x += indent
+        self._y += TimetableIMG._font_h3.size + skip
+
+        self._insert_events(draw, skip, indent, x, y, events)
         self._y += TimetableIMG._font_reqular.size + skip
         self._x -= indent
 
