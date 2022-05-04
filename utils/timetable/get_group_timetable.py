@@ -3,7 +3,7 @@ from babel.dates import format_date
 
 from tgbot import loader
 from utils.db_api.db_group_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db, GroupEvent
-from utils.image_converter.new_converter import TimetableIMG
+from utils.image_converter.converter import TimetableIMG
 from utils.timetable.api import fill_group_timetable_from_tt
 from utils.timetable.helpers import calculator_of_week_days, calculator_of_days
 from utils.timetable.parsers import group_timetable_day_header, group_timetable_week_header, timetable_day_header

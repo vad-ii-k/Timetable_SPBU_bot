@@ -3,7 +3,7 @@ from babel.dates import format_date
 
 from tgbot import loader
 from utils.db_api.db_teacher_timetable import get_teacher_timetable_week_from_db, get_teacher_timetable_day_from_db, TeacherEvent
-from utils.image_converter.new_converter import TimetableIMG
+from utils.image_converter.converter import TimetableIMG
 from utils.timetable.api import fill_teacher_timetable_from_tt
 from utils.timetable.helpers import calculator_of_week_days, calculator_of_days
 from utils.timetable.parsers import teacher_timetable_day_header, teacher_timetable_week_header, timetable_day_header
