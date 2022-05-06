@@ -8,6 +8,7 @@ from tgbot.loader import dp
 from tgbot.set_bot_commands import set_default_commands
 from utils.db_api.db_commands import create_db
 from utils.db_api.initial_filling_of_db import adding_groups_to_db
+from utils.db_api.updating_of_db import start_scheduler
 
 
 async def on_startup(dispatcher):
@@ -23,6 +24,8 @@ async def on_startup(dispatcher):
     if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     await adding_groups_to_db()
+
+    await start_scheduler()
 
 
 async def on_shutdown(dispatcher):
