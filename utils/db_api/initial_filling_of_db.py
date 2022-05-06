@@ -1,6 +1,6 @@
 import asyncio
 import os
-import random
+from itertools import cycle
 
 import aiohttp
 from aiohttp_socks import ProxyConnector
@@ -9,12 +9,6 @@ from python_socks import ProxyConnectionError
 from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
 from tgbot.loader import db
 from utils.timetable.api import tt_api_url
-
-
-async def get_proxy_connector() -> ProxyConnector:
-    ip = PROXY_IPS[random.randint(0, len(PROXY_IPS) - 1)]
-    connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{ip}')
-    return connector
 
 
 async def request(session: aiohttp.ClientSession, url: str) -> dict:
@@ -45,13 +39,16 @@ program_ids = []
 
 async def collecting_program_ids():
     aliases = [item['Alias'] for item in (await get_study_divisions())]
-    connector = await get_proxy_connector()
-    async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = []
-        for alias in aliases:
-            task = asyncio.create_task(get_study_levels(session, alias))
-            tasks.append(task)
-        await asyncio.gather(*tasks)
+    aliases_by_parts = list(chunks_generator(aliases, 4))
+    proxies_pool = cycle(PROXY_IPS)
+    for chunk in aliases_by_parts:
+        connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{next(proxies_pool)}')
+        async with aiohttp.ClientSession(connector=connector) as session:
+            tasks = []
+            for alias in chunk:
+                task = asyncio.create_task(get_study_levels(session, alias))
+                tasks.append(task)
+            await asyncio.gather(*tasks)
 
 
 async def get_study_levels(session: aiohttp.ClientSession, alias: str):
@@ -71,11 +68,11 @@ remaining_program_ids = []
 async def get_groups(session: aiohttp.ClientSession, program_id: str):
     url = tt_api_url + f"/progams/{program_id}/groups"
     response = await request(session, url)
-    try:
+    if response.get("Groups", None):
         for group in response["Groups"]:
             if len(group) != 0:
                 groups.append({"GroupId": group["StudentGroupId"], "GroupName": group["StudentGroupName"]})
-    except KeyError:
+    else:
         remaining_program_ids.append(program_id)
 
 
@@ -84,10 +81,11 @@ def chunks_generator(lst: list, chuck_size: int):
         yield lst[i: i + chuck_size]
 
 
-async def collecting_groups_info():
-    program_ids_by_parts = list(chunks_generator(program_ids, 100))
+async def collecting_groups_info(_program_ids: list[int]):
+    program_ids_by_parts = list(chunks_generator(_program_ids, 100))
+    proxies_pool = cycle(PROXY_IPS)
     for chunk in program_ids_by_parts:
-        connector = await get_proxy_connector()
+        connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{next(proxies_pool)}')
         async with aiohttp.ClientSession(connector=connector) as session:
             tasks = []
             for program_id in chunk:
@@ -106,7 +104,7 @@ async def adding_groups_to_db():
         elif file_size != 1:
             [program_ids.append(program_id) for program_id in file.readline().split(' ')]
     if file_size != 1:
-        await collecting_groups_info()
+        await collecting_groups_info(program_ids)
         for group in groups:
             await db.add_new_group(tt_id=group["GroupId"], group_name=group["GroupName"])
 

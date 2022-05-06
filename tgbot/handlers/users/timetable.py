@@ -12,7 +12,7 @@ from utils.timetable.get_teacher_timetable import get_teacher_timetable
 
 
 async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: dict, text: str):
-    is_picture = await check_message_content_type(query)
+    is_picture = await check_message_content_type(query.message)
     if is_picture:
         answer_msg = await query.message.edit_media(media=InputMedia(
             media=InputFile("utils/image_converter/output.png")))
@@ -30,7 +30,7 @@ async def timetable_days_handler(query: CallbackQuery, callback_data: dict, stat
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
-    is_picture = await check_message_content_type(query)
+    is_picture = await check_message_content_type(query.message)
     await change_message_to_progress(query.message, is_picture)
 
     async with state.proxy() as state_data:
@@ -64,7 +64,7 @@ async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, sta
     await query.answer(cache_time=2)
     logging.info(f"call = {callback_data}")
 
-    is_picture = await check_message_content_type(query)
+    is_picture = await check_message_content_type(query.message)
     await change_message_to_progress(query.message, is_picture)
 
     async with state.proxy() as state_data:
@@ -96,7 +96,7 @@ async def timetable_type_handler(query: CallbackQuery, callback_data: dict, stat
     await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 
-    is_picture = not await check_message_content_type(query)
+    is_picture = not await check_message_content_type(query.message)
     await change_message_to_progress(query.message, not is_picture)
 
     data = await state.get_data()

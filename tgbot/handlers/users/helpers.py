@@ -16,10 +16,10 @@ async def change_message_to_progress(message: Message, is_picture: bool = False)
 
 
 async def send_group_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
+    await change_message_to_progress(message, await check_message_content_type(message))
+
     settings = await db.set_settings()
     is_picture: bool = settings.schedule_view_is_picture
-    await change_message_to_progress(message, is_picture)
-
     text = await get_group_timetable(tt_id=int(callback_data["group_id"]), is_picture=is_picture, week_counter=0)
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
@@ -32,10 +32,10 @@ async def send_group_schedule(message: Message, callback_data: dict, state: FSMC
 
 
 async def send_teacher_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
+    await change_message_to_progress(message, await check_message_content_type(message))
+
     settings = await db.set_settings()
     is_picture = settings.schedule_view_is_picture
-    await change_message_to_progress(message, is_picture)
-
     text = await get_teacher_timetable(tt_id=int(callback_data["teacher_id"]), is_picture=is_picture, week_counter=0)
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
@@ -62,6 +62,6 @@ async def send_subscription_question(answer_msg: Message):
     await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())
 
 
-async def check_message_content_type(query: CallbackQuery) -> bool:
-    is_picture = (query.message.content_type == 'photo')
+async def check_message_content_type(message: Message) -> bool:
+    is_picture = (message.content_type == 'photo')
     return is_picture
