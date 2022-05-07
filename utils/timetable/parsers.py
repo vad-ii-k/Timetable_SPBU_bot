@@ -16,25 +16,6 @@ async def get_subject(subject_data: str, is_cancelled: bool) -> str:
     return subject_name
 
 
-async def teacher_timetable_parser_day(day: dict) -> str:
-    timetable = await timetable_day_header(day.get("DayString"))
-    events = day["DayStudyEvents"]
-    for event in events:
-        time = event.get("TimeIntervalString")
-        subject = await get_subject(subject_data=event.get("Subject"), is_cancelled=event.get("IsCancelled"))
-        lesson_format = event.get("Subject").rsplit(sep=", ", maxsplit=1)[1]
-        contingent = event.get("ContingentUnitName")
-        locations = event.get("LocationsDisplayText")
-
-        timetable += "   ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n" \
-                     f"     <b>{subject}</b>\n" \
-                     f"    🕟 <u>{time}</u>\n" \
-                     f"    🎓 Группы: <b>{contingent}</b>\n" \
-                     f"    ✍🏻 Формат: <i>{lesson_format}</i>\n" \
-                     f"    🚩 Место: <i>{locations}</i>\n"
-    return timetable
-
-
 async def group_timetable_day_header(group_id: int, current_date: date, group_name: str) -> str:
     header = "<b>👨‍👩‍👧‍👦 Группа: {group_name}</b>\n📆 <a href='{link}'>День: {current_date}</a>\n".format(
         group_name=group_name,
