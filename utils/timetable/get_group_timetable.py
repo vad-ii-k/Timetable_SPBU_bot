@@ -102,6 +102,6 @@ async def group_timetable_parser_day(day: date, events: list[GroupEvent]) -> str
             day_timetable += f"    🕟 <u>{event.start_time.strftime('%H:%M')}-{event.end_time.strftime('%H:%M')}</u>\n" \
                              f"    ✍🏻 Формат: <i>{event.subject_format}</i>\n"
 
-        day_timetable += f"    ╔🧑‍🏫 <i>{event.educator}</i>\n" \
-                         f"    ╚🚩 Место: <i>{event.locations}</i>\n"
+        day_timetable += f"    ╔ 🧑‍🏫 <i>{event.educator}</i>\n" \
+                         f"    ╚ 🚩<i>{event.locations}</i>\n"
     return day_timetable

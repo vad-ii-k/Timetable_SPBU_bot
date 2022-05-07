@@ -26,8 +26,8 @@
 + Getting a group schedule using program navigation
 + Getting a teacher's schedule by last name
 + Subscribe to the group/teacher schedule
-! Getting a schedule with an image
-! Updating the schedule in the database
++ Getting a schedule with an image
++ Updating the schedule in the database
 - Notifying the user about the upcoming lesson
 - Notifying the user about changes in the schedule
 ```

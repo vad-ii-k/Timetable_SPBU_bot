@@ -1,10 +1,12 @@
 import textwrap
 from PIL import Image, ImageDraw, ImageFont
 
+from utils.timetable.helpers import is_basic_events_info_identical
+
 
 class TimetableIMG:
     """Class for creating a schedule image from text"""
-    _final_img_width, _final_img_height = 3800, 5500
+    _final_img_width, _final_img_height = 3800, 4300
     _font_h1 = ImageFont.truetype(font="data/converter/FiraSansFonts/FiraSans-Medium.ttf", size=100)
     _font_h2 = ImageFont.truetype(font="data/converter/FiraSansFonts/FiraSans-Medium.ttf", size=70)
     _font_h3 = ImageFont.truetype(font="data/converter/FiraSansFonts/FiraSans-Medium.ttf", size=50)
@@ -29,6 +31,7 @@ class TimetableIMG:
             image.paste(im=image_spbu, box=(image.width - image_spbu.width - 30, 0), mask=image_spbu)
         with Image.open('data/converter/pictures_for_use/spbu_logo.png') as image_spbu_logo:
             image.paste(im=image_spbu_logo, box=(200, 300), mask=image_spbu_logo)
+        image.save('utils/image_converter/output.png')
         return image
 
     def create_image_title(self, title: str, date: str):
@@ -44,51 +47,60 @@ class TimetableIMG:
         self._x = x
         self._y = self._y_foundation = self._y_max = y
 
-    def _draw_text(self, xy: tuple, text: str, font: ImageFont, event_cancelled: bool = False) -> tuple:
+    def _draw_text(self, xy: tuple, text: str, font: ImageFont, event_cancelled: bool = False) -> int:
         image = self._current_image
         draw = ImageDraw.Draw(image)
         x, y = xy
-        lines = textwrap.wrap(text, width=self._final_img_width * 0.9 // font.size)
+        lines = textwrap.wrap(text, width=self._final_img_width * 0.95 // font.size)
         for line in lines:
             width, height = font.getsize(line)
             draw.text((x, y), f"  {line}", font=font, fill="grey" if event_cancelled else "black")
             y += height
-        return x, y
+        return y
 
     def _insert_events(self, draw: ImageDraw, skip: int, indent: int, x: int, y: int, events: list):
-        for event in events:
-            event_time = "{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M"))
-            draw.text(xy=(x - indent, y + skip), text=event_time,
-                      font=TimetableIMG._font_reqular, fill="black")
-            x, y = self._draw_text(xy=(x, y), text=event.subject_name,
-                                   font=TimetableIMG._font_bold, event_cancelled=event.is_canceled)
-            x, y = self._draw_text(xy=(x, y), text=event.educator if hasattr(event, "educator") else event.groups,
-                                   font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
-            x, y = self._draw_text(xy=(x, y), text=event.locations,
-                                   font=TimetableIMG._font_reqular, event_cancelled=event.is_canceled)
-            x, y = self._draw_text(xy=(x, y), text=event.subject_format,
-                                   font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
-            draw.line(xy=[(x + 10, self._y + skip), (x + 10, y - skip // 2)], fill="red", width=5)
+        for i, event in enumerate(events):
+            if i == 0 or is_basic_events_info_identical(events[i-1], events[i]):
+                event_time = "{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M"))
+                draw.text(xy=(x - indent, y), text=event_time,
+                          font=TimetableIMG._font_reqular, fill="black")
+                y = self._draw_text(xy=(x, y), text=event.subject_name,
+                                    font=TimetableIMG._font_bold, event_cancelled=event.is_canceled)
+                y = self._draw_text(xy=(x, y), text=event.subject_format,
+                                    font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
+            y_for_subject_line = y
+            y = self._draw_text(xy=(x + 25, y), text=event.educator if hasattr(event, "educator") else event.groups,
+                                font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
+            y = self._draw_text(xy=(x + 25, y), text=event.locations,
+                                font=TimetableIMG._font_reqular, event_cancelled=event.is_canceled)
+            draw.line(xy=[(x + 25, y_for_subject_line + skip // 2), (x + 25, y - skip // 2)],
+                      fill="grey" if event.is_canceled else "#0088cc", width=3)
+
             if y > self._y_max:
                 self._y_max = y
-            if y > self._final_img_width - 300 and x >= self._final_img_width // 2:
-                break
-            if y > self._final_img_width - 300:
-                x, y = self._final_img_width // 2, self._y_foundation
+            if y > self._final_img_height - 300:
+                if x >= self._final_img_width // 2:
+                    self._x, self._y = x, y
+                    break
+                else:
+                    x, y = self._final_img_width // 2, self._y_foundation
             self._x, self._y = x, y + skip
 
     def insert_timetable(self, date: str, events: list):
         image = self._current_image
         draw = ImageDraw.Draw(image)
-        skip, indent = 10, 90
-        x, y = self._draw_text(xy=(self._x, self._y), text=date, font=TimetableIMG._font_h3)
-        x += indent
+        skip, indent = 15, 90
+        if self._y > self._final_img_height - 500 and self._x >= self._final_img_width // 2:
+            return
+        y = self._draw_text(xy=(self._x, self._y), text=date, font=TimetableIMG._font_h3)
+        x = self._x + indent
         self._y += TimetableIMG._font_h3.size + skip
 
         self._insert_events(draw, skip, indent, x, y, events)
-        self._y += TimetableIMG._font_reqular.size + skip
+        self._y += TimetableIMG._font_reqular.size
         self._x -= indent
 
     def crop_image(self):
         image = self._current_image
-        image.crop(box=(0, 0, self._final_img_width, self._y_max + 15)).save(self._path_final_img)
+        image = image.crop(box=(0, 0, self._final_img_width, min(self._y_max + 15, self._final_img_height)))
+        image.save(self._path_final_img)
