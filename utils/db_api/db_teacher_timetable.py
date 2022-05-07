@@ -25,7 +25,8 @@ class TeacherTimetableOneDay:
 async def add_teacher_timetable_to_db(events: dict, tt_id: int, full_name: str):
     for event in events:
         subject: str = event.get("Subject")
-        subject_name, subject_format = subject.rsplit(sep=", ", maxsplit=1) if subject.rfind(', ') != -1 else (subject, '—')
+        subject_name, subject_format = subject.rsplit(sep=", ", maxsplit=1)\
+            if subject.rfind(', ') != -1 else (subject, '—')
         locations: str = event.get("LocationsDisplayText")
         db_subject = await loader.db.add_new_subject(subject_name, subject_format, locations)
 
@@ -56,7 +57,8 @@ async def get_teacher_timetable_day_from_db(teacher_db_id: int, current_date: da
     return timetable_info
 
 
-async def get_teacher_timetable_week_from_db(teacher_db_id: int, monday: date, sunday: date) -> List[TeacherTimetableOneDay]:
+async def get_teacher_timetable_week_from_db(teacher_db_id: int, monday: date, sunday: date)\
+        -> List[TeacherTimetableOneDay]:
     timetable_info = []
     study_events = await loader.db.get_teacher_timetable_week(teacher_db_id, monday, sunday)
     i = 0

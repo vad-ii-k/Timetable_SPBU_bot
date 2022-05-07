@@ -1,5 +1,5 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery, InputFile
+from aiogram.types import Message, InputFile
 
 from tgbot.keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
 from tgbot.keyboards.inline.timetable_buttons import create_timetable_keyboard
@@ -23,8 +23,7 @@ async def send_group_schedule(message: Message, callback_data: dict, state: FSMC
     text = await get_group_timetable(tt_id=int(callback_data["group_id"]), is_picture=is_picture, week_counter=0)
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
-    await state.update_data(user_type="student", tt_id=callback_data["group_id"],
-                            group_name=text.split('\n', 1)[0])
+    await state.update_data(user_type="student", tt_id=callback_data["group_id"])
     await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
     if subscription:
@@ -39,8 +38,8 @@ async def send_teacher_schedule(message: Message, callback_data: dict, state: FS
     text = await get_teacher_timetable(tt_id=int(callback_data["teacher_id"]), is_picture=is_picture, week_counter=0)
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
-    await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"),
-                            full_name=text.split('\n', 1)[0].split(' ', 1)[1])
+    await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id")
+                            )
     await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
     if subscription:
@@ -57,8 +56,8 @@ async def create_answer_based_on_content(message: Message, text: str, is_picture
     return answer_msg
 
 
-async def send_subscription_question(answer_msg: Message):
-    answer_sub = await answer_msg.answer(text="⚙️ Хотите сделать это расписание своим основным?")
+async def send_subscription_question(message: Message):
+    answer_sub = await message.answer(text="⚙️ Хотите сделать это расписание своим основным?")
     await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())
 
 

@@ -2,14 +2,15 @@ from datetime import date
 from babel.dates import format_date
 
 from tgbot import loader
-from utils.db_api.db_group_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db, GroupEvent
+from utils.db_api.db_group_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db,\
+    GroupEvent
 from utils.image_converter.converter import TimetableIMG
 from utils.timetable.api import fill_group_timetable_from_tt
 from utils.timetable.helpers import calculator_of_week_days, calculator_of_days
 from utils.timetable.parsers import group_timetable_day_header, group_timetable_week_header, timetable_day_header
 
 
-async def get_group_timetable(tt_id: id, is_picture: bool, week_counter: int = None, day_counter: int = None):
+async def get_group_timetable(tt_id: id, is_picture: bool, week_counter: int = None, day_counter: int = None) -> str:
     group_db = await loader.db.get_group_by_tt_id(tt_id)
     if not group_db.is_received_schedule:
         await fill_group_timetable_from_tt(tt_id)
@@ -91,7 +92,7 @@ async def get_image_group_timetable_week(group_id: int, group_name: str, monday:
     return timetable
 
 
-async def group_timetable_parser_day(day: date, events: list[GroupEvent]):
+async def group_timetable_parser_day(day: date, events: list[GroupEvent]) -> str:
     day_timetable = await timetable_day_header(format_date(day, 'EEEE, d MMMM', locale='ru_RU'))
     for event in events:
         day_timetable += "   ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"

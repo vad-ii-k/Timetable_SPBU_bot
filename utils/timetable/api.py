@@ -7,10 +7,7 @@ from aiohttp_socks import ProxyConnector
 from tgbot.config import PROXY_LOGIN, PROXY_PASSWORD, PROXY_IPS
 from utils.db_api.db_group_timetable import add_group_timetable_to_db
 from utils.db_api.db_teacher_timetable import add_teacher_timetable_to_db
-from utils.image_converter.converter import TimetableIMG
-from utils.timetable.helpers import calculator_of_days, calculator_of_week_days
-from utils.timetable.parsers import teacher_timetable_parser_day, teacher_timetable_week_header, \
-    teacher_timetable_day_header
+from utils.timetable.helpers import calculator_of_week_days
 
 
 async def request(url: str) -> dict:

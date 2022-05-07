@@ -1,4 +1,5 @@
 from datetime import time, date
+from typing import List
 
 from sqlalchemy import and_, asc
 
@@ -101,7 +102,7 @@ class DBCommands:
         return group
 
     @staticmethod
-    async def get_groups_by_name(group_name: str) -> list:
+    async def get_groups_by_name(group_name: str) -> List[Group]:
         groups = await Group.query.where(Group.name.contains(group_name)).order_by(asc(Group.name)).gino.all()
         return groups
 
@@ -151,7 +152,7 @@ class DBCommands:
             Subject.locations == locations)).gino.first()
         return subject
 
-    async def add_new_subject(self, subject_name: str, subject_format: str, locations: str):
+    async def add_new_subject(self, subject_name: str, subject_format: str, locations: str) -> Subject:
         old_subject = await self._get_subject_from_full_info(subject_name, subject_format, locations)
         if old_subject:
             return old_subject
@@ -163,25 +164,26 @@ class DBCommands:
         return new_subject
 
     @staticmethod
-    async def _get_group_study_event(group_id: int, date: date, start_time: time,
+    async def _get_group_study_event(group_id: int, event_date: date, start_time: time,
                                      subject_id: int, educator: str) -> GroupStudyEvent:
         study_event = await GroupStudyEvent.query.where(and_(
             GroupStudyEvent.group_id == group_id,
-            GroupStudyEvent.date == date,
+            GroupStudyEvent.date == event_date,
             GroupStudyEvent.start_time == start_time,
             GroupStudyEvent.subject_id == subject_id,
             GroupStudyEvent.educator == educator)).gino.first()
         return study_event
 
-    async def add_new_group_study_event(self, tt_id: int, subject_id: int, date: date, start_time: time,
+    async def add_new_group_study_event(self, tt_id: int, subject_id: int, event_date: date, start_time: time,
                                         end_time: time, educator: str, is_canceled: bool) -> GroupStudyEvent:
         group = await self.get_group_by_tt_id(tt_id)
-        old_study_event = await self._get_group_study_event(group.group_id, date, start_time, subject_id, educator)
+        old_study_event = await self._get_group_study_event(group.group_id, event_date, start_time,
+                                                            subject_id, educator)
         if old_study_event:
             return old_study_event
         new_study_event = GroupStudyEvent()
         new_study_event.group_id = group.group_id
-        new_study_event.date = date
+        new_study_event.date = event_date
         new_study_event.start_time = start_time
         new_study_event.end_time = end_time
         new_study_event.subject_id = subject_id
@@ -191,14 +193,14 @@ class DBCommands:
         return new_study_event
 
     @staticmethod
-    async def get_group_timetable_day(group_id: int, day: date) -> list:
+    async def get_group_timetable_day(group_id: int, day: date) -> List[GroupStudyEvent]:
         study_events = await GroupStudyEvent.query.where(and_(
             GroupStudyEvent.group_id == group_id,
             GroupStudyEvent.date == day)).gino.all()
         return study_events
 
     @staticmethod
-    async def get_group_timetable_week(group_id: int, monday: date, sunday: date) -> list:
+    async def get_group_timetable_week(group_id: int, monday: date, sunday: date) -> List[GroupStudyEvent]:
         study_events = await GroupStudyEvent.query.where(and_(
             GroupStudyEvent.group_id == group_id,
             GroupStudyEvent.date >= monday,
@@ -206,25 +208,27 @@ class DBCommands:
         return study_events
 
     @staticmethod
-    async def _get_teacher_study_event(teacher_id: int, date: date, start_time: time,
+    async def _get_teacher_study_event(teacher_id: int, event_date: date, start_time: time,
                                        subject_id: int, groups: str) -> TeacherStudyEvent:
         study_event = await TeacherStudyEvent.query.where(and_(
             TeacherStudyEvent.teacher_id == teacher_id,
-            TeacherStudyEvent.date == date,
+            TeacherStudyEvent.date == event_date,
             TeacherStudyEvent.start_time == start_time,
             TeacherStudyEvent.subject_id == subject_id,
             TeacherStudyEvent.groups == groups)).gino.first()
         return study_event
 
-    async def add_new_teacher_study_event(self, tt_id: int, full_name: str, subject_id: int, date: date, start_time: time,
-                                          end_time: time, groups: str, is_canceled: bool) -> TeacherStudyEvent:
+    async def add_new_teacher_study_event(
+            self, tt_id: int, full_name: str, subject_id: int, event_date: date, start_time: time,
+            end_time: time, groups: str, is_canceled: bool) -> TeacherStudyEvent:
         teacher_spbu = await self.set_teacher_spbu(tt_id, full_name)
-        old_study_event = await self._get_teacher_study_event(teacher_spbu.teacher_spbu_id, date, start_time, subject_id, groups)
+        old_study_event = await self._get_teacher_study_event(teacher_spbu.teacher_spbu_id, event_date, start_time,
+                                                              subject_id, groups)
         if old_study_event:
             return old_study_event
         new_study_event = TeacherStudyEvent()
         new_study_event.teacher_id = teacher_spbu.teacher_spbu_id
-        new_study_event.date = date
+        new_study_event.date = event_date
         new_study_event.start_time = start_time
         new_study_event.end_time = end_time
         new_study_event.subject_id = subject_id
@@ -234,19 +238,26 @@ class DBCommands:
         return new_study_event
 
     @staticmethod
-    async def get_teacher_timetable_day(teacher_id: int, day: date) -> list:
+    async def get_teacher_timetable_day(teacher_id: int, day: date) -> List[TeacherStudyEvent]:
         study_events = await TeacherStudyEvent.query.where(and_(
             TeacherStudyEvent.teacher_id == teacher_id,
             TeacherStudyEvent.date == day)).gino.all()
         return study_events
 
     @staticmethod
-    async def get_teacher_timetable_week(teacher_id: int, monday: date, sunday: date) -> list:
+    async def get_teacher_timetable_week(teacher_id: int, monday: date, sunday: date) -> List[TeacherStudyEvent]:
         study_events = await TeacherStudyEvent.query.where(and_(
             TeacherStudyEvent.teacher_id == teacher_id,
             TeacherStudyEvent.date >= monday,
             TeacherStudyEvent.date <= sunday)).gino.all()
         return study_events
+
+    @staticmethod
+    async def get_active_groups_tt_ids() -> List[int]:
+        groups_db_ids = [int(group_id[0]) for group_id in (await Student.select('group_id').gino.all())]
+        groups_tt_ids = list(map(lambda tt_id: int(tt_id[0]),
+                                 (await Group.select('tt_id').where(Group.group_id.in_(groups_db_ids)).gino.all())))
+        return groups_tt_ids
 
 
 async def create_db():

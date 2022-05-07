@@ -19,7 +19,7 @@ async def getting_choice_for_teacher(message: types.Message):
     if len(teachers_list) == 0:
         await TeacherChoice.wrong_last_name.set()
         await wrong_last_name(message)
-    elif len(teachers_list) > 40:
+    elif len(teachers_list) > 50:
         await TeacherChoice.widespread_last_name.set()
         await widespread_last_name(message)
     else:

@@ -25,7 +25,8 @@ class GroupTimetableOneDay:
 async def add_group_timetable_to_db(events: dict, tt_id: int):
     for event in events:
         subject: str = event.get("Subject")
-        subject_name, subject_format = subject.rsplit(sep=", ", maxsplit=1) if subject.rfind(', ') != -1 else (subject, '—')
+        subject_name, subject_format = subject.rsplit(sep=", ", maxsplit=1)\
+            if subject.rfind(', ') != -1 else (subject, '—')
         locations: str = event.get("LocationsDisplayText")
         db_subject = await loader.db.add_new_subject(subject_name, subject_format, locations)
 
