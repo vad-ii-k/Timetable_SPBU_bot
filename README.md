@@ -11,7 +11,7 @@
 # [Bot](https://t.me/timetable_SPBU_bot?start)
 <div>
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
-        <img alt="Telegram logo" align="left" src="data/github/telegram_logo.gif" width="110">
+        <img alt="Telegram logo" align="left" src="data/github/telegram_logo.gif" width="90">
   </a>
 </div>
 

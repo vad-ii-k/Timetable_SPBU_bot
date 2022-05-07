@@ -254,10 +254,19 @@ class DBCommands:
 
     @staticmethod
     async def get_active_groups_tt_ids() -> List[int]:
-        groups_db_ids = [int(group_id[0]) for group_id in (await Student.select('group_id').gino.all())]
-        groups_tt_ids = list(map(lambda tt_id: int(tt_id[0]),
-                                 (await Group.select('tt_id').where(Group.group_id.in_(groups_db_ids)).gino.all())))
+        active_students = await Student.select('group_id').gino.all()
+        groups_db_ids = [int(group_id[0]) for group_id in active_students]
+        active_groups = await Group.select('tt_id').where(Group.group_id.in_(groups_db_ids)).gino.all()
+        groups_tt_ids = list(map(lambda tt_id: int(tt_id[0]), active_groups))
         return groups_tt_ids
+
+    @staticmethod
+    async def get_active_teachers_tt_ids() -> List[int]:
+        active_users = await TeacherUser.select('teacher_spbu_id').gino.all()
+        db_ids = [int(teachers_id[0]) for teachers_id in active_users]
+        active_spbu = await TeacherSPBU.select('tt_id').where(TeacherSPBU.teacher_spbu_id.in_(db_ids)).gino.all()
+        tt_ids = list(map(lambda tt_id: int(tt_id[0]), active_spbu))
+        return tt_ids
 
 
 async def create_db():
