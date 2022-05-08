@@ -21,9 +21,10 @@
 ---
 
 ## Demonstration
-| Student                                         | Teacher                                       |
-|-------------------------------------------------|-----------------------------------------------|
-| ![Student demo](data/github/student_demo.gif)   | ![Teacher demo](data/github/teacher_demo.gif) |
+|     | Student                                       | Teacher                                       |     |
+|-----|-----------------------------------------------|-----------------------------------------------|-----|
+|     | ![Student demo](data/github/student_demo.gif) | ![Teacher demo](data/github/teacher_demo.gif) |     |
+
 
 ## Features
 ```diff
