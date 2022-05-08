@@ -14,7 +14,6 @@ PG_NAME = env.str("PG_NAME")
 
 REDIS_HOST = env.str("REDIS_HOST")
 REDIS_PORT = env.int("REDIS_PORT")
-REDIS_DB = env.int("REDIS_DB")
 REDIS_PASSWORD = env.str("REDIS_PASSWORD")
 
 PROXY_LOGIN = env.str("PROXY_LOGIN")

@@ -38,8 +38,7 @@ async def send_teacher_schedule(message: Message, callback_data: dict, state: FS
     text = await get_teacher_timetable(tt_id=int(callback_data["teacher_id"]), is_picture=is_picture, week_counter=0)
     answer_msg = await create_answer_based_on_content(message, text, is_picture)
 
-    await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id")
-                            )
+    await state.update_data(user_type="teacher", tt_id=callback_data.get("teacher_id"))
     await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
 
     if subscription:

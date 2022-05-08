@@ -38,7 +38,7 @@ async def get_text_group_timetable_day(group_id: int, group_name: str, current_d
 
     if len(timetable_db[0].events) > 0:
         day_timetable = await group_timetable_parser_day(day=timetable_db[0].date, events=timetable_db[0].events)
-        if len(timetable) + len(day_timetable) < 4096:
+        if len(timetable) + len(day_timetable) < 4070:
             timetable += day_timetable
         else:
             timetable += "\n\n📛 Сообщение слишком длинное..."
@@ -67,7 +67,7 @@ async def get_text_group_timetable_week(group_id: int, group_name: str, monday: 
     if len(timetable_db) > 0:
         for day in timetable_db:
             day_timetable = await group_timetable_parser_day(day=day.date, events=day.events)
-            if len(timetable) + len(day_timetable) < 4096:
+            if len(timetable) + len(day_timetable) < 4070:
                 timetable += day_timetable
             else:
                 timetable += "\n\n📛 Сообщение слишком длинное..."

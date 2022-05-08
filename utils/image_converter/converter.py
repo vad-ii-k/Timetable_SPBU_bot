@@ -51,7 +51,7 @@ class TimetableIMG:
         image = self._current_image
         draw = ImageDraw.Draw(image)
         x, y = xy
-        lines = textwrap.wrap(text, width=self._final_img_width * 0.95 // font.size)
+        lines = textwrap.wrap(text, width=self._final_img_width * 0.9 // font.size)
         for line in lines:
             width, height = font.getsize(line)
             draw.text((x, y), f"  {line}", font=font, fill="grey" if event_cancelled else "black")
@@ -61,9 +61,10 @@ class TimetableIMG:
     def _insert_events(self, draw: ImageDraw, skip: int, indent: int, x: int, y: int, events: list):
         for i, event in enumerate(events):
             if i == 0 or is_basic_events_info_identical(events[i-1], events[i]):
-                event_time = "{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M"))
-                draw.text(xy=(x - indent, y), text=event_time,
-                          font=TimetableIMG._font_reqular, fill="black")
+                if i == 0 or events[i-1].start_time != event.start_time or events[i-1].end_time != event.end_time:
+                    event_time = "{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M"))
+                    draw.text(xy=(x - indent, y), text=event_time,
+                              font=TimetableIMG._font_reqular, fill="grey" if event.is_canceled else "black")
                 y = self._draw_text(xy=(x, y), text=event.subject_name,
                                     font=TimetableIMG._font_bold, event_cancelled=event.is_canceled)
                 y = self._draw_text(xy=(x, y), text=event.subject_format,
@@ -83,7 +84,7 @@ class TimetableIMG:
                     self._x, self._y = x, y
                     break
                 else:
-                    x, y = self._final_img_width // 2, self._y_foundation
+                    x, y = self._final_img_width // 2 + indent, self._y_foundation
             self._x, self._y = x, y + skip
 
     def insert_timetable(self, date: str, events: list):
