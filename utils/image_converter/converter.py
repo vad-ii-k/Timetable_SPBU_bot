@@ -1,4 +1,5 @@
 import textwrap
+
 from PIL import Image, ImageDraw, ImageFont
 
 from utils.timetable.helpers import is_basic_events_info_identical
@@ -31,7 +32,6 @@ class TimetableIMG:
             image.paste(im=image_spbu, box=(image.width - image_spbu.width - 30, 0), mask=image_spbu)
         with Image.open('data/converter/pictures_for_use/spbu_logo.png') as image_spbu_logo:
             image.paste(im=image_spbu_logo, box=(200, 300), mask=image_spbu_logo)
-        image.save('utils/image_converter/output.png')
         return image
 
     def create_image_title(self, title: str, date: str):
@@ -103,4 +103,4 @@ class TimetableIMG:
     def crop_image(self):
         image = self._current_image
         image = image.crop(box=(0, 0, self._final_img_width, min(self._y_max + 15, self._final_img_height)))
-        image.save(self._path_final_img)
+        image.save(self._path_final_img, 'jpeg')
