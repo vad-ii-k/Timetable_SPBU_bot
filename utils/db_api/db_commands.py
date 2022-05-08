@@ -1,5 +1,5 @@
 from datetime import time, date
-from typing import List
+from typing import List, Tuple
 
 from sqlalchemy import and_, asc
 
@@ -16,6 +16,11 @@ class DBCommands:
     async def get_user() -> User:
         user_tg = types.User.get_current()
         user = await User.query.where(User.tg_id == user_tg.id).gino.first()
+        return user
+
+    @staticmethod
+    async def get_user_by_tg_id(tg_id: int) -> User:
+        user = await User.query.where(User.tg_id == tg_id).gino.first()
         return user
 
     async def add_new_user(self) -> User:
@@ -263,10 +268,24 @@ class DBCommands:
     @staticmethod
     async def get_active_teachers_tt_ids() -> List[int]:
         active_users = await TeacherUser.select('teacher_spbu_id').gino.all()
-        db_ids = [int(teachers_id[0]) for teachers_id in active_users]
+        db_ids = [int(teacher_id[0]) for teacher_id in active_users]
         active_spbu = await TeacherSPBU.select('tt_id').where(TeacherSPBU.teacher_spbu_id.in_(db_ids)).gino.all()
         tt_ids = list(map(lambda tt_id: int(tt_id[0]), active_spbu))
         return tt_ids
+
+    @staticmethod
+    async def get_users_with_sign_to_summary(current_time: time) -> Tuple[List[Tuple[int, int]], List[Tuple[int, int]]]:
+        users = await Settings.select('user_id').where(Settings.daily_summary == current_time).gino.all()
+        users_ids = [int(user[0]) for user in users]
+        students = await Student.join(User, Student.user_id == User.user_id).\
+            join(Group, Student.group_id == Group.group_id).select().\
+            where(Student.user_id.in_(users_ids)).gino.all()
+        list_tg_ids_with_group_tt_id = [(int(student[4]), int(student[9])) for student in students]
+        teachers = await TeacherUser.join(User, TeacherUser.user_id == User.user_id).\
+            join(TeacherSPBU, TeacherUser.teacher_spbu_id == TeacherSPBU.teacher_spbu_id).select().\
+            where(TeacherUser.user_id.in_(users_ids)).gino.all()
+        list_user_ids_with_teacher_id = [(int(teacher[4]), int(teacher[9])) for teacher in teachers]
+        return list_tg_ids_with_group_tt_id, list_user_ids_with_teacher_id
 
 
 async def create_db():

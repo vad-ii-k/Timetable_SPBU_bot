@@ -21,3 +21,5 @@ study_programs_callback = CallbackData("study_program_combinations", "serial")
 admission_years_callback = CallbackData("admission_years_combinations", "program_id")
 
 groups_callback = CallbackData("groups", "group_id")
+
+settings_daily_summary_callback = CallbackData("time", "choice")

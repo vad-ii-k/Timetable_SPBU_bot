@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from tgbot.keyboards.inline.callback_data import settings_callback
@@ -7,12 +9,18 @@ from utils.db_api.db_commands import Settings
 async def create_settings_keyboard(settings: Settings) -> InlineKeyboardMarkup:
     settings_keyboard = InlineKeyboardMarkup(row_width=1)
 
-    text = "Присылать сводку на день: "
+    text = "Присылать сводку "
     if settings.daily_summary is None:
-        text += '❌'
+        text += 'на день: ❌'
+    else:
+        if settings.daily_summary > datetime.time(12):
+            text += 'за день до: в '
+        else:
+            text += 'день в день: в '
+        text += settings.daily_summary.strftime('%H:%M')
     daily_summary = InlineKeyboardButton(text=text,
                                          callback_data=settings_callback.new(type='daily_summary'))
-    # settings_keyboard.insert(daily_summary)
+    settings_keyboard.insert(daily_summary)
 
     text = "Уведомлять о начале пары: "
     if settings.notification_of_lesson is None:
