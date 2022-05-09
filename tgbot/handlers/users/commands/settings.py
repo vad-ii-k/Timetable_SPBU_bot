@@ -6,7 +6,7 @@ from tgbot.loader import dp, db
 
 
 @dp.message_handler(CommandSettings(), state="*")
-async def bot_settings(message: types.Message):
+async def bot_settings(message: types.Message) -> None:
     user_db = await db.get_user()
     settings = await db.get_settings(user_db)
 

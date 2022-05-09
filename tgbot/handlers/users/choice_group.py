@@ -12,7 +12,7 @@ from tgbot.states.choice_group import GroupChoice
 
 
 @dp.message_handler(state=GroupChoice.getting_choice)
-async def getting_choice_for_student(message: types.Message):
+async def getting_choice_for_student(message: types.Message) -> None:
     groups_list = await db.get_groups_by_name(message.text)
     if len(groups_list) == 0:
         await GroupChoice.wrong_group.set()
@@ -27,7 +27,7 @@ async def getting_choice_for_student(message: types.Message):
 
 
 @dp.message_handler(state=GroupChoice.too_many_groups)
-async def groups_are_too_many_handler(message: Message):
+async def groups_are_too_many_handler(message: Message) -> None:
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
     await message.answer(f"Групп, содержащих в названии \"<i>{message.text}</i>\" слишком много!\n"
@@ -36,7 +36,7 @@ async def groups_are_too_many_handler(message: Message):
 
 
 @dp.message_handler(state=GroupChoice.wrong_group)
-async def groups_not_found_handler(message: Message):
+async def groups_not_found_handler(message: Message) -> None:
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
     await message.answer(f"Группа \"<i>{message.text.replace('>', '').replace('<', '')}</i>\" не найдена!\n"
@@ -45,7 +45,7 @@ async def groups_not_found_handler(message: Message):
 
 
 @dp.callback_query_handler(choice_group_callback.filter(), state=GroupChoice.choosing)
-async def group_viewing_schedule_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def group_viewing_schedule_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await state.finish()
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")

@@ -6,7 +6,7 @@ from utils.timetable.api import get_study_divisions
 
 
 @dp.message_handler(commands='group', state="*")
-async def bot_group_command(message: Message):
+async def bot_group_command(message: Message) -> None:
     answer = await message.answer("Выберите направление для поиска группы: ")
     study_divisions = await get_study_divisions()
     await answer.edit_reply_markup(reply_markup=await create_study_divisions_keyboard(study_divisions))

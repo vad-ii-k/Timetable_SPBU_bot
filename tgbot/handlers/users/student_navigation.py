@@ -13,7 +13,7 @@ from utils.timetable.api import get_study_levels, get_groups
 
 
 @dp.callback_query_handler(study_divisions_callback.filter())
-async def study_divisions_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def study_divisions_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await change_message_to_progress(query.message)
     study_levels, response = await get_study_levels(callback_data["alias"])
     await query.message.edit_text("Выберите уровень подготовки:")
@@ -22,7 +22,7 @@ async def study_divisions_keyboard_handler(query: CallbackQuery, callback_data: 
 
 
 @dp.callback_query_handler(study_levels_callback.filter())
-async def study_levels_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def study_levels_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await query.message.edit_text("Выберите программу подготовки: ")
     data = await state.get_data()
     program_combinations = data["levels_response"][int(callback_data["serial"])]["StudyProgramCombinations"]
@@ -36,7 +36,7 @@ async def study_levels_keyboard_handler(query: CallbackQuery, callback_data: dic
 
 
 @dp.callback_query_handler(study_programs_callback.filter())
-async def admission_years_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def admission_years_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await query.message.edit_text("Выберите год поступления: ")
     data = await state.get_data()
     admission_years = data["program_combinatons"][int(callback_data["serial"])]["AdmissionYears"]
@@ -49,7 +49,7 @@ async def admission_years_keyboard_handler(query: CallbackQuery, callback_data: 
 
 
 @dp.callback_query_handler(admission_years_callback.filter())
-async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
+async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict) -> None:
     await change_message_to_progress(query.message)
     groups = await get_groups(callback_data["program_id"])
     if len(groups) > 0:
@@ -61,7 +61,7 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict):
 
 
 @dp.callback_query_handler(groups_callback.filter())
-async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
     await send_group_schedule(query.message, callback_data, state, subscription=True)

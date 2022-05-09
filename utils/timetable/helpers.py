@@ -1,9 +1,10 @@
 from datetime import timedelta, date
+from typing import Tuple
 
 from utils.db_api.db_teacher_timetable import TeacherEvent
 
 
-async def calculator_of_days(day_counter: int) -> tuple:
+async def calculator_of_days(day_counter: int) -> Tuple[date, date]:
     if day_counter > 0:
         current_date = date.today() + timedelta(day_counter)
     else:
@@ -12,7 +13,7 @@ async def calculator_of_days(day_counter: int) -> tuple:
     return current_date, next_day
 
 
-async def calculator_of_week_days(week_counter: int) -> tuple[date, date]:
+async def calculator_of_week_days(week_counter: int) -> Tuple[date, date]:
     current_date = date.today() + timedelta(week_counter * 7)
     monday = current_date - timedelta(days=current_date.weekday())
     sunday = monday + timedelta(days=6)

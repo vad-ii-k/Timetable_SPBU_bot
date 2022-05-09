@@ -9,7 +9,7 @@ from tgbot.keyboards.inline.choice_user_status_buttons import choice_user_status
 
 
 @dp.message_handler(CommandStart(), state="*")
-async def bot_start(message: Message, state: FSMContext):
+async def bot_start(message: Message, state: FSMContext) -> None:
     await state.finish()
     logging.info(f"start: id{message.from_user.id}")
     await message.answer(text=f"👋🏻 <b>Добро пожаловать, {message.from_user.full_name}!</b>\n"

@@ -22,7 +22,7 @@ class GroupTimetableOneDay:
     events: List[GroupEvent]
 
 
-async def add_group_timetable_to_db(events: dict, tt_id: int):
+async def add_group_timetable_to_db(events: dict, tt_id: int) -> None:
     for event in events:
         subject: str = event.get("Subject")
         subject_name, subject_format = subject.rsplit(sep=", ", maxsplit=1)\

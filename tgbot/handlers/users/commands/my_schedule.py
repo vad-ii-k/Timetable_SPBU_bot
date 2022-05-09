@@ -6,7 +6,7 @@ from tgbot.loader import dp, db
 
 
 @dp.message_handler(commands='my_schedule', state="*")
-async def bot_my_schedule_command(query: CallbackQuery, state: FSMContext):
+async def bot_my_schedule_command(query: CallbackQuery, state: FSMContext) -> None:
     user_db = await db.get_user()
     student = await db.get_student(user_db)
     message: Message = await query.answer('...')
