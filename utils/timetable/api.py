@@ -28,8 +28,9 @@ async def teacher_search(last_name: str) -> list:
     response = await request(url)
 
     teachers = []
-    for teacher in response["Educators"]:
-        teachers.append({"Id": teacher["Id"], "FullName": teacher["FullName"]})
+    if response.get("Educators") is not None:
+        for teacher in response["Educators"]:
+            teachers.append({"Id": teacher["Id"], "FullName": teacher["FullName"]})
     return teachers
 
 

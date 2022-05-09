@@ -39,7 +39,7 @@ async def groups_are_too_many_handler(message: Message):
 async def groups_not_found_handler(message: Message):
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
-    await message.answer(f"Группа \"<i>{message.text}</i>\" не найдена!\n"
+    await message.answer(f"Группа \"<i>{message.text.replace('>', '').replace('<', '')}</i>\" не найдена!\n"
                          "Попробуйте ещё раз или воспользуйтесь навигацией:")
     await GroupChoice.getting_choice.set()
 

@@ -7,6 +7,6 @@ from tgbot.loader import dp, bot
 async def bot_help(message: types.Message):
     answer = "🤖 Список команд: \n"
     commands = await bot.get_my_commands()
-    for item in commands:
-        answer += '/' + item["command"] + ' — ' + item["description"] + '\n'
+    for cmd in commands:
+        answer += '/' + cmd["command"] + ' — ' + cmd["description"] + '\n'
     await message.answer(answer)
