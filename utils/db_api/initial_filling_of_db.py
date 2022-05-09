@@ -1,6 +1,7 @@
 import asyncio
 import os
 from itertools import cycle
+from typing import Dict, List, Iterable
 
 import aiohttp
 from aiohttp_socks import ProxyConnector
@@ -11,7 +12,7 @@ from tgbot.loader import db
 from utils.timetable.api import tt_api_url
 
 
-async def request(session: aiohttp.ClientSession, url: str) -> dict:
+async def request(session: aiohttp.ClientSession, url: str) -> Dict:
     try:
         async with session.get(url) as response:
             print(url)
@@ -24,7 +25,7 @@ async def request(session: aiohttp.ClientSession, url: str) -> dict:
         return {}  # TODO
 
 
-async def get_study_divisions() -> list:
+async def get_study_divisions() -> List[Dict[str, str]]:
     url = tt_api_url + "/study/divisions"
     async with aiohttp.ClientSession() as session:
         response = await request(session, url)
@@ -37,7 +38,7 @@ async def get_study_divisions() -> list:
 program_ids = []
 
 
-async def collecting_program_ids():
+async def collecting_program_ids() -> None:
     aliases = [item['Alias'] for item in (await get_study_divisions())]
     aliases_by_parts = list(chunks_generator(aliases, 4))
     proxies_pool = cycle(PROXY_IPS)
@@ -51,7 +52,7 @@ async def collecting_program_ids():
             await asyncio.gather(*tasks)
 
 
-async def get_study_levels(session: aiohttp.ClientSession, alias: str):
+async def get_study_levels(session: aiohttp.ClientSession, alias: str) -> None:
     url = tt_api_url + f"/study/divisions/{alias}/programs/levels"
     response = await request(session, url)
     for level in response:
@@ -61,11 +62,11 @@ async def get_study_levels(session: aiohttp.ClientSession, alias: str):
             for year in years:
                 program_ids.append(str(year['StudyProgramId']))
 
-groups = []
+groups: List[Dict[str, str]] = []
 remaining_program_ids = []
 
 
-async def get_groups(session: aiohttp.ClientSession, program_id: str):
+async def get_groups(session: aiohttp.ClientSession, program_id: str) -> None:
     url = tt_api_url + f"/progams/{program_id}/groups"
     response = await request(session, url)
     if response.get("Groups", None):
@@ -76,12 +77,12 @@ async def get_groups(session: aiohttp.ClientSession, program_id: str):
         remaining_program_ids.append(program_id)
 
 
-def chunks_generator(lst: list, chuck_size: int):
+def chunks_generator(lst: List[str], chuck_size: int) -> Iterable[List[str]]:
     for i in range(0, len(lst), chuck_size):
         yield lst[i: i + chuck_size]
 
 
-async def collecting_groups_info(_program_ids: list[int]):
+async def collecting_groups_info(_program_ids: List[str]) -> None:
     program_ids_by_parts = list(chunks_generator(_program_ids, 100))
     proxies_pool = cycle(PROXY_IPS)
     for chunk in program_ids_by_parts:
@@ -95,7 +96,7 @@ async def collecting_groups_info(_program_ids: list[int]):
             await asyncio.gather(*tasks)
 
 
-async def adding_groups_to_db():
+async def adding_groups_to_db() -> None:
     with open("data/program_ids.txt", 'r+') as file:
         global program_ids
         file_size = os.stat(file.name).st_size

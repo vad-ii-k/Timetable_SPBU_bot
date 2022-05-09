@@ -1,5 +1,6 @@
 import random
 from datetime import date
+from typing import Dict, List, Tuple
 
 import aiohttp
 from aiohttp_socks import ProxyConnector
@@ -10,7 +11,7 @@ from utils.db_api.db_teacher_timetable import add_teacher_timetable_to_db
 from utils.timetable.helpers import calculator_of_week_days
 
 
-async def request(url: str) -> dict:
+async def request(url: str) -> Dict:
     ip = PROXY_IPS[random.randint(0, len(PROXY_IPS) - 1)]
     connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{ip}')
     async with aiohttp.ClientSession(connector=connector) as session:
@@ -23,17 +24,18 @@ async def request(url: str) -> dict:
 tt_api_url = "https://timetable.spbu.ru/api/v1"
 
 
-async def teacher_search(last_name: str) -> list:
+async def teacher_search(last_name: str) -> List[Dict[str, str]]:
     url = tt_api_url + f"/educators/search/{last_name}"
     response = await request(url)
 
     teachers = []
-    for teacher in response["Educators"]:
-        teachers.append({"Id": teacher["Id"], "FullName": teacher["FullName"]})
+    if response.get("Educators") is not None:
+        for teacher in response["Educators"]:
+            teachers.append({"Id": teacher["Id"], "FullName": teacher["FullName"]})
     return teachers
 
 
-async def fill_teacher_timetable_from_tt(teacher_id: int):
+async def fill_teacher_timetable_from_tt(teacher_id: int) -> None:
     """ We get the schedule for the rest of the current half-year """
     monday, sunday = await calculator_of_week_days(week_counter=-1)
     url = tt_api_url + f"/educators/{teacher_id}/events/{monday}/"
@@ -46,7 +48,7 @@ async def fill_teacher_timetable_from_tt(teacher_id: int):
             await add_teacher_timetable_to_db(day["DayStudyEvents"], teacher_id, response["EducatorLongDisplayText"])
 
 
-async def get_study_divisions() -> list:
+async def get_study_divisions() -> List[Dict[str, str]]:
     url = tt_api_url + "/study/divisions"
     response = await request(url)
 
@@ -56,7 +58,7 @@ async def get_study_divisions() -> list:
     return study_divisions
 
 
-async def get_study_levels(alias: str) -> tuple:
+async def get_study_levels(alias: str) -> Tuple[List[Dict[str, str]], Dict]:
     url = tt_api_url + f"/study/divisions/{alias}/programs/levels"
     response = await request(url)
 
@@ -66,7 +68,7 @@ async def get_study_levels(alias: str) -> tuple:
     return study_levels, response
 
 
-async def get_groups(program_id: str) -> list:
+async def get_groups(program_id: str) -> List[Dict[str, str]]:
     url = tt_api_url + f"/progams/{program_id}/groups"
     response = await request(url)
 
@@ -76,7 +78,7 @@ async def get_groups(program_id: str) -> list:
     return groups
 
 
-async def fill_group_timetable_from_tt(group_id: int):
+async def fill_group_timetable_from_tt(group_id: int) -> None:
     """ We get the schedule for the rest of the current half-year """
     monday, sunday = await calculator_of_week_days(week_counter=-1)
     url = tt_api_url + f"/groups/{group_id}/events/{monday}/"

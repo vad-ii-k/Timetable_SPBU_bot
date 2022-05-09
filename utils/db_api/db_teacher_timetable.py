@@ -22,7 +22,7 @@ class TeacherTimetableOneDay:
     events: List[TeacherEvent]
 
 
-async def add_teacher_timetable_to_db(events: dict, tt_id: int, full_name: str):
+async def add_teacher_timetable_to_db(events: dict, tt_id: int, full_name: str) -> None:
     for event in events:
         subject: str = event.get("Subject")
         subject_name, subject_format = subject.rsplit(sep=", ", maxsplit=1)\

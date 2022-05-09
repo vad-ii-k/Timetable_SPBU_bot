@@ -8,14 +8,14 @@ from utils.timetable.get_group_timetable import get_group_timetable
 from utils.timetable.get_teacher_timetable import get_teacher_timetable
 
 
-async def change_message_to_progress(message: Message, is_picture: bool = False):
+async def change_message_to_progress(message: Message, is_picture: bool = False) -> None:
     if is_picture:
         await message.edit_caption("🕒 <i>Загрузка...</i>")
     else:
         await message.edit_text("⏳")
 
 
-async def send_group_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
+async def send_group_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool) -> None:
     await change_message_to_progress(message, await check_message_content_type(message))
 
     settings = await db.set_settings()
@@ -30,7 +30,7 @@ async def send_group_schedule(message: Message, callback_data: dict, state: FSMC
         await send_subscription_question(answer_msg)
 
 
-async def send_teacher_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool):
+async def send_teacher_schedule(message: Message, callback_data: dict, state: FSMContext, subscription: bool) -> None:
     await change_message_to_progress(message, await check_message_content_type(message))
 
     settings = await db.set_settings()
@@ -55,7 +55,7 @@ async def create_answer_based_on_content(message: Message, text: str, is_picture
     return answer_msg
 
 
-async def send_subscription_question(message: Message):
+async def send_subscription_question(message: Message) -> None:
     answer_sub = await message.answer(text="⚙️ Хотите сделать это расписание своим основным?")
     await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())
 

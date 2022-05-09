@@ -91,7 +91,7 @@ class DBCommands:
         await new_teacher_user.create()
         return new_teacher_user
 
-    async def _clear_teacher(self, user_db: User):
+    async def _clear_teacher(self, user_db: User) -> None:
         old_teacher = await self.get_teacher_user(user_db)
         if old_teacher:
             await old_teacher.delete()
@@ -124,7 +124,7 @@ class DBCommands:
         student = await Student.query.where(Student.user_id == user_db.user_id).gino.first()
         return student
 
-    async def _clear_student(self, user_db: User):
+    async def _clear_student(self, user_db: User) -> None:
         old_student = await self.get_student(user_db)
         if old_student:
             await old_student.delete()
@@ -288,7 +288,7 @@ class DBCommands:
         return list_tg_ids_with_group_tt_id, list_user_ids_with_teacher_id
 
 
-async def create_db():
+async def create_db() -> None:
     pg_url = f'postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_NAME}'
     await db_gino.set_bind(pg_url)
 

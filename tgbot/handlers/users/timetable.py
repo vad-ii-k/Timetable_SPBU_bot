@@ -11,7 +11,7 @@ from utils.timetable.get_group_timetable import get_group_timetable
 from utils.timetable.get_teacher_timetable import get_teacher_timetable
 
 
-async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: dict, text: str):
+async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: dict, text: str) -> None:
     is_picture = await check_message_content_type(query.message)
     if is_picture:
         answer_msg = await query.message.edit_media(media=InputMedia(
@@ -26,7 +26,7 @@ async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: di
 
 
 @dp.callback_query_handler(timetable_callback.filter(button=['1-1', '1-2', '1-3']))
-async def timetable_days_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def timetable_days_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
@@ -60,7 +60,7 @@ async def timetable_days_handler(query: CallbackQuery, callback_data: dict, stat
 
 
 @dp.callback_query_handler(timetable_callback.filter(button=['2-1', '2-2']))
-async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await query.answer(cache_time=2)
     logging.info(f"call = {callback_data}")
 
@@ -92,7 +92,7 @@ async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, sta
 
 
 @dp.callback_query_handler(timetable_callback.filter(button='3-1'))
-async def timetable_type_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def timetable_type_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await query.answer(cache_time=5)
     logging.info(f"call = {callback_data}")
 

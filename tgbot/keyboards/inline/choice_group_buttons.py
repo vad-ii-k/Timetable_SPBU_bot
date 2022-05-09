@@ -8,8 +8,7 @@ async def create_choice_groups_keyboard(groups: list) -> InlineKeyboardMarkup:
     choice_group = InlineKeyboardMarkup(row_width=1)
     for group in groups:
         group: Group
-        button = InlineKeyboardButton(text=group.name, callback_data=choice_group_callback.new(
-            group_id=group.tt_id
-        ))
+        button = InlineKeyboardButton(text=group.name,
+                                      callback_data=choice_group_callback.new(group_id=group.tt_id))
         choice_group.insert(button)
     return choice_group

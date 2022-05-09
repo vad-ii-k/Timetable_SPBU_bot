@@ -11,7 +11,7 @@ from utils.db_api.initial_filling_of_db import adding_groups_to_db
 from utils.db_api.updating_of_db import start_scheduler
 
 
-async def on_startup(dispatcher):
+async def on_startup(dispatcher) -> None:
     # Setting default commands
     await set_default_commands(dispatcher)
 
@@ -28,7 +28,7 @@ async def on_startup(dispatcher):
     await start_scheduler()
 
 
-async def on_shutdown(dispatcher):
+async def on_shutdown(dispatcher) -> None:
     await dp.storage.close()
     await dp.storage.wait_closed()
 

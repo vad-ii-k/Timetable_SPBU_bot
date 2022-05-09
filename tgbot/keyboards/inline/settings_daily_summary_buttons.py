@@ -1,23 +1,24 @@
+from datetime import datetime
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from tgbot.keyboards.inline.callback_data import settings_daily_summary_callback
-from utils.db_api.db_commands import Settings
 
 
-async def create_daily_summary_keyboard(settings: Settings) -> InlineKeyboardMarkup:
-    daily_summary_keyboard = InlineKeyboardMarkup()
+async def create_daily_summary_keyboard(selected_option: datetime) -> InlineKeyboardMarkup:
+    daily_summary_keyboard = InlineKeyboardMarkup(row_width=2)
 
-    suggested_time = [7, 8, 9]
-    for option in suggested_time:
-        button_left = InlineKeyboardButton(text=str(option+12)+':00',
-                                           callback_data=settings_daily_summary_callback.new(choice=option+12))
-        button_right = InlineKeyboardButton(text=str(option) + ':00',
-                                            callback_data=settings_daily_summary_callback.new(choice=option))
-        daily_summary_keyboard.row(button_left, button_right)
+    suggested_time = [(19, '🕖'), (7, '🕖'), (20, '🕗'), (8, '🕗'), (21, '🕘'), (9, '🕘')]
+    for option, sticker in suggested_time:
+        button_time = InlineKeyboardButton(text=('● ' if selected_option is not None and option == selected_option.hour
+                                                 else '○ ') + str(option) + ':00 ' + sticker,
+                                           callback_data=settings_daily_summary_callback.new(choice=option))
+        daily_summary_keyboard.insert(button_time)
 
-    button_disabling = InlineKeyboardButton(text='Не присылать ❌',
+    button_disabling = InlineKeyboardButton(text=('● ' if (selected_option is None) else '○ ') + 'Не присылать ❌',
                                             callback_data=settings_daily_summary_callback.new(choice='disabling'))
     daily_summary_keyboard.row(button_disabling)
+
     button_back = InlineKeyboardButton(text='Назад ↩️',
                                        callback_data=settings_daily_summary_callback.new(choice='back'))
     daily_summary_keyboard.row(button_back)

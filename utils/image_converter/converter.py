@@ -34,7 +34,7 @@ class TimetableIMG:
             image.paste(im=image_spbu_logo, box=(200, 300), mask=image_spbu_logo)
         return image
 
-    def create_image_title(self, title: str, date: str):
+    def create_image_title(self, title: str, date: str) -> None:
         x, y = self._x - 15, self._y - 15
         image = self._current_image
         draw = ImageDraw.Draw(image)
@@ -58,7 +58,7 @@ class TimetableIMG:
             y += height
         return y
 
-    def _insert_events(self, draw: ImageDraw, skip: int, indent: int, x: int, y: int, events: list):
+    def _insert_events(self, draw: ImageDraw, skip: int, indent: int, x: int, y: int, events: list) -> None:
         for i, event in enumerate(events):
             if i == 0 or is_basic_events_info_identical(events[i-1], events[i]):
                 if i == 0 or events[i-1].start_time != event.start_time or events[i-1].end_time != event.end_time:
@@ -87,7 +87,7 @@ class TimetableIMG:
                     x, y = self._final_img_width // 2 + indent, self._y_foundation
             self._x, self._y = x, y + skip
 
-    def insert_timetable(self, date: str, events: list):
+    def insert_timetable(self, date: str, events: list) -> None:
         image = self._current_image
         draw = ImageDraw.Draw(image)
         skip, indent = 15, 90
@@ -101,7 +101,7 @@ class TimetableIMG:
         self._y += TimetableIMG._font_reqular.size
         self._x -= indent
 
-    def crop_image(self):
+    def crop_image(self) -> None:
         image = self._current_image
         image = image.crop(box=(0, 0, self._final_img_width, min(self._y_max + 15, self._final_img_height)))
         image.save(self._path_final_img, 'jpeg')

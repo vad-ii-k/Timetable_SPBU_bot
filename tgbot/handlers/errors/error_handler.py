@@ -1,10 +1,12 @@
 import logging
+
+from aiogram.types import Update
 from aiogram.utils.exceptions import TelegramAPIError, MessageNotModified, CantParseEntities, MessageToDeleteNotFound
 from tgbot.loader import dp
 
 
 @dp.errors_handler()
-async def errors_handler(update, exception):
+async def errors_handler(update: Update, exception: Exception):
 
     if isinstance(exception, MessageNotModified):
         logging.exception('Message is not modified')

@@ -13,17 +13,17 @@ from tgbot.loader import dp, db
 
 
 @dp.callback_query_handler(settings_callback.filter(type='daily_summary'))
-async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict):
+async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict) -> None:
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
     settings = await db.set_settings()
     await query.message.edit_text('⚙️<b> Выберите время для получения\nсводки расписания на день</b>\n'
                                   'Заранее вечером в ┃ В день занятий в')
-    await query.message.edit_reply_markup(reply_markup=await create_daily_summary_keyboard(settings))
+    await query.message.edit_reply_markup(reply_markup=await create_daily_summary_keyboard(settings.daily_summary))
 
 
 @dp.callback_query_handler(settings_daily_summary_callback.filter())
-async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict):
+async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict) -> None:
     logging.info(f"call = {callback_data}")
     settings = await db.set_settings()
     if callback_data['choice'] != 'back':
@@ -34,7 +34,7 @@ async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict)
 
 
 @dp.callback_query_handler(settings_callback.filter(type='schedule_view'))
-async def settings_keyboard_handler_3(query: CallbackQuery, callback_data: dict):
+async def settings_keyboard_handler_3(query: CallbackQuery, callback_data: dict) -> None:
     logging.info(f"call = {callback_data}")
     settings = await db.set_settings()
     await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
@@ -42,7 +42,7 @@ async def settings_keyboard_handler_3(query: CallbackQuery, callback_data: dict)
 
 
 @dp.callback_query_handler(schedule_subscription_callback.filter())
-async def schedule_subscription_handler(query: CallbackQuery, callback_data: dict, state: FSMContext):
+async def schedule_subscription_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     logging.info(f"call = {callback_data}")
 
     if callback_data["answer"] == '1':
