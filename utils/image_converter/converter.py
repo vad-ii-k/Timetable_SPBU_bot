@@ -70,7 +70,7 @@ class TimetableIMG:
                 y = self._draw_text(xy=(x, y), text=event.subject_format,
                                     font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
             y_for_subject_line = y
-            y = self._draw_text(xy=(x + 25, y), text=event.educator if hasattr(event, "educator") else event.groups,
+            y = self._draw_text(xy=(x + 25, y), text=event.contingent,
                                 font=TimetableIMG._font_italic, event_cancelled=event.is_canceled)
             y = self._draw_text(xy=(x + 25, y), text=event.locations,
                                 font=TimetableIMG._font_reqular, event_cancelled=event.is_canceled)

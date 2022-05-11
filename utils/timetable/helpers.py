@@ -1,7 +1,7 @@
 from datetime import timedelta, date
 from typing import Tuple
 
-from utils.db_api.db_teacher_timetable import TeacherEvent
+from utils.db_api.db_timetable import StudyEvent
 
 
 async def calculator_of_days(day_counter: int) -> Tuple[date, date]:
@@ -40,7 +40,7 @@ async def get_weekday_sticker(day: str) -> str:
     return weekday_sticker
 
 
-def is_basic_events_info_identical(event1: TeacherEvent, event2: TeacherEvent) -> bool:
+def is_basic_events_info_identical(event1: StudyEvent, event2: StudyEvent) -> bool:
     return event1.subject_name != event2.subject_name \
         or event1.start_time != event2.start_time or event1.end_time != event2.end_time \
         or event1.subject_format != event2.subject_format or event1.is_canceled != event2.is_canceled

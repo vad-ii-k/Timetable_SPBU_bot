@@ -5,7 +5,6 @@ from typing import Dict, List, Iterable
 
 import aiohttp
 from aiohttp_socks import ProxyConnector
-from python_socks import ProxyConnectionError
 
 from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
 from tgbot.loader import db
@@ -21,7 +20,7 @@ async def request(session: aiohttp.ClientSession, url: str) -> Dict:
             else:
                 print(response.status)
                 return {}
-    except ProxyConnectionError as e:
+    except Exception as e:
         return {}  # TODO
 
 
@@ -35,7 +34,7 @@ async def get_study_divisions() -> List[Dict[str, str]]:
         study_divisions.append({"Alias": division["Alias"], "Name": division["Name"]})
     return study_divisions
 
-program_ids = []
+program_ids: List[str] = []
 
 
 async def collecting_program_ids() -> None:
@@ -63,7 +62,7 @@ async def get_study_levels(session: aiohttp.ClientSession, alias: str) -> None:
                 program_ids.append(str(year['StudyProgramId']))
 
 groups: List[Dict[str, str]] = []
-remaining_program_ids = []
+remaining_program_ids: List[str] = []
 
 
 async def get_groups(session: aiohttp.ClientSession, program_id: str) -> None:

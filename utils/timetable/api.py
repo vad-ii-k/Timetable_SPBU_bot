@@ -6,8 +6,7 @@ import aiohttp
 from aiohttp_socks import ProxyConnector
 
 from tgbot.config import PROXY_LOGIN, PROXY_PASSWORD, PROXY_IPS
-from utils.db_api.db_group_timetable import add_group_timetable_to_db
-from utils.db_api.db_teacher_timetable import add_teacher_timetable_to_db
+from utils.db_api.db_timetable import add_group_timetable_to_db, add_teacher_timetable_to_db
 from utils.timetable.helpers import calculator_of_week_days
 
 

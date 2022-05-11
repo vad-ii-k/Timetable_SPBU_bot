@@ -1,9 +1,11 @@
 from datetime import date
+from typing import List
+
 from babel.dates import format_date
 
 from tgbot import loader
-from utils.db_api.db_teacher_timetable import get_teacher_timetable_week_from_db, get_teacher_timetable_day_from_db, \
-    TeacherEvent
+from utils.db_api.db_timetable import StudyEvent
+from utils.db_api.db_timetable import get_teacher_timetable_week_from_db, get_teacher_timetable_day_from_db
 from utils.image_converter.converter import TimetableIMG
 from utils.timetable.api import fill_teacher_timetable_from_tt
 from utils.timetable.helpers import calculator_of_week_days, calculator_of_days, is_basic_events_info_identical
@@ -96,7 +98,7 @@ async def get_image_teacher_timetable_week(group_id: int, group_name: str, monda
     return timetable
 
 
-async def teacher_timetable_parser_day(day: date, events: list[TeacherEvent]) -> str:
+async def teacher_timetable_parser_day(day: date, events: List[StudyEvent]) -> str:
     day_timetable = await timetable_day_header(format_date(day, 'EEEE, d MMMM', locale='ru_RU'))
     for i, event in enumerate(events):
         if i == 0 or is_basic_events_info_identical(events[i-1], events[i]):
@@ -106,6 +108,6 @@ async def teacher_timetable_parser_day(day: date, events: list[TeacherEvent]) ->
             day_timetable += f"    🕟 <u>{event.start_time.strftime('%H:%M')}-{event.end_time.strftime('%H:%M')}</u>\n" \
                              f"    ✍🏻 Формат: <i>{event.subject_format}</i>\n"
 
-        day_timetable += f"    ╔ 🎓 <i>{event.groups}</i>\n" \
+        day_timetable += f"    ╔ 🎓 <i>{event.contingent}</i>\n" \
                          f"    ╚ 🚩 <i>{event.locations}</i>\n"
     return day_timetable

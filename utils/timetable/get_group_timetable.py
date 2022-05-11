@@ -1,9 +1,11 @@
 from datetime import date
+from typing import List
+
 from babel.dates import format_date
 
 from tgbot import loader
-from utils.db_api.db_group_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db,\
-    GroupEvent
+from utils.db_api.db_timetable import get_group_timetable_week_from_db, get_group_timetable_day_from_db, \
+    StudyEvent
 from utils.image_converter.converter import TimetableIMG
 from utils.timetable.api import fill_group_timetable_from_tt
 from utils.timetable.helpers import calculator_of_week_days, calculator_of_days, is_basic_events_info_identical
@@ -92,7 +94,7 @@ async def get_image_group_timetable_week(group_id: int, group_name: str, monday:
     return timetable
 
 
-async def group_timetable_parser_day(day: date, events: list[GroupEvent]) -> str:
+async def group_timetable_parser_day(day: date, events: List[StudyEvent]) -> str:
     day_timetable = await timetable_day_header(format_date(day, 'EEEE, d MMMM', locale='ru_RU'))
     for i, event in enumerate(events):
         if i == 0 or is_basic_events_info_identical(events[i-1], events[i]):
@@ -102,6 +104,6 @@ async def group_timetable_parser_day(day: date, events: list[GroupEvent]) -> str
             day_timetable += f"    🕟 <u>{event.start_time.strftime('%H:%M')}-{event.end_time.strftime('%H:%M')}</u>\n" \
                              f"    ✍🏻 Формат: <i>{event.subject_format}</i>\n"
 
-        day_timetable += f"    ╔ 🧑‍🏫 <i>{event.educator}</i>\n" \
+        day_timetable += f"    ╔ 🧑‍🏫 <i>{event.contingent}</i>\n" \
                          f"    ╚ 🚩<i>{event.locations}</i>\n"
     return day_timetable

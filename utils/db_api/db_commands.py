@@ -199,17 +199,20 @@ class DBCommands:
 
     @staticmethod
     async def get_group_timetable_day(group_id: int, day: date) -> List[GroupStudyEvent]:
-        study_events = await GroupStudyEvent.query.where(and_(
-            GroupStudyEvent.group_id == group_id,
-            GroupStudyEvent.date == day)).gino.all()
+        study_events = await GroupStudyEvent.join(Subject, Subject.subject_id == GroupStudyEvent.subject_id). \
+            select().where(and_(GroupStudyEvent.group_id == group_id, GroupStudyEvent.date == day)).\
+            order_by(asc(GroupStudyEvent.date), asc(GroupStudyEvent.start_time), asc(Subject.subject_name)).\
+            gino.all()
         return study_events
 
     @staticmethod
     async def get_group_timetable_week(group_id: int, monday: date, sunday: date) -> List[GroupStudyEvent]:
-        study_events = await GroupStudyEvent.query.where(and_(
-            GroupStudyEvent.group_id == group_id,
-            GroupStudyEvent.date >= monday,
-            GroupStudyEvent.date <= sunday)).gino.all()
+        study_events = await GroupStudyEvent.join(Subject, Subject.subject_id == GroupStudyEvent.subject_id). \
+            select().where(and_(GroupStudyEvent.group_id == group_id,
+                                GroupStudyEvent.date >= monday,
+                                GroupStudyEvent.date <= sunday)).\
+            order_by(asc(GroupStudyEvent.date), asc(GroupStudyEvent.start_time), asc(Subject.subject_name)).\
+            gino.all()
         return study_events
 
     @staticmethod
@@ -244,17 +247,18 @@ class DBCommands:
 
     @staticmethod
     async def get_teacher_timetable_day(teacher_id: int, day: date) -> List[TeacherStudyEvent]:
-        study_events = await TeacherStudyEvent.query.where(and_(
-            TeacherStudyEvent.teacher_id == teacher_id,
-            TeacherStudyEvent.date == day)).gino.all()
+        study_events = await TeacherStudyEvent.join(Subject, Subject.subject_id == TeacherStudyEvent.subject_id). \
+            select().where(and_(TeacherStudyEvent.teacher_id == teacher_id, TeacherStudyEvent.date == day)).\
+            order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
         return study_events
 
     @staticmethod
     async def get_teacher_timetable_week(teacher_id: int, monday: date, sunday: date) -> List[TeacherStudyEvent]:
-        study_events = await TeacherStudyEvent.query.where(and_(
-            TeacherStudyEvent.teacher_id == teacher_id,
-            TeacherStudyEvent.date >= monday,
-            TeacherStudyEvent.date <= sunday)).gino.all()
+        study_events = await TeacherStudyEvent.join(Subject, Subject.subject_id == TeacherStudyEvent.subject_id). \
+            select().where(and_(TeacherStudyEvent.teacher_id == teacher_id,
+                                TeacherStudyEvent.date >= monday,
+                                TeacherStudyEvent.date <= sunday)).\
+            order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
         return study_events
 
     @staticmethod
@@ -291,7 +295,6 @@ class DBCommands:
 async def create_db() -> None:
     pg_url = f'postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_NAME}'
     await db_gino.set_bind(pg_url)
-
     # Create tables
     # db.gino: GinoSchemaVisitor
     # await db_gino.gino.drop_all()

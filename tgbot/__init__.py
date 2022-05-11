@@ -3,3 +3,4 @@ from . import keyboards
 from . import middlewares
 from . import misc
 from . import states
+from . import notifications
