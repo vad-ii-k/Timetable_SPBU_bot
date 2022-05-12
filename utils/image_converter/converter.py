@@ -51,7 +51,7 @@ class TimetableIMG:
         image = self._current_image
         draw = ImageDraw.Draw(image)
         x, y = xy
-        lines = textwrap.wrap(text, width=self._final_img_width * 0.9 // font.size)
+        lines = textwrap.wrap(text, width=int(self._final_img_width * 0.9 // font.size))
         for line in lines:
             width, height = font.getsize(line)
             draw.text((x, y), f"  {line}", font=font, fill="grey" if event_cancelled else "black")

@@ -12,17 +12,12 @@ from utils.db_api.updating_of_db import start_scheduler
 
 
 async def on_startup(dispatcher) -> None:
-    # Setting default commands
     await set_default_commands(dispatcher)
 
-    # Creating a new DB
     await create_db()
 
-    # Launch Notification
     # await on_startup_notify(dispatcher)
 
-    if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     await adding_groups_to_db()
 
     await start_scheduler()
@@ -34,4 +29,6 @@ async def on_shutdown(dispatcher) -> None:
 
 
 if __name__ == '__main__':
+    if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     executor.start_polling(dp, on_startup=on_startup, on_shutdown=on_shutdown)
