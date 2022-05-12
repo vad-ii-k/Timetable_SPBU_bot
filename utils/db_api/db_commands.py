@@ -112,7 +112,10 @@ class DBCommands:
         return groups
 
     @staticmethod
-    async def add_new_group(tt_id: int, group_name: str) -> Group:
+    async def add_new_group(self, tt_id: int, group_name: str) -> Group:
+        old_group = await self.get_group_by_tt_id(tt_id)
+        if old_group:
+            return old_group
         new_group = Group()
         new_group.tt_id = tt_id
         new_group.name = group_name

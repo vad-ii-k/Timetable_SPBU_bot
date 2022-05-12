@@ -3,7 +3,7 @@ import logging
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from tgbot.handlers.users.helpers import send_group_schedule, change_message_to_progress
+from tgbot.handlers.users.helpers import send_schedule, change_message_to_progress
 from tgbot.keyboards.inline.callback_data import study_divisions_callback, study_levels_callback,\
     study_programs_callback, admission_years_callback, groups_callback
 from tgbot.keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard,\
@@ -64,4 +64,4 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict) -> 
 async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
-    await send_group_schedule(query.message, callback_data, state, subscription=True)
+    await send_schedule(query.message, callback_data, state, subscription=True)

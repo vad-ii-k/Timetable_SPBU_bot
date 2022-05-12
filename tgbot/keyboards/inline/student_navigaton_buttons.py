@@ -43,7 +43,8 @@ async def create_admission_years_keyboard(years: list) -> InlineKeyboardMarkup:
 async def create_groups_keyboard(groups: list) -> InlineKeyboardMarkup:
     groups_keyboard = InlineKeyboardMarkup(row_width=1)
     for group in groups:
-        button = InlineKeyboardButton(text=group["StudentGroupName"],
-                                      callback_data=groups_callback.new(group_id=group["StudentGroupId"]))
+        button = InlineKeyboardButton(
+            text=group["StudentGroupName"],
+            callback_data=groups_callback.new(tt_id=group["StudentGroupId"], user_type='student'))
         groups_keyboard.insert(button)
     return groups_keyboard

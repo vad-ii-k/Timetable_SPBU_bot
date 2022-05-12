@@ -6,7 +6,7 @@ import aiohttp
 from aiohttp_socks import ProxyConnector
 
 from tgbot.config import PROXY_LOGIN, PROXY_PASSWORD, PROXY_IPS
-from utils.db_api.db_timetable import add_group_timetable_to_db, add_teacher_timetable_to_db
+from utils.db_api.db_timetable import add_timetable_to_db
 from utils.timetable.helpers import calculator_of_week_days
 
 
@@ -32,19 +32,6 @@ async def teacher_search(last_name: str) -> List[Dict[str, str]]:
         for teacher in response["Educators"]:
             teachers.append({"Id": teacher["Id"], "FullName": teacher["FullName"]})
     return teachers
-
-
-async def fill_teacher_timetable_from_tt(teacher_id: int) -> None:
-    """ We get the schedule for the rest of the current half-year """
-    monday, sunday = await calculator_of_week_days(week_counter=-1)
-    url = tt_api_url + f"/educators/{teacher_id}/events/{monday}/"
-    august_of_current_year = date(monday.year, 8, 1)
-    url += f"{monday.year}-08-01" if monday < august_of_current_year else f"{monday.year+1}-02-01"
-    response = await request(url)
-
-    if len(response["EducatorEventsDays"]) > 0:
-        for day in response["EducatorEventsDays"]:
-            await add_teacher_timetable_to_db(day["DayStudyEvents"], teacher_id, response["EducatorLongDisplayText"])
 
 
 async def get_study_divisions() -> List[Dict[str, str]]:
@@ -77,14 +64,18 @@ async def get_groups(program_id: str) -> List[Dict[str, str]]:
     return groups
 
 
-async def fill_group_timetable_from_tt(group_id: int) -> None:
+async def fill_timetable_from_tt(tt_id: int, user_type: str) -> None:
     """ We get the schedule for the rest of the current half-year """
     monday, sunday = await calculator_of_week_days(week_counter=-1)
-    url = tt_api_url + f"/groups/{group_id}/events/{monday}/"
-    august_of_current_year = date(monday.year, 8, 1)
-    url += f"{monday.year}-08-01" if monday < august_of_current_year else f"{monday.year+1}-02-01"
+    url = tt_api_url + ("/groups" if user_type == 'student' else "/educators") + f"/{tt_id}/events/{monday}/"
+    url += f"{monday.year}-08-01" if monday < date(monday.year, 8, 1) else f"{monday.year + 1}-02-01"
     response = await request(url)
 
-    if len(response["Days"]) > 0:
-        for day in response["Days"]:
-            await add_group_timetable_to_db(day["DayStudyEvents"], group_id)
+    if user_type == 'student':
+        if len(response["Days"]) > 0:
+            for day in response["Days"]:
+                await add_timetable_to_db(day["DayStudyEvents"], tt_id, user_type)
+    else:
+        if len(response["EducatorEventsDays"]) > 0:
+            for day in response["EducatorEventsDays"]:
+                await add_timetable_to_db(day["DayStudyEvents"], tt_id, user_type, response["EducatorLongDisplayText"])

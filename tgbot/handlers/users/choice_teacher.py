@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from tgbot.handlers.users.helpers import send_teacher_schedule
+from tgbot.handlers.users.helpers import send_schedule
 from tgbot.keyboards.inline.callback_data import choice_teacher_callback
 from tgbot.keyboards.inline.choice_teacher_buttons import create_teachers_keyboard
 from tgbot.loader import dp
@@ -62,4 +62,4 @@ async def teacher_viewing_schedule_handler(query: CallbackQuery, state: FSMConte
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
-    await send_teacher_schedule(query.message, callback_data, state, subscription=True)
+    await send_schedule(query.message, callback_data, state, subscription=True)
