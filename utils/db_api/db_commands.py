@@ -294,6 +294,16 @@ class DBCommands:
         list_user_ids_with_teacher_id = [(int(teacher[4]), int(teacher[9])) for teacher in teachers]
         return list_tg_ids_with_group_tt_id, list_user_ids_with_teacher_id
 
+    @staticmethod
+    async def clearing_unused_info():
+        ids_of_student_groups = list(map(lambda student: int(student[0]), await Student.select('group_id').gino.all()))
+        unused_groups_ids = list(map(lambda group: int(group[0]),
+                                     await Group.select('group_id').
+                                     where(and_(Group.is_received_schedule,
+                                                Group.group_id.notin_(ids_of_student_groups))).gino.all()))
+        await Group.update.values(is_received_schedule=False).where(Group.group_id.in_(unused_groups_ids)).gino.status()
+        await GroupStudyEvent.delete.where(GroupStudyEvent.group_id.in_(unused_groups_ids)).gino.status()
+
 
 async def create_db() -> None:
     pg_url = f'postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_NAME}'

@@ -1,5 +1,9 @@
+import asyncio
+from contextlib import suppress
+
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, InputFile
+from aiogram.utils.exceptions import MessageCantBeDeleted, MessageToDeleteNotFound
 
 from tgbot.keyboards.inline.schedule_subscription_buttons import create_schedule_subscription_keyboard
 from tgbot.keyboards.inline.timetable_buttons import create_timetable_keyboard
@@ -40,9 +44,16 @@ async def create_answer_based_on_content(message: Message, text: str, is_picture
     return answer_msg
 
 
+async def delete_message(message: Message, sleep_time: int = 0):
+    await asyncio.sleep(sleep_time)
+    with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
+        await message.delete()
+
+
 async def send_subscription_question(message: Message) -> None:
     answer_sub = await message.answer(text="⚙️ Хотите сделать это расписание своим основным?")
     await answer_sub.edit_reply_markup(reply_markup=await create_schedule_subscription_keyboard())
+    asyncio.create_task(delete_message(answer_sub, 300))
 
 
 async def check_message_content_type(message: Message) -> bool:

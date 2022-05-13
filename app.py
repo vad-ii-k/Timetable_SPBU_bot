@@ -16,7 +16,7 @@ async def on_startup(dispatcher) -> None:
 
     await create_db()
 
-    # await on_startup_notify(dispatcher)
+    await on_startup_notify(dispatcher)
 
     await adding_groups_to_db()
 
