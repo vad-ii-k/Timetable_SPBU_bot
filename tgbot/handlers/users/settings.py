@@ -24,6 +24,7 @@ async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict)
 
 @dp.callback_query_handler(settings_daily_summary_callback.filter())
 async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict) -> None:
+    await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
     settings = await db.set_settings()
     if callback_data['choice'] != 'back':
@@ -35,6 +36,7 @@ async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict)
 
 @dp.callback_query_handler(settings_callback.filter(type='schedule_view'))
 async def settings_keyboard_handler_3(query: CallbackQuery, callback_data: dict) -> None:
+    await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
     settings = await db.set_settings()
     await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
@@ -54,5 +56,5 @@ async def schedule_subscription_handler(query: CallbackQuery, callback_data: dic
         text = "Вы подписались на расписание! ✅"
     else:
         text = "Вы отказались от подписки! ❌"
-    await query.answer(text=text, show_alert=False, cache_time=3)
+    await query.answer(text=text, show_alert=False)
     await query.message.delete()

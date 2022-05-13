@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery
 
-from tgbot.handlers.users.helpers import send_teacher_schedule
+from tgbot.handlers.users.helpers import send_schedule
 from tgbot.keyboards.inline.callback_data import choice_teacher_callback
 from tgbot.keyboards.inline.choice_teacher_buttons import create_teachers_keyboard
 from tgbot.loader import dp
@@ -38,6 +38,7 @@ async def choosing_teacher(message: types.Message) -> None:
 async def wrong_last_name(message: types.Message) -> None:
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
+    await message.chat.delete_message(message.message_id + 1)
     await message.answer(f"Преподаватель \"<i>{message.text.replace('>', '').replace('<', '')}</i>\" не найден!\n"
                          "Пожалуйста, введите другую фамилию:")
     await TeacherChoice.getting_choice.set()
@@ -47,6 +48,7 @@ async def wrong_last_name(message: types.Message) -> None:
 async def widespread_last_name(message: types.Message) -> None:
     await message.chat.delete_message(message.message_id - 1)
     await message.delete()
+    await message.chat.delete_message(message.message_id + 1)
     await message.answer(f"Фамилия \"<i>{message.text}</i>\" очень распространена\n"
                          "Попробуйте ввести фамилию и первую букву имени:")
     await TeacherChoice.getting_choice.set()
@@ -57,6 +59,7 @@ async def teacher_viewing_schedule_handler(query: CallbackQuery, state: FSMConte
     await state.finish()
     await query.message.chat.delete_message(query.message.message_id - 2)
     await query.message.chat.delete_message(query.message.message_id - 1)
+    await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
 
-    await send_teacher_schedule(query.message, callback_data, state, subscription=True)
+    await send_schedule(query.message, callback_data, state, subscription=True)

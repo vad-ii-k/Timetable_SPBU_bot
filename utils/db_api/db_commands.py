@@ -112,7 +112,10 @@ class DBCommands:
         return groups
 
     @staticmethod
-    async def add_new_group(tt_id: int, group_name: str) -> Group:
+    async def add_new_group(self, tt_id: int, group_name: str) -> Group:
+        old_group = await self.get_group_by_tt_id(tt_id)
+        if old_group:
+            return old_group
         new_group = Group()
         new_group.tt_id = tt_id
         new_group.name = group_name
@@ -199,17 +202,20 @@ class DBCommands:
 
     @staticmethod
     async def get_group_timetable_day(group_id: int, day: date) -> List[GroupStudyEvent]:
-        study_events = await GroupStudyEvent.query.where(and_(
-            GroupStudyEvent.group_id == group_id,
-            GroupStudyEvent.date == day)).gino.all()
+        study_events = await GroupStudyEvent.join(Subject, Subject.subject_id == GroupStudyEvent.subject_id). \
+            select().where(and_(GroupStudyEvent.group_id == group_id, GroupStudyEvent.date == day)).\
+            order_by(asc(GroupStudyEvent.date), asc(GroupStudyEvent.start_time), asc(Subject.subject_name)).\
+            gino.all()
         return study_events
 
     @staticmethod
     async def get_group_timetable_week(group_id: int, monday: date, sunday: date) -> List[GroupStudyEvent]:
-        study_events = await GroupStudyEvent.query.where(and_(
-            GroupStudyEvent.group_id == group_id,
-            GroupStudyEvent.date >= monday,
-            GroupStudyEvent.date <= sunday)).gino.all()
+        study_events = await GroupStudyEvent.join(Subject, Subject.subject_id == GroupStudyEvent.subject_id). \
+            select().where(and_(GroupStudyEvent.group_id == group_id,
+                                GroupStudyEvent.date >= monday,
+                                GroupStudyEvent.date <= sunday)).\
+            order_by(asc(GroupStudyEvent.date), asc(GroupStudyEvent.start_time), asc(Subject.subject_name)).\
+            gino.all()
         return study_events
 
     @staticmethod
@@ -244,17 +250,18 @@ class DBCommands:
 
     @staticmethod
     async def get_teacher_timetable_day(teacher_id: int, day: date) -> List[TeacherStudyEvent]:
-        study_events = await TeacherStudyEvent.query.where(and_(
-            TeacherStudyEvent.teacher_id == teacher_id,
-            TeacherStudyEvent.date == day)).gino.all()
+        study_events = await TeacherStudyEvent.join(Subject, Subject.subject_id == TeacherStudyEvent.subject_id). \
+            select().where(and_(TeacherStudyEvent.teacher_id == teacher_id, TeacherStudyEvent.date == day)).\
+            order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
         return study_events
 
     @staticmethod
     async def get_teacher_timetable_week(teacher_id: int, monday: date, sunday: date) -> List[TeacherStudyEvent]:
-        study_events = await TeacherStudyEvent.query.where(and_(
-            TeacherStudyEvent.teacher_id == teacher_id,
-            TeacherStudyEvent.date >= monday,
-            TeacherStudyEvent.date <= sunday)).gino.all()
+        study_events = await TeacherStudyEvent.join(Subject, Subject.subject_id == TeacherStudyEvent.subject_id). \
+            select().where(and_(TeacherStudyEvent.teacher_id == teacher_id,
+                                TeacherStudyEvent.date >= monday,
+                                TeacherStudyEvent.date <= sunday)).\
+            order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
         return study_events
 
     @staticmethod
@@ -287,11 +294,20 @@ class DBCommands:
         list_user_ids_with_teacher_id = [(int(teacher[4]), int(teacher[9])) for teacher in teachers]
         return list_tg_ids_with_group_tt_id, list_user_ids_with_teacher_id
 
+    @staticmethod
+    async def clearing_unused_info():
+        ids_of_student_groups = list(map(lambda student: int(student[0]), await Student.select('group_id').gino.all()))
+        unused_groups_ids = list(map(lambda group: int(group[0]),
+                                     await Group.select('group_id').
+                                     where(and_(Group.is_received_schedule,
+                                                Group.group_id.notin_(ids_of_student_groups))).gino.all()))
+        await Group.update.values(is_received_schedule=False).where(Group.group_id.in_(unused_groups_ids)).gino.status()
+        await GroupStudyEvent.delete.where(GroupStudyEvent.group_id.in_(unused_groups_ids)).gino.status()
+
 
 async def create_db() -> None:
     pg_url = f'postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_NAME}'
     await db_gino.set_bind(pg_url)
-
     # Create tables
     # db.gino: GinoSchemaVisitor
     # await db_gino.gino.drop_all()

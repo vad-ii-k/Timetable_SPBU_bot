@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from tgbot.handlers.users.helpers import send_group_schedule
+from tgbot.handlers.users.helpers import send_schedule
 from tgbot.keyboards.inline.callback_data import choice_group_callback
 from tgbot.keyboards.inline.choice_group_buttons import create_choice_groups_keyboard
 from tgbot.loader import dp, db
@@ -49,4 +49,4 @@ async def group_viewing_schedule_handler(query: CallbackQuery, callback_data: di
     await state.finish()
     await query.answer(cache_time=1)
     logging.info(f"call = {callback_data}")
-    await send_group_schedule(query.message, callback_data, state, subscription=True)
+    await send_schedule(query.message, callback_data, state, subscription=True)

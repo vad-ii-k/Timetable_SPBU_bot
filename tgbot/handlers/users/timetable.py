@@ -7,8 +7,7 @@ from tgbot.handlers.users.helpers import check_message_content_type, change_mess
 from tgbot.keyboards.inline.callback_data import timetable_callback
 from tgbot.keyboards.inline.timetable_buttons import create_timetable_keyboard
 from tgbot.loader import dp
-from utils.timetable.get_group_timetable import get_group_timetable
-from utils.timetable.get_teacher_timetable import get_teacher_timetable
+from utils.timetable.get_timetable import get_timetable
 
 
 async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: dict, text: str) -> None:
@@ -51,11 +50,11 @@ async def timetable_days_handler(query: CallbackQuery, callback_data: dict, stat
     data = await state.get_data()
 
     if data["user_type"] == "teacher":
-        text = await get_teacher_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture,
-                                           day_counter=data.get("day_counter"))
+        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='teacher',
+                                   day_counter=data.get("day_counter"))
     else:
-        text = await get_group_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture,
-                                         day_counter=data.get("day_counter"))
+        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='student',
+                                   day_counter=data.get("day_counter"))
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
@@ -83,11 +82,11 @@ async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, sta
     data = await state.get_data()
 
     if data["user_type"] == "teacher":
-        text = await get_teacher_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture,
-                                           week_counter=data.get("week_counter"))
+        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='teacher',
+                                   week_counter=data.get("week_counter"))
     else:
-        text = await get_group_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture,
-                                         week_counter=data.get("week_counter"))
+        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='student',
+                                   week_counter=data.get("week_counter"))
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
@@ -101,18 +100,12 @@ async def timetable_type_handler(query: CallbackQuery, callback_data: dict, stat
 
     data = await state.get_data()
     day_counter, week_counter = data.get("day_counter"), data.get("week_counter")
-    if data["user_type"] == "teacher":
-        text = await get_teacher_timetable(
-            tt_id=int(data["tt_id"]),
-            is_picture=is_picture,
-            day_counter=day_counter,
-            week_counter=0 if day_counter is None and week_counter is None else week_counter)
-    else:
-        text = await get_group_timetable(
-            tt_id=int(data["tt_id"]),
-            is_picture=is_picture,
-            day_counter=day_counter,
-            week_counter=0 if day_counter is None and week_counter is None else week_counter)
+    text = await get_timetable(
+        tt_id=int(data["tt_id"]),
+        is_picture=is_picture,
+        user_type=data["user_type"],
+        day_counter=day_counter,
+        week_counter=0 if day_counter is None and week_counter is None else week_counter)
 
     if is_picture:
         answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))

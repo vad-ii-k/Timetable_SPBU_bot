@@ -2,9 +2,9 @@ from aiogram.utils.callback_data import CallbackData
 
 user_status_callback = CallbackData("user_status", "name")
 
-choice_teacher_callback = CallbackData("choice_teacher", "teacher_id")
+choice_teacher_callback = CallbackData("choice_teacher", "tt_id", "user_type")
 
-choice_group_callback = CallbackData("choice_group", "group_id")
+choice_group_callback = CallbackData("choice_group", "tt_id", "user_type")
 
 timetable_callback = CallbackData("timetable", "button")
 
@@ -20,6 +20,6 @@ study_programs_callback = CallbackData("study_program_combinations", "serial")
 
 admission_years_callback = CallbackData("admission_years_combinations", "program_id")
 
-groups_callback = CallbackData("groups", "group_id")
+groups_callback = CallbackData("groups", "tt_id", "user_type")
 
 settings_daily_summary_callback = CallbackData("time", "choice")

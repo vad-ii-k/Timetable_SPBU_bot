@@ -82,7 +82,7 @@ class Subject(db_gino.Model):
     subject_id = Column(Integer, Sequence("subject_id_seq"), primary_key=True)
     subject_name = Column(String(150))
     subject_format = Column(String(150))
-    locations = Column(String(300))
+    locations = Column(String(500))
 
     def __repr__(self):
         return "<Subject(id={}, subject_name={}, subject_format={}, locations={})>".format(
