@@ -1,10 +1,12 @@
+from typing import List, Dict
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from tgbot.keyboards.inline.callback_data import study_divisions_callback, study_levels_callback, \
     study_programs_callback, admission_years_callback, groups_callback
 
 
-async def create_study_divisions_keyboard(divisions: list) -> InlineKeyboardMarkup:
+async def create_study_divisions_keyboard(divisions: List[Dict[str, str]]) -> InlineKeyboardMarkup:
     study_divisions_keyboard = InlineKeyboardMarkup(row_width=1)
     for division in divisions:
         button = InlineKeyboardButton(text=division["Name"],
@@ -13,7 +15,7 @@ async def create_study_divisions_keyboard(divisions: list) -> InlineKeyboardMark
     return study_divisions_keyboard
 
 
-async def create_study_levels_keyboard(levels: list) -> InlineKeyboardMarkup:
+async def create_study_levels_keyboard(levels: List[Dict[str, str]]) -> InlineKeyboardMarkup:
     study_levels_keyboard = InlineKeyboardMarkup(row_width=1)
     for level in levels:
         button = InlineKeyboardButton(text=level["StudyLevelName"],
@@ -22,7 +24,7 @@ async def create_study_levels_keyboard(levels: list) -> InlineKeyboardMarkup:
     return study_levels_keyboard
 
 
-async def create_study_programs_keyboard(programs: list) -> InlineKeyboardMarkup:
+async def create_study_programs_keyboard(programs: List[Dict[str, str]]) -> InlineKeyboardMarkup:
     study_programs_keyboard = InlineKeyboardMarkup(row_width=1)
     for program in programs:
         button = InlineKeyboardButton(text=program["Name"],
@@ -31,7 +33,7 @@ async def create_study_programs_keyboard(programs: list) -> InlineKeyboardMarkup
     return study_programs_keyboard
 
 
-async def create_admission_years_keyboard(years: list) -> InlineKeyboardMarkup:
+async def create_admission_years_keyboard(years: List[Dict[str, str]]) -> InlineKeyboardMarkup:
     admission_years_keyboard = InlineKeyboardMarkup(row_width=2)
     for year in years:
         button = InlineKeyboardButton(text=year["Year"],
@@ -40,7 +42,7 @@ async def create_admission_years_keyboard(years: list) -> InlineKeyboardMarkup:
     return admission_years_keyboard
 
 
-async def create_groups_keyboard(groups: list) -> InlineKeyboardMarkup:
+async def create_groups_keyboard(groups: List[Dict[str, str]]) -> InlineKeyboardMarkup:
     groups_keyboard = InlineKeyboardMarkup(row_width=1)
     for group in groups:
         button = InlineKeyboardButton(
