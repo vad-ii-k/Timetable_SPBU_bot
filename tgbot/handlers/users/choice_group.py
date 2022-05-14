@@ -1,8 +1,10 @@
 import logging
+from contextlib import suppress
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
+from aiogram.utils.exceptions import MessageToDeleteNotFound, MessageCantBeDeleted
 
 from tgbot.handlers.users.helpers import send_schedule
 from tgbot.keyboards.inline.callback_data import choice_group_callback
@@ -28,8 +30,9 @@ async def getting_choice_for_student(message: types.Message) -> None:
 
 @dp.message_handler(state=GroupChoice.too_many_groups)
 async def groups_are_too_many_handler(message: Message) -> None:
-    await message.chat.delete_message(message.message_id - 1)
-    await message.delete()
+    with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
+        await message.chat.delete_message(message.message_id - 1)
+        await message.delete()
     await message.answer(f"Групп, содержащих в названии \"<i>{message.text}</i>\" слишком много!\n"
                          "Попробуйте ввести подробнее:")
     await GroupChoice.getting_choice.set()
@@ -37,8 +40,9 @@ async def groups_are_too_many_handler(message: Message) -> None:
 
 @dp.message_handler(state=GroupChoice.wrong_group)
 async def groups_not_found_handler(message: Message) -> None:
-    await message.chat.delete_message(message.message_id - 1)
-    await message.delete()
+    with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
+        await message.chat.delete_message(message.message_id - 1)
+        await message.delete()
     await message.answer(f"Группа \"<i>{message.text.replace('>', '').replace('<', '')}</i>\" не найдена!\n"
                          "Попробуйте ещё раз или воспользуйтесь навигацией:")
     await GroupChoice.getting_choice.set()
