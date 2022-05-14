@@ -1,7 +1,9 @@
 import textwrap
+from typing import List
 
 from PIL import Image, ImageDraw, ImageFont
 
+from utils.db_api.db_timetable import StudyEvent
 from utils.timetable.helpers import is_basic_events_info_identical
 
 
@@ -58,7 +60,7 @@ class TimetableIMG:
             y += height
         return y
 
-    def _insert_events(self, draw: ImageDraw, skip: int, indent: int, x: int, y: int, events: list) -> None:
+    def _insert_events(self, draw: ImageDraw, skip: int, indent: int, x: int, y: int, events: List[StudyEvent]) -> None:
         for i, event in enumerate(events):
             if i == 0 or is_basic_events_info_identical(events[i-1], events[i]):
                 if i == 0 or events[i-1].start_time != event.start_time or events[i-1].end_time != event.end_time:
@@ -87,7 +89,7 @@ class TimetableIMG:
                     x, y = self._final_img_width // 2 + indent, self._y_foundation
             self._x, self._y = x, y + skip
 
-    def insert_timetable(self, date: str, events: list) -> None:
+    def insert_timetable(self, date: str, events: List[StudyEvent]) -> None:
         image = self._current_image
         draw = ImageDraw.Draw(image)
         skip, indent = 15, 90

@@ -4,11 +4,8 @@ from datetime import date, timedelta
 from tgbot.keyboards.inline.callback_data import timetable_callback
 
 
-async def create_timetable_keyboard(is_picture, day_counter=0) -> InlineKeyboardMarkup:
-    if day_counter > 0:
-        current_date = date.today() + timedelta(day_counter)
-    else:
-        current_date = date.today() - timedelta(-day_counter)
+async def create_timetable_keyboard(is_picture: bool, day_counter: int = 0) -> InlineKeyboardMarkup:
+    current_date = date.today() + timedelta(day_counter)
     prev_day_date = current_date - timedelta(days=1)
     next_day_date = current_date + timedelta(days=1)
 

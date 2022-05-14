@@ -13,7 +13,7 @@ from utils.timetable.parsers import teacher_timetable_day_header, teacher_timeta
     group_timetable_week_header, group_timetable_day_header
 
 
-async def get_timetable(tt_id: id, is_picture: bool, user_type: str,
+async def get_timetable(tt_id: int, is_picture: bool, user_type: str,
                         week_counter: int = None, day_counter: int = None) -> str:
     if user_type == 'student':
         group_db = await loader.db.get_group_by_tt_id(tt_id)

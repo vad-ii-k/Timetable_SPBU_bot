@@ -13,9 +13,9 @@ from utils.timetable.get_timetable import get_timetable
 async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: dict, text: str) -> None:
     is_picture = await check_message_content_type(query.message)
     if is_picture:
-        answer_msg = await query.message.edit_media(media=InputMedia(
-            media=InputFile("utils/image_converter/output.png")))
-        await answer_msg.edit_caption(caption=text.split('\n')[1])
+        answer_msg = await query.message.edit_media(
+            media=InputMedia(media=InputFile("utils/image_converter/output.png")))
+        await answer_msg.edit_caption(caption=text)
     else:
         answer_msg = await query.message.edit_text(text=text)
 
@@ -49,12 +49,8 @@ async def timetable_days_handler(query: CallbackQuery, callback_data: dict, stat
                 state_data["day_counter"] += 1
     data = await state.get_data()
 
-    if data["user_type"] == "teacher":
-        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='teacher',
-                                   day_counter=data.get("day_counter"))
-    else:
-        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='student',
-                                   day_counter=data.get("day_counter"))
+    text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type=data["user_type"],
+                               day_counter=data.get("day_counter"))
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
@@ -81,12 +77,8 @@ async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, sta
                 state_data["week_counter"] += 1
     data = await state.get_data()
 
-    if data["user_type"] == "teacher":
-        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='teacher',
-                                   week_counter=data.get("week_counter"))
-    else:
-        text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type='student',
-                                   week_counter=data.get("week_counter"))
+    text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type=data["user_type"],
+                               week_counter=data.get("week_counter"))
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
@@ -100,17 +92,16 @@ async def timetable_type_handler(query: CallbackQuery, callback_data: dict, stat
 
     data = await state.get_data()
     day_counter, week_counter = data.get("day_counter"), data.get("week_counter")
-    text = await get_timetable(
-        tt_id=int(data["tt_id"]),
-        is_picture=is_picture,
-        user_type=data["user_type"],
-        day_counter=day_counter,
-        week_counter=0 if day_counter is None and week_counter is None else week_counter)
+    text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type=data["user_type"],
+                               day_counter=day_counter,
+                               week_counter=0 if day_counter is None and week_counter is None else week_counter)
 
     if is_picture:
         answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
-        await answer_msg.edit_caption(caption=text.split('\n')[1])
+        await answer_msg.edit_caption(caption=text)
     else:
         answer_msg = await query.message.answer(text=text)
     await query.message.delete()
-    await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(is_picture=is_picture))
+    await answer_msg.edit_reply_markup(
+        reply_markup=await create_timetable_keyboard(is_picture=is_picture,
+                                                     day_counter=0 if day_counter is None else day_counter))
