@@ -8,7 +8,12 @@ from aiohttp_socks import ProxyConnector
 
 from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
 from tgbot.loader import db
-from utils.timetable.api import tt_api_url
+from utils.timetable.api import TT_API_URL
+
+
+program_ids: List[str] = []
+groups: List[Dict[str, str]] = []
+remaining_program_ids: List[str] = []
 
 
 async def request(session: aiohttp.ClientSession, url: str) -> Dict:
@@ -18,14 +23,15 @@ async def request(session: aiohttp.ClientSession, url: str) -> Dict:
             if response.status == 200:
                 return await response.json()
             else:
-                print(response.status)
+                print(f"Error code: {response.status}")
                 return {}
-    except Exception as e:
-        return {}  # TODO
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        return {}
 
 
 async def get_study_divisions() -> List[Dict[str, str]]:
-    url = tt_api_url + "/study/divisions"
+    url = TT_API_URL + "/study/divisions"
     async with aiohttp.ClientSession() as session:
         response = await request(session, url)
 
@@ -33,8 +39,6 @@ async def get_study_divisions() -> List[Dict[str, str]]:
     for division in response:
         study_divisions.append({"Alias": division["Alias"], "Name": division["Name"]})
     return study_divisions
-
-program_ids: List[str] = []
 
 
 async def collecting_program_ids() -> None:
@@ -52,7 +56,7 @@ async def collecting_program_ids() -> None:
 
 
 async def get_study_levels(session: aiohttp.ClientSession, alias: str) -> None:
-    url = tt_api_url + f"/study/divisions/{alias}/programs/levels"
+    url = TT_API_URL + f"/study/divisions/{alias}/programs/levels"
     response = await request(session, url)
     for level in response:
         program_combinations = level['StudyProgramCombinations']
@@ -61,12 +65,9 @@ async def get_study_levels(session: aiohttp.ClientSession, alias: str) -> None:
             for year in years:
                 program_ids.append(str(year['StudyProgramId']))
 
-groups: List[Dict[str, str]] = []
-remaining_program_ids: List[str] = []
-
 
 async def get_groups(session: aiohttp.ClientSession, program_id: str) -> None:
-    url = tt_api_url + f"/progams/{program_id}/groups"
+    url = TT_API_URL + f"/progams/{program_id}/groups"
     response = await request(session, url)
     if response.get("Groups", None):
         for group in response["Groups"]:
@@ -97,7 +98,6 @@ async def collecting_groups_info(_program_ids: List[str]) -> None:
 
 async def adding_groups_to_db() -> None:
     with open("data/program_ids.txt", 'r+') as file:
-        global program_ids
         file_size = os.stat(file.name).st_size
         if file_size == 0:
             await collecting_program_ids()

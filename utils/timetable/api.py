@@ -17,14 +17,13 @@ async def request(url: str) -> Dict:
         async with session.get(url) as resp:
             if resp.status == 200:
                 return await resp.json()
-            else:
-                return {}
+            return {}
 
-tt_api_url = "https://timetable.spbu.ru/api/v1"
+TT_API_URL = "https://timetable.spbu.ru/api/v1"
 
 
 async def teacher_search(last_name: str) -> List[Dict[str, str]]:
-    url = tt_api_url + f"/educators/search/{last_name}"
+    url = TT_API_URL + f"/educators/search/{last_name}"
     response = await request(url)
 
     teachers = []
@@ -35,7 +34,7 @@ async def teacher_search(last_name: str) -> List[Dict[str, str]]:
 
 
 async def get_study_divisions() -> List[Dict[str, str]]:
-    url = tt_api_url + "/study/divisions"
+    url = TT_API_URL + "/study/divisions"
     response = await request(url)
 
     study_divisions = []
@@ -45,7 +44,7 @@ async def get_study_divisions() -> List[Dict[str, str]]:
 
 
 async def get_study_levels(alias: str) -> Tuple[List[Dict[str, str]], Dict]:
-    url = tt_api_url + f"/study/divisions/{alias}/programs/levels"
+    url = TT_API_URL + f"/study/divisions/{alias}/programs/levels"
     response = await request(url)
 
     study_levels = []
@@ -55,7 +54,7 @@ async def get_study_levels(alias: str) -> Tuple[List[Dict[str, str]], Dict]:
 
 
 async def get_groups(program_id: str) -> List[Dict[str, str]]:
-    url = tt_api_url + f"/progams/{program_id}/groups"
+    url = TT_API_URL + f"/progams/{program_id}/groups"
     response = await request(url)
 
     groups = []
@@ -66,8 +65,8 @@ async def get_groups(program_id: str) -> List[Dict[str, str]]:
 
 async def fill_timetable_from_tt(tt_id: int, user_type: str) -> None:
     """ We get the schedule for the rest of the current half-year """
-    monday, sunday = await calculator_of_week_days(week_counter=-1)
-    url = tt_api_url + ("/groups" if user_type == 'student' else "/educators") + f"/{tt_id}/events/{monday}/"
+    monday = (await calculator_of_week_days(week_counter=-1))[0]
+    url = TT_API_URL + ("/groups" if user_type == 'student' else "/educators") + f"/{tt_id}/events/{monday}/"
     url += f"{monday.year}-08-01" if monday < date(monday.year, 8, 1) else f"{monday.year + 1}-02-01"
     response = await request(url)
 

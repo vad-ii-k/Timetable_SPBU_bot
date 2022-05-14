@@ -111,7 +111,6 @@ class DBCommands:
         groups = await Group.query.where(Group.name.contains(group_name)).order_by(asc(Group.name)).gino.all()
         return groups
 
-    @staticmethod
     async def add_new_group(self, tt_id: int, group_name: str) -> Group:
         old_group = await self.get_group_by_tt_id(tt_id)
         if old_group:

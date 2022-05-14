@@ -115,8 +115,8 @@ async def get_image_timetable_week(tt_id: int, tt_name: str, monday: date, sunda
         timetable = await group_timetable_week_header(tt_id, monday, sunday, tt_name)
 
     schedule_pic = TimetableIMG("utils/image_converter/output.png")
-    schedule_pic.create_image_title(title=tt_name, date="Неделя: {monday} — {sunday}".format(
-        monday=monday.strftime("%d.%m"), sunday=sunday.strftime("%d.%m")))
+    schedule_pic.create_image_title(title=tt_name,
+                                    date=f"Неделя: {monday.strftime('%d.%m')} — {sunday.strftime('%d.%m')}")
     if len(timetable_db) > 0:
         for day in timetable_db:
             schedule_pic.insert_timetable(date=format_date(day.date, 'EEEE, d MMMM', locale='ru_RU'),
@@ -134,6 +134,6 @@ async def timetable_parser_day(day: date, events: List[StudyEvent], user_type: s
                 else f"   <b>{event.subject_name}</b>\n"
             day_timetable += f"    🕟 <u>{event.start_time.strftime('%H:%M')}-{event.end_time.strftime('%H:%M')}</u>\n" \
                              f"    ✍🏻 Формат: <i>{event.subject_format}</i>\n"
-        day_timetable += f"    ╔ " + ("🧑‍🏫" if user_type == 'student' else "🎓") + f" <i>{event.contingent}</i>\n"\
+        day_timetable += "    ╔ " + ("🧑‍🏫" if user_type == 'student' else "🎓") + f" <i>{event.contingent}</i>\n"\
                          f"    ╚ 🚩 <i>{event.locations}</i>\n"
     return day_timetable

@@ -64,7 +64,7 @@ class TimetableIMG:
         for i, event in enumerate(events):
             if i == 0 or is_basic_events_info_identical(events[i-1], events[i]):
                 if i == 0 or events[i-1].start_time != event.start_time or events[i-1].end_time != event.end_time:
-                    event_time = "{}\n{}".format(event.start_time.strftime("%H:%M"), event.end_time.strftime("%H:%M"))
+                    event_time = f"{event.start_time.strftime('%H:%M')}\n{event.end_time.strftime('%H:%M')}"
                     draw.text(xy=(x - indent, y), text=event_time,
                               font=TimetableIMG._font_reqular, fill="grey" if event.is_canceled else "black")
                 y = self._draw_text(xy=(x, y), text=event.subject_name,
@@ -85,8 +85,7 @@ class TimetableIMG:
                 if x >= self._final_img_width // 2:
                     self._x, self._y = x, y
                     break
-                else:
-                    x, y = self._final_img_width // 2 + indent, self._y_foundation
+                x, y = self._final_img_width // 2 + indent, self._y_foundation
             self._x, self._y = x, y + skip
 
     def insert_timetable(self, date: str, events: List[StudyEvent]) -> None:

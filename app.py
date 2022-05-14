@@ -12,15 +12,11 @@ from utils.db_api.updating_of_db import start_scheduler
 
 
 async def on_startup(dispatcher) -> None:
-    await set_default_commands(dispatcher)
-
     await create_db()
-
-    await on_startup_notify(dispatcher)
-
     await adding_groups_to_db()
-
     await start_scheduler()
+    await set_default_commands(dispatcher)
+    await on_startup_notify(dispatcher)
 
 
 async def on_shutdown(dispatcher) -> None:
