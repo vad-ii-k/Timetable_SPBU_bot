@@ -10,24 +10,30 @@ from tgbot.loader import dp
 from utils.timetable.get_timetable import get_timetable
 
 
-async def timetable_keyboard_handler_helper(query: CallbackQuery, state_data: dict, text: str) -> None:
+async def timetable_keyboard_handler_helper(
+        query: CallbackQuery, state_data: dict, text: str
+) -> None:
     is_picture = await check_message_content_type(query.message)
     if is_picture:
         answer_msg = await query.message.edit_media(
-            media=InputMedia(media=InputFile("utils/image_converter/output.png")))
+            media=InputMedia(media=InputFile("utils/image_converter/output.png"))
+        )
         await answer_msg.edit_caption(caption=text)
     else:
         answer_msg = await query.message.edit_text(text=text)
 
     day_counter = state_data.get("day_counter") if state_data.get("day_counter") else 0
-    await answer_msg.edit_reply_markup(reply_markup=await create_timetable_keyboard(day_counter=day_counter,
-                                                                                    is_picture=is_picture))
+    await answer_msg.edit_reply_markup(
+        reply_markup=await create_timetable_keyboard(day_counter=day_counter, is_picture=is_picture)
+    )
 
 
-@dp.callback_query_handler(timetable_callback.filter(button=['1-1', '1-2', '1-3']))
-async def timetable_days_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
+@dp.callback_query_handler(timetable_callback.filter(button=["1-1", "1-2", "1-3"]))
+async def timetable_days_handler(
+        query: CallbackQuery, callback_data: dict, state: FSMContext
+) -> None:
     await query.answer(cache_time=1)
-    logging.info(f"call = {callback_data}")
+    logging.info("call = %s", callback_data)
 
     is_picture = await check_message_content_type(query.message)
     await change_message_to_progress(query.message, is_picture)
@@ -41,23 +47,29 @@ async def timetable_days_handler(query: CallbackQuery, callback_data: dict, stat
             state_data["day_counter"] = 0
 
         match callback_data["button"]:
-            case '1-1':
+            case "1-1":
                 state_data["day_counter"] -= 1
-            case '1-2':
+            case "1-2":
                 state_data["day_counter"] = 0
-            case '1-3':
+            case "1-3":
                 state_data["day_counter"] += 1
     data = await state.get_data()
 
-    text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type=data["user_type"],
-                               day_counter=data.get("day_counter"))
+    text = await get_timetable(
+        tt_id=int(data["tt_id"]),
+        is_picture=is_picture,
+        user_type=data["user_type"],
+        day_counter=data.get("day_counter"),
+    )
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
-@dp.callback_query_handler(timetable_callback.filter(button=['2-1', '2-2']))
-async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
+@dp.callback_query_handler(timetable_callback.filter(button=["2-1", "2-2"]))
+async def timetable_weeks_handler(
+        query: CallbackQuery, callback_data: dict, state: FSMContext
+) -> None:
     await query.answer(cache_time=2)
-    logging.info(f"call = {callback_data}")
+    logging.info("call = %s", callback_data)
 
     is_picture = await check_message_content_type(query.message)
     await change_message_to_progress(query.message, is_picture)
@@ -71,37 +83,53 @@ async def timetable_weeks_handler(query: CallbackQuery, callback_data: dict, sta
             state_data["week_counter"] = 0
 
         match callback_data["button"]:
-            case '2-1':
+            case "2-1":
                 state_data["week_counter"] = 0
-            case '2-2':
+            case "2-2":
                 state_data["week_counter"] += 1
     data = await state.get_data()
 
-    text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type=data["user_type"],
-                               week_counter=data.get("week_counter"))
+    text = await get_timetable(
+        tt_id=int(data["tt_id"]),
+        is_picture=is_picture,
+        user_type=data["user_type"],
+        week_counter=data.get("week_counter"),
+    )
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
 
 
-@dp.callback_query_handler(timetable_callback.filter(button='3-1'))
-async def timetable_type_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
+@dp.callback_query_handler(timetable_callback.filter(button="3-1"))
+async def timetable_type_handler(
+        query: CallbackQuery, callback_data: dict, state: FSMContext
+) -> None:
     await query.answer(cache_time=5)
-    logging.info(f"call = {callback_data}")
+    logging.info("call = %s", callback_data)
 
     is_picture = not await check_message_content_type(query.message)
     await change_message_to_progress(query.message, not is_picture)
 
     data = await state.get_data()
     day_counter, week_counter = data.get("day_counter"), data.get("week_counter")
-    text = await get_timetable(tt_id=int(data["tt_id"]), is_picture=is_picture, user_type=data["user_type"],
-                               day_counter=day_counter,
-                               week_counter=0 if day_counter is None and week_counter is None else week_counter)
+    text = await get_timetable(
+        tt_id=int(data["tt_id"]),
+        is_picture=is_picture,
+        user_type=data["user_type"],
+        day_counter=day_counter,
+        week_counter=0
+        if day_counter is None and week_counter is None
+        else week_counter,
+    )
 
     if is_picture:
-        answer_msg = await query.message.answer_photo(photo=InputFile("utils/image_converter/output.png"))
+        answer_msg = await query.message.answer_photo(
+            photo=InputFile("utils/image_converter/output.png")
+        )
         await answer_msg.edit_caption(caption=text)
     else:
         answer_msg = await query.message.answer(text=text)
     await query.message.delete()
     await answer_msg.edit_reply_markup(
-        reply_markup=await create_timetable_keyboard(is_picture=is_picture,
-                                                     day_counter=0 if day_counter is None else day_counter))
+        reply_markup=await create_timetable_keyboard(
+            is_picture=is_picture, day_counter=0 if day_counter is None else day_counter
+        )
+    )

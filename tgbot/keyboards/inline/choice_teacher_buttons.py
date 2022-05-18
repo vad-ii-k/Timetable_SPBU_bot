@@ -10,6 +10,7 @@ async def create_teachers_keyboard(teachers: List[Dict[str, str]]) -> InlineKeyb
     for teacher in teachers:
         button = InlineKeyboardButton(
             text=teacher["FullName"],
-            callback_data=choice_teacher_callback.new(tt_id=teacher["Id"], user_type='teacher'))
+            callback_data=choice_teacher_callback.new(tt_id=teacher["Id"], user_type='teacher')
+        )
         choice_teacher.insert(button)
     return choice_teacher

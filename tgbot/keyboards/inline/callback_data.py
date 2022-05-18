@@ -20,6 +20,4 @@ study_programs_callback = CallbackData("study_program_combinations", "serial")
 
 admission_years_callback = CallbackData("admission_years_combinations", "program_id")
 
-groups_callback = CallbackData("groups", "tt_id", "user_type")
-
 settings_daily_summary_callback = CallbackData("time", "choice")

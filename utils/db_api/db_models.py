@@ -1,5 +1,6 @@
 from gino import Gino
-from sqlalchemy import (Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Date)
+from sqlalchemy import (Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time,
+                        Date)
 
 db_gino = Gino()
 
@@ -12,10 +13,6 @@ class User(db_gino.Model):
     language = Column(String(2))
     username = Column(String(50))
 
-    def __repr__(self):
-        return "<User(id={}, tg_id={}, fullname={}, username={})>".format(
-            self.user_id, self.tg_id, self.full_name, self.username)
-
 
 class Settings(db_gino.Model):
     __tablename__ = "settings"
@@ -25,22 +22,12 @@ class Settings(db_gino.Model):
     notification_of_lesson = Column(Time)
     schedule_view_is_picture = Column(Boolean, default=False)
 
-    def __repr__(self):
-        return "<Settings(id={}, user_id={}, daily_summary={}," \
-               "notification_of_lesson={}, schedule_view_is_picture={})>".format(
-                self.settings_id, self.user_id, self.daily_summary,
-                self.notification_of_lesson, self.schedule_view_is_picture)
-
 
 class TeacherSPBU(db_gino.Model):
     __tablename__ = "teacher_spbu"
     teacher_spbu_id = Column(Integer, Sequence("teacher_spbu_id_seq"), primary_key=True)
     tt_id = Column(Integer)
     full_name = Column(String(100))
-
-    def __repr__(self):
-        return "<TeacherSPBU(id={}, tt_id={}, user_id={}, full_name={})>".format(
-            self.teacher_spbu_id, self.tt_id, self.user_id, self.full_name)
 
 
 class Group(db_gino.Model):
@@ -50,20 +37,12 @@ class Group(db_gino.Model):
     name = Column(String(150))
     is_received_schedule = Column(Boolean, default=False)
 
-    def __repr__(self):
-        return "<Group(id={}, tt_id={}, name={}, is_received_schedule={})>".format(
-            self.group_id, self.tt_id, self.name, self.is_received_schedule)
-
 
 class TeacherUser(db_gino.Model):
     __tablename__ = "teacher_user"
     teacher_user_id = Column(Integer, Sequence("teacher_user_id_seq"), primary_key=True)
     user_id = Column(None, ForeignKey("user.user_id"))
     teacher_spbu_id = Column(None, ForeignKey("teacher_spbu.teacher_spbu_id"))
-
-    def __repr__(self):
-        return "<TeacherUser(id={}, user_id={}, teacher_spbu_id={})>".format(
-            self.teacher_user_id, self.user_id, self.teacher_spbu_id)
 
 
 class Student(db_gino.Model):
@@ -72,21 +51,13 @@ class Student(db_gino.Model):
     user_id = Column(None, ForeignKey("user.user_id"))
     group_id = Column(None, ForeignKey("group.group_id"))
 
-    def __repr__(self):
-        return "<Student(id={}, user_id={}, group_id={})>".format(
-            self.student_id, self.user_id, self.group_id)
-
 
 class Subject(db_gino.Model):
     __tablename__ = "subject"
     subject_id = Column(Integer, Sequence("subject_id_seq"), primary_key=True)
     subject_name = Column(String(150))
     subject_format = Column(String(150))
-    locations = Column(String(500))
-
-    def __repr__(self):
-        return "<Subject(id={}, subject_name={}, subject_format={}, locations={})>".format(
-            self.subject_id, self.subject_name, self.subject_format, self.locations)
+    locations = Column(String(1000))
 
 
 class GroupStudyEvent(db_gino.Model):
@@ -100,10 +71,6 @@ class GroupStudyEvent(db_gino.Model):
     educator = Column(String(300))
     is_canceled = Column(Boolean)
 
-    def __repr__(self):
-        return "<StudentStudyEvent(id={}, group_id={}, date={}, subject_id={}, is_canceled={})>".format(
-            self.student_event_id, self.group_id, self.date, self.subject_id, self.is_canceled)
-
 
 class TeacherStudyEvent(db_gino.Model):
     __tablename__ = "teacher_study_event"
@@ -115,7 +82,3 @@ class TeacherStudyEvent(db_gino.Model):
     subject_id = Column(None, ForeignKey("subject.subject_id"))
     groups = Column(String(300))
     is_canceled = Column(Boolean)
-
-    def __repr__(self):
-        return "<TeacherStudyEvent(id={}, teacher_id={}, date={}, subject_id={}, is_canceled={})>".format(
-            self.teacher_event_id, self.teacher_id, self.date, self.subject_id, self.is_canceled)
