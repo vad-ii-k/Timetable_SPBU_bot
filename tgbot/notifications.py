@@ -22,9 +22,5 @@ async def send_daily_summary(user_type: str, tg_id: int, tt_id: int, day_counter
     is_picture: bool = settings.schedule_view_is_picture
     text = "🔔 Расписание на " + ("завтра\n" if day_counter == 1 else "сегодня\n")
     message = await bot.send_message(tg_id, text)
-    if user_type == 'student':
-        text += await get_timetable(tt_id=tt_id, is_picture=is_picture, user_type='student', day_counter=day_counter)
-        await create_answer_based_on_content(message, text, is_picture)
-    else:
-        text += await get_timetable(tt_id=tt_id, is_picture=is_picture, user_type='teacher', day_counter=day_counter)
-        await create_answer_based_on_content(message, text, is_picture)
+    text += await get_timetable(tt_id=tt_id, is_picture=is_picture, user_type=user_type, day_counter=day_counter)
+    await create_answer_based_on_content(message, text, is_picture)
