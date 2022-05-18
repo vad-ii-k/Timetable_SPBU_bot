@@ -1,5 +1,6 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import date, timedelta
+
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from tgbot.keyboards.inline.callback_data import timetable_callback
 
@@ -21,8 +22,10 @@ async def create_timetable_keyboard(is_picture: bool, day_counter: int = 0) -> I
     else:
         timetable_keyboard.row(today_button, next_day_button)
 
-    this_week_button = InlineKeyboardButton(text="⏹ Эта неделя", callback_data=timetable_callback.new(button="2-1"))
-    next_week_button = InlineKeyboardButton(text="След. неделя ⏩", callback_data=timetable_callback.new(button="2-2"))
+    this_week_button = InlineKeyboardButton(text="⏹ Эта неделя",
+                                            callback_data=timetable_callback.new(button="2-1"))
+    next_week_button = InlineKeyboardButton(text="След. неделя ⏩",
+                                            callback_data=timetable_callback.new(button="2-2"))
     timetable_keyboard.row(this_week_button, next_week_button)
 
     text = "📝 Текстом 📝" if is_picture else "🖼 Картинкой 🖼"

@@ -22,9 +22,8 @@ async def request(session: aiohttp.ClientSession, url: str) -> Dict:
             print(url)
             if response.status == 200:
                 return await response.json()
-            else:
-                print(f"Error code: {response.status}")
-                return {}
+            print(f"Error code: {response.status}")
+            return {}
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         return {}
