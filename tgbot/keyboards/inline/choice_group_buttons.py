@@ -11,6 +11,7 @@ async def create_choice_groups_keyboard(groups: List[Group]) -> InlineKeyboardMa
     for group in groups:
         button = InlineKeyboardButton(
             text=group.name,
-            callback_data=choice_group_callback.new(tt_id=group.tt_id, user_type='student'))
+            callback_data=choice_group_callback.new(tt_id=group.tt_id, user_type="student")
+        )
         choice_group.insert(button)
     return choice_group

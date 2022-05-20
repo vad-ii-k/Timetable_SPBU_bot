@@ -1,7 +1,6 @@
 import logging
 from contextlib import suppress
 
-from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.exceptions import MessageToDeleteNotFound, MessageCantBeDeleted
@@ -14,7 +13,7 @@ from tgbot.states.choice_group import GroupChoice
 
 
 @dp.message_handler(state=GroupChoice.getting_choice)
-async def getting_choice_for_student(message: types.Message) -> None:
+async def getting_choice_for_student(message: Message) -> None:
     groups_list = await db.get_groups_by_name(message.text)
     if len(groups_list) == 0:
         await GroupChoice.wrong_group.set()
@@ -24,7 +23,9 @@ async def getting_choice_for_student(message: types.Message) -> None:
         await groups_are_too_many_handler(message)
     else:
         answer_msg = await message.answer("Выберите группу из списка:")
-        await answer_msg.edit_reply_markup(reply_markup=await create_choice_groups_keyboard(groups_list))
+        await answer_msg.edit_reply_markup(
+            reply_markup=await create_choice_groups_keyboard(groups_list)
+        )
         await GroupChoice.choosing.set()
 
 
@@ -33,8 +34,10 @@ async def groups_are_too_many_handler(message: Message) -> None:
     with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
         await message.chat.delete_message(message.message_id - 1)
         await message.delete()
-    await message.answer(f"Групп, содержащих в названии \"<i>{message.text}</i>\" слишком много!\n"
-                         "Попробуйте ввести подробнее:")
+    await message.answer(
+        f'Групп, содержащих в названии "<i>{message.text}</i>" слишком много!\n'
+        "Попробуйте ввести подробнее:"
+    )
     await GroupChoice.getting_choice.set()
 
 
@@ -43,14 +46,18 @@ async def groups_not_found_handler(message: Message) -> None:
     with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
         await message.chat.delete_message(message.message_id - 1)
         await message.delete()
-    await message.answer(f"Группа \"<i>{message.text.replace('>', '').replace('<', '')}</i>\" не найдена!\n"
-                         "Попробуйте ещё раз или воспользуйтесь навигацией:")
+    await message.answer(
+        f"Группа \"<i>{message.text.replace('>', '').replace('<', '')}</i>\" не найдена!\n"
+        "Попробуйте ещё раз или воспользуйтесь навигацией:"
+    )
     await GroupChoice.getting_choice.set()
 
 
 @dp.callback_query_handler(choice_group_callback.filter(), state=GroupChoice.choosing)
-async def group_viewing_schedule_handler(query: CallbackQuery, callback_data: dict, state: FSMContext) -> None:
+async def group_viewing_schedule_handler(
+        query: CallbackQuery, callback_data: dict, state: FSMContext
+) -> None:
     await state.finish()
     await query.answer(cache_time=1)
-    logging.info(f"call = {callback_data}")
+    logging.info("call = %s", callback_data)
     await send_schedule(query.message, callback_data, state, subscription=True)

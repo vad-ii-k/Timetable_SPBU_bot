@@ -11,20 +11,22 @@ async def create_settings_keyboard(settings: Settings) -> InlineKeyboardMarkup:
 
     text = "Присылать сводку "
     if settings.daily_summary is None:
-        text += 'на день: ❌'
+        text += "на день: 🔇"
     else:
         if settings.daily_summary > datetime.time(12):
-            text += 'за день до: в '
+            text += "за день до: в "
         else:
-            text += 'день в день: в '
-        text += settings.daily_summary.strftime('%H:%M')
-    daily_summary = InlineKeyboardButton(text=text,
-                                         callback_data=settings_callback.new(type='daily_summary'))
+            text += "день в день: в "
+        text += settings.daily_summary.strftime("%H:%M")
+    daily_summary = InlineKeyboardButton(
+        text=text, callback_data=settings_callback.new(type="daily_summary")
+    )
     settings_keyboard.insert(daily_summary)
 
     text = "Вид расписания по умолчанию: "
-    text += '🖼' if settings.schedule_view_is_picture else '📝'
-    schedule_view = InlineKeyboardButton(text=text,
-                                         callback_data=settings_callback.new(type='schedule_view'))
+    text += "🖼" if settings.schedule_view_is_picture else "📝"
+    schedule_view = InlineKeyboardButton(
+        text=text, callback_data=settings_callback.new(type="schedule_view")
+    )
     settings_keyboard.insert(schedule_view)
     return settings_keyboard

@@ -1,7 +1,7 @@
 import asyncio
 import sys
 
-from aiogram import executor
+from aiogram import executor, Dispatcher
 
 from tgbot.notify_admins import on_startup_notify
 from tgbot.loader import dp
@@ -11,7 +11,7 @@ from utils.db_api.initial_filling_of_db import adding_groups_to_db
 from utils.db_api.updating_of_db import start_scheduler
 
 
-async def on_startup(dispatcher) -> None:
+async def on_startup(dispatcher: Dispatcher) -> None:
     await create_db()
     await adding_groups_to_db()
     await start_scheduler()
@@ -19,7 +19,7 @@ async def on_startup(dispatcher) -> None:
     await on_startup_notify(dispatcher)
 
 
-async def on_shutdown(dispatcher) -> None:
+async def on_shutdown(dispatcher: Dispatcher) -> None:
     await dp.storage.close()
     await dp.storage.wait_closed()
 
