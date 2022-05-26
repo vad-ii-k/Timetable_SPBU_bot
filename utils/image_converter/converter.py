@@ -57,7 +57,7 @@ class TimetableIMG:
         self._y = self._y_foundation = self._y_max = y
 
     def _draw_text(
-self, xy: tuple, text: str, font: ImageFont, event_cancelled: bool = False
+        self, xy: tuple, text: str, font: ImageFont, event_cancelled: bool = False
     ) -> int:
         image = self._current_image
         draw = ImageDraw.Draw(image)

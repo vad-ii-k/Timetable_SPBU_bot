@@ -7,6 +7,7 @@ from tgbot.keyboards.inline.callback_data import study_divisions_callback, \
 from tgbot.keyboards.inline.student_navigaton_buttons import create_study_levels_keyboard, \
     create_study_programs_keyboard, create_admission_years_keyboard, create_groups_keyboard
 from tgbot.loader import dp
+from tgbot.states.choice_group import GroupChoice
 from utils.timetable.api import get_study_levels, get_groups
 
 
@@ -65,6 +66,6 @@ async def groups_keyboard_handler(query: CallbackQuery, callback_data: dict) -> 
     if len(groups) > 0:
         await query.message.edit_text("Выберите группу:")
         await query.message.edit_reply_markup(reply_markup=await create_groups_keyboard(groups))
+        await GroupChoice.choosing.set()
     else:
         await query.message.edit_text("По данной программе группы не найдены!")
-        await query.message.edit_reply_markup()
