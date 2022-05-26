@@ -15,7 +15,7 @@ from utils.timetable.api import get_study_divisions
 async def student_group_search_handler(query: CallbackQuery, callback_data: dict) -> None:
     await query.answer(cache_time=1)
     logging.info("call = %s", callback_data)
-    await query.message.edit_text("Введите название группы:\n*<i>например, 20.Б09-мм</i>")
+    await query.message.edit_text("Введите название группы:\n *<i>например, 20.Б09-мм</i>")
     await GroupChoice.getting_choice.set()
 
 
