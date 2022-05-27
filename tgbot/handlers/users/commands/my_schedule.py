@@ -24,8 +24,9 @@ async def bot_my_schedule_command(query: CallbackQuery, state: FSMContext) -> No
         teacher_user = await db.get_teacher_user(user_db)
         if teacher_user:
             teacher_spbu = await db.get_teacher_spbu(teacher_user.teacher_spbu_id)
-            await send_schedule(message, {"tt_id": teacher_spbu.tt_id, "user_type": 'teacher'},
-                                state, False)
+            await send_schedule(
+                message, {"tt_id": teacher_spbu.tt_id, "user_type": 'teacher'}, state, False
+            )
         else:
             text = "🚫 Основное расписание отсутствует\n" \
                    "1. 🔎 Воспользуйтесь одной из команд:\n" \

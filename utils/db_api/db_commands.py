@@ -76,6 +76,9 @@ class DBCommands:
     async def set_teacher_spbu(self, tt_id: int, full_name: str) -> TeacherSPBU:
         old_teacher_spbu = await self.get_teacher_spbu_by_tt_id(tt_id)
         if old_teacher_spbu:
+            if old_teacher_spbu.full_name is None:
+                # This condition is a patch due to a bug, you can remove it
+                await old_teacher_spbu.update(full_name=full_name).apply()
             return old_teacher_spbu
         new_teacher_spbu = TeacherSPBU()
         new_teacher_spbu.tt_id = tt_id
@@ -125,9 +128,9 @@ class DBCommands:
     @staticmethod
     async def get_groups_by_name(group_name: str) -> List[Group]:
         groups = (
-            await Group.query.where(Group.name.contains(group_name))
-                .order_by(asc(Group.name))
-                .gino.all()
+            await Group.query.where(
+                Group.name.contains(group_name)
+            ).order_by(asc(Group.name)).gino.all()
         )
         return groups
 
@@ -256,17 +259,13 @@ class DBCommands:
         study_events = (
             await GroupStudyEvent.join(
                 Subject, Subject.subject_id == GroupStudyEvent.subject_id
-            )
-                .select()
-                .where(
+            ).select().where(
                 and_(GroupStudyEvent.group_id == group_id, GroupStudyEvent.date == day)
-            )
-                .order_by(
+            ).order_by(
                 asc(GroupStudyEvent.date),
                 asc(GroupStudyEvent.start_time),
                 asc(Subject.subject_name),
-            )
-                .gino.all()
+            ).gino.all()
         )
         return study_events
 
@@ -277,21 +276,17 @@ class DBCommands:
         study_events = (
             await GroupStudyEvent.join(
                 Subject, Subject.subject_id == GroupStudyEvent.subject_id
-            )
-                .select()
-                .where(
+            ).select().where(
                 and_(
                     GroupStudyEvent.group_id == group_id,
                     GroupStudyEvent.date >= monday,
                     GroupStudyEvent.date <= sunday,
                 )
-            )
-                .order_by(
+            ).order_by(
                 asc(GroupStudyEvent.date),
                 asc(GroupStudyEvent.start_time),
                 asc(Subject.subject_name),
-            )
-                .gino.all()
+            ).gino.all()
         )
         return study_events
 
@@ -349,16 +344,12 @@ class DBCommands:
         study_events = (
             await TeacherStudyEvent.join(
                 Subject, Subject.subject_id == TeacherStudyEvent.subject_id
-            )
-                .select()
-                .where(
+            ).select().where(
                 and_(
                     TeacherStudyEvent.teacher_id == teacher_id,
                     TeacherStudyEvent.date == day,
                 )
-            )
-                .order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time))
-                .gino.all()
+            ).order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
         )
         return study_events
 
@@ -369,17 +360,13 @@ class DBCommands:
         study_events = (
             await TeacherStudyEvent.join(
                 Subject, Subject.subject_id == TeacherStudyEvent.subject_id
-            )
-                .select()
-                .where(
+            ).select().where(
                 and_(
                     TeacherStudyEvent.teacher_id == teacher_id,
                     TeacherStudyEvent.date >= monday,
                     TeacherStudyEvent.date <= sunday,
                 )
-            )
-                .order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time))
-                .gino.all()
+            ).order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
         )
         return study_events
 
@@ -400,9 +387,9 @@ class DBCommands:
         active_users = await TeacherUser.select("teacher_spbu_id").gino.all()
         db_ids = [int(teacher_id[0]) for teacher_id in active_users]
         active_spbu = (
-            await TeacherSPBU.select("tt_id")
-                .where(TeacherSPBU.teacher_spbu_id.in_(db_ids))
-                .gino.all()
+            await TeacherSPBU.select("tt_id").where(
+                TeacherSPBU.teacher_spbu_id.in_(db_ids)
+            ).gino.all()
         )
         tt_ids = list(map(lambda tt_id: int(tt_id[0]), active_spbu))
         return tt_ids
@@ -412,31 +399,25 @@ class DBCommands:
             current_time: time,
     ) -> Tuple[List[Tuple[int, int]], List[Tuple[int, int]]]:
         users = (
-            await Settings.select("user_id")
-                .where(Settings.daily_summary == current_time)
-                .gino.all()
+            await Settings.select("user_id").where(
+                Settings.daily_summary == current_time
+            ).gino.all()
         )
         users_ids = [int(user[0]) for user in users]
         students = (
-            await Student.join(User, Student.user_id == User.user_id)
-                .join(Group, Student.group_id == Group.group_id)
-                .select()
-                .where(Student.user_id.in_(users_ids))
-                .gino.all()
+            await Student.join(User, Student.user_id == User.user_id).join(
+                Group, Student.group_id == Group.group_id
+            ).select().where(Student.user_id.in_(users_ids)).gino.all()
         )
         list_tg_ids_with_group_tt_id = [
             (int(student[4]), int(student[9])) for student in students
         ]
         teachers = (
-            await TeacherUser.join(User, TeacherUser.user_id == User.user_id)
-                .join(TeacherSPBU, TeacherUser.teacher_spbu_id == TeacherSPBU.teacher_spbu_id)
-                .select()
-                .where(TeacherUser.user_id.in_(users_ids))
-                .gino.all()
+            await TeacherUser.join(User, TeacherUser.user_id == User.user_id).join(
+                TeacherSPBU, TeacherUser.teacher_spbu_id == TeacherSPBU.teacher_spbu_id
+            ).select().where(TeacherUser.user_id.in_(users_ids)).gino.all()
         )
-        list_user_ids_with_teacher_id = [
-            (int(teacher[4]), int(teacher[9])) for teacher in teachers
-        ]
+        list_user_ids_with_teacher_id = [(int(teacher[4]), int(teacher[9])) for teacher in teachers]
         return list_tg_ids_with_group_tt_id, list_user_ids_with_teacher_id
 
     @staticmethod
@@ -450,14 +431,12 @@ class DBCommands:
         unused_groups_ids = list(
             map(
                 lambda group: int(group[0]),
-                await Group.select("group_id")
-                    .where(
+                await Group.select("group_id").where(
                     and_(
                         Group.is_received_schedule,
                         Group.group_id.notin_(ids_of_student_groups),
                     )
-                )
-                    .gino.all(),
+                ).gino.all(),
             )
         )
         await Group.update.values(is_received_schedule=False).where(

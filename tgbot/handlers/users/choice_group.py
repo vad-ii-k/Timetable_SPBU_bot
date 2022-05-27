@@ -22,6 +22,9 @@ async def getting_choice_for_student(message: Message) -> None:
         await GroupChoice.too_many_groups.set()
         await groups_are_too_many_handler(message)
     else:
+        with suppress(MessageCantBeDeleted, MessageToDeleteNotFound):
+            await message.chat.delete_message(message.message_id - 1)
+            await message.delete()
         answer_msg = await message.answer("Выберите группу из списка:")
         await answer_msg.edit_reply_markup(
             reply_markup=await create_choice_groups_keyboard(groups_list)
@@ -48,7 +51,7 @@ async def groups_not_found_handler(message: Message) -> None:
         await message.delete()
     await message.answer(
         f"Группа \"<i>{message.text.replace('>', '').replace('<', '')}</i>\" не найдена!\n"
-        "Попробуйте ещё раз или воспользуйтесь навигацией:"
+        "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /group:"
     )
     await GroupChoice.getting_choice.set()
 

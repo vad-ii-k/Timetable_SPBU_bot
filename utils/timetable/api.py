@@ -89,5 +89,5 @@ async def fill_timetable_from_tt(tt_id: int, user_type: str) -> None:
                 events=day["DayStudyEvents"],
                 tt_id=tt_id,
                 user_type=user_type,
-                full_name=response["EducatorLongDisplayText"] if user_type == 'educator' else None
+                full_name=response["EducatorLongDisplayText"] if user_type == 'teacher' else None
             )

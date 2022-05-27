@@ -23,10 +23,7 @@ class TimetableOneDay:
 
 
 async def add_timetable_to_db(
-        events: List[Dict[str, str | bool]],
-        tt_id: int,
-        user_type: str,
-        full_name: str = None,
+    events: List[Dict[str, str | bool]], tt_id: int, user_type: str, full_name: str = None
 ) -> None:
     for event in events:
         subject: str = event.get("Subject")
@@ -36,9 +33,7 @@ async def add_timetable_to_db(
             else (subject, "—")
         )
         locations: str = event.get("LocationsDisplayText")
-        db_subject = await loader.db.add_new_subject(
-            subject_name, subject_format, locations
-        )
+        db_subject = await loader.db.add_new_subject(subject_name, subject_format, locations)
 
         start: datetime = datetime.strptime(event.get("Start"), "%Y-%m-%dT%H:%M:%S")
         end: datetime = datetime.strptime(event.get("End"), "%Y-%m-%dT%H:%M:%S")
@@ -46,10 +41,9 @@ async def add_timetable_to_db(
         is_cancelled: bool = event.get("IsCancelled")
 
         if user_type == "student":
-            educator: str = "".join(
-                educator.rsplit(sep=", ", maxsplit=1)[0] + ", "
-                for educator in event.get("EducatorsDisplayText").split(sep=";")
-            )[:-2]
+            educator: str = "".join(educator.rsplit(sep=", ", maxsplit=1)[0] + ", "
+                                    for educator in event.get("EducatorsDisplayText").split(sep=";")
+                                    )[:-2]
             await loader.db.add_new_group_study_event(
                 int(tt_id),
                 db_subject.subject_id,

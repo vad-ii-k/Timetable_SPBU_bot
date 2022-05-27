@@ -23,11 +23,7 @@ from utils.timetable.parsers import (
 
 
 async def get_timetable(
-        tt_id: int,
-        is_picture: bool,
-        user_type: str,
-        week_counter: int = None,
-        day_counter: int = None,
+    tt_id: int, is_picture: bool, user_type: str, week_counter: int = None, day_counter: int = None
 ) -> str:
     if user_type == "student":
         group_db = await loader.db.get_group_by_tt_id(tt_id)
@@ -38,7 +34,8 @@ async def get_timetable(
         tt_name: str = group_db.name
     else:
         teacher_spbu_db = await loader.db.get_teacher_spbu_by_tt_id(tt_id)
-        if teacher_spbu_db is None:
+        if teacher_spbu_db is None or teacher_spbu_db.full_name is None:
+            # The second condition is a patch due to a bug, you can remove it
             await fill_timetable_from_tt(tt_id, user_type)
             teacher_spbu_db = await loader.db.get_teacher_spbu_by_tt_id(tt_id)
         db_id: int = teacher_spbu_db.teacher_spbu_id

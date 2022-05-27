@@ -38,7 +38,7 @@ async def settings_daily_summary_handler(query: CallbackQuery, callback_data: di
             else None
         )
         await settings.update(daily_summary=value).apply()
-    await query.answer(text="Настройки обновлены ✅", show_alert=False)
+        await query.answer(text="Настройки обновлены ✅", show_alert=False)
     await query.message.delete()
     await bot_settings_command(query.message)
 
@@ -49,7 +49,7 @@ async def settings_keyboard_handler_3(query: CallbackQuery, callback_data: dict)
     settings = await db.set_settings()
     await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
     await query.message.edit_reply_markup(reply_markup=await create_settings_keyboard(settings))
-    await query.answer(text="Настройки обновлены ✅", show_alert=True)
+    await query.answer(text="Настройки обновлены ✅", show_alert=False)
 
 
 @dp.callback_query_handler(schedule_subscription_callback.filter())

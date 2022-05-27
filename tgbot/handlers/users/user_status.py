@@ -35,5 +35,5 @@ async def student_navigation_handler(query: CallbackQuery, callback_data: dict) 
 async def teacher_search_handler(query: CallbackQuery, callback_data: dict) -> None:
     await query.answer(cache_time=1)
     logging.info("call = %s", callback_data)
-    await query.message.edit_text("Введите Вашу фамилию:")
+    await query.message.edit_text("Введите фамилию преподавателя:")
     await TeacherChoice.getting_choice.set()
