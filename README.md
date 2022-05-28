@@ -13,14 +13,13 @@
 # [Bot](https://t.me/timetable_SPBU_bot?start)
 <div>
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
-        <img alt="Telegram logo" align="left" src="data/github/telegram_logo.gif" width="90">
+        <img alt="Telegram logo" align="left" src="data/github/telegram_logo.png" width="80">
   </a>
+    <hr>
+    <p align="center">🤖 This is a bot for quick access to the schedule of classes for students and teachers of SPBU</p>
+    <hr>
 </div>
 
----
-<p align="center">🤖 This is a bot for quick access to the schedule of classes for students and teachers of SPBU</p>
-
----
 
 ## Demonstration
 |     | Student                                       | Teacher                                       |     |
