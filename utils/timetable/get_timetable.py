@@ -189,9 +189,19 @@ async def timetable_parser_day(day: date, events: List[StudyEvent], user_type: s
                 f'    🕟 <u>{event.start_time:%H:%M}-{event.end_time:%H:%M}</u>\n'
                 f'    ✍🏻 Формат: <i>{event.subject_format}</i>\n'
             )
-        day_timetable += (
-            f"    ╔ {'🧑‍🏫' if user_type == 'student' else '🎓'}"
-            f" <i>{event.contingent}</i>\n"
-            f"    ╚ 🚩 <i>{event.locations}</i>\n"
-        )
+        list_of_members = event.contingent.split(';')
+        list_of_locations = event.locations.split(';')
+        if len(list_of_members) != 1 and len(list_of_members) == len(list_of_locations):
+            for j in range(len(list_of_members)):
+                day_timetable += (
+                    f"    ╔ {'🧑‍🏫' if user_type == 'student' else '🎓'}"
+                    f" <i>{list_of_members[j].lstrip(' ')}</i>\n"
+                    f"    ╚ 🚩 <i>{list_of_locations[j].lstrip(' ')}</i>\n"
+                )
+        else:
+            day_timetable += (
+                f"    ╔ {'🧑‍🏫' if user_type == 'student' else '🎓'}"
+                f" <i>{event.contingent}</i>\n"
+                f"    ╚ 🚩 <i>{event.locations}</i>\n"
+            )
     return day_timetable

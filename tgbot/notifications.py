@@ -3,11 +3,10 @@ import datetime
 import pytz
 
 from tgbot.handlers.users.helpers import create_answer_based_on_content
-from tgbot.loader import db, bot, scheduler
+from tgbot.loader import db, bot
 from utils.timetable.get_timetable import get_timetable
 
 
-@scheduler.scheduled_job("cron", hour="7, 8, 9, 19, 20, 21", jobstore="redis")
 async def job_send_daily_summary() -> None:
     current_hour = datetime.datetime.now(pytz.timezone('Europe/Moscow')).hour
     students, teachers = await db.get_users_with_sign_to_summary(datetime.time(current_hour))

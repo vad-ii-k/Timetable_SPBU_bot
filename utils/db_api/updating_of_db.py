@@ -1,8 +1,8 @@
 from tgbot.loader import db, scheduler
+from tgbot.notifications import job_send_daily_summary
 from utils.timetable.api import fill_timetable_from_tt
 
 
-@scheduler.scheduled_job("cron", hour="1, 13", jobstore="redis")
 async def job_timetable_updating() -> None:
     active_groups_tt_ids = await db.get_active_groups_tt_ids()
     for group_tt_id in active_groups_tt_ids:
@@ -12,10 +12,8 @@ async def job_timetable_updating() -> None:
         await fill_timetable_from_tt(teacher_tt_id, "teacher")
 
 
-@scheduler.scheduled_job("cron", hour="4", jobstore="redis")
-async def job_clearing_db_unused_info() -> None:
-    await db.clearing_unused_info()
-
-
 async def start_scheduler() -> None:
+    scheduler.add_job(db.clearing_unused_info, "cron", hour="4", jobstore="redis")
+    scheduler.add_job(job_timetable_updating, "cron", hour="1, 13", jobstore="redis")
+    scheduler.add_job(job_send_daily_summary, "cron", hour="7-9, 19-21", jobstore="redis")
     scheduler.start()

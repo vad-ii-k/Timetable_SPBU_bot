@@ -265,6 +265,8 @@ class DBCommands:
                 asc(GroupStudyEvent.date),
                 asc(GroupStudyEvent.start_time),
                 asc(Subject.subject_name),
+                asc(Subject.subject_format),
+                asc(GroupStudyEvent.educator)
             ).gino.all()
         )
         return study_events
@@ -286,6 +288,8 @@ class DBCommands:
                 asc(GroupStudyEvent.date),
                 asc(GroupStudyEvent.start_time),
                 asc(Subject.subject_name),
+                asc(Subject.subject_format),
+                asc(GroupStudyEvent.educator)
             ).gino.all()
         )
         return study_events
@@ -338,9 +342,7 @@ class DBCommands:
         return new_study_event
 
     @staticmethod
-    async def get_teacher_timetable_day(
-            teacher_id: int, day: date
-    ) -> List[TeacherStudyEvent]:
+    async def get_teacher_timetable_day(teacher_id: int, day: date) -> List[TeacherStudyEvent]:
         study_events = (
             await TeacherStudyEvent.join(
                 Subject, Subject.subject_id == TeacherStudyEvent.subject_id
@@ -349,7 +351,13 @@ class DBCommands:
                     TeacherStudyEvent.teacher_id == teacher_id,
                     TeacherStudyEvent.date == day,
                 )
-            ).order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
+            ).order_by(
+                asc(TeacherStudyEvent.date),
+                asc(TeacherStudyEvent.start_time),
+                asc(Subject.subject_name),
+                asc(Subject.subject_format),
+                asc(TeacherStudyEvent.groups)
+            ).gino.all()
         )
         return study_events
 
@@ -366,7 +374,13 @@ class DBCommands:
                     TeacherStudyEvent.date >= monday,
                     TeacherStudyEvent.date <= sunday,
                 )
-            ).order_by(asc(TeacherStudyEvent.date), asc(TeacherStudyEvent.start_time)).gino.all()
+            ).order_by(
+                asc(TeacherStudyEvent.date),
+                asc(TeacherStudyEvent.start_time),
+                asc(Subject.subject_name),
+                asc(Subject.subject_format),
+                asc(TeacherStudyEvent.groups)
+            ).gino.all()
         )
         return study_events
 
@@ -375,9 +389,7 @@ class DBCommands:
         active_students = await Student.select("group_id").gino.all()
         groups_db_ids = [int(group_id[0]) for group_id in active_students]
         active_groups = (
-            await Group.select("tt_id")
-                .where(Group.group_id.in_(groups_db_ids))
-                .gino.all()
+            await Group.select("tt_id").where(Group.group_id.in_(groups_db_ids)).gino.all()
         )
         groups_tt_ids = list(map(lambda tt_id: int(tt_id[0]), active_groups))
         return groups_tt_ids

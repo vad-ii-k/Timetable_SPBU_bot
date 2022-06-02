@@ -41,17 +41,11 @@ async def add_timetable_to_db(
         is_cancelled: bool = event.get("IsCancelled")
 
         if user_type == "student":
-            educator: str = "".join(educator.rsplit(sep=", ", maxsplit=1)[0] + ", "
+            educator: str = "".join(educator.rsplit(sep=", ", maxsplit=1)[0] + "; "
                                     for educator in event.get("EducatorsDisplayText").split(sep=";")
                                     )[:-2]
             await loader.db.add_new_group_study_event(
-                int(tt_id),
-                db_subject.subject_id,
-                event_date,
-                start,
-                end,
-                educator,
-                is_cancelled,
+                int(tt_id), db_subject.subject_id, event_date, start, end, educator, is_cancelled,
             )
         else:
             groups: str = event.get("ContingentUnitName")
@@ -83,9 +77,7 @@ async def get_timetable_day_from_db(
             subject_name=study_event.subject_name,
             subject_format=study_event.subject_format,
             locations=study_event.locations,
-            contingent=study_event.educator
-            if user_type == "student"
-            else study_event.groups,
+            contingent=study_event.educator if user_type == "student" else study_event.groups,
             is_canceled=study_event.is_canceled,
         )
         timetable_one_day.events.append(event)
