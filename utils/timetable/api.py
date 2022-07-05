@@ -2,7 +2,7 @@ from datetime import date
 from typing import Dict, List, Tuple
 
 import aiohttp
-from aiohttp_socks import ProxyConnector
+from aiohttp_socks import ProxyConnector, ProxyError
 
 from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
 from utils.db_api.db_timetable import add_timetable_to_db
@@ -14,9 +14,13 @@ async def request(url: str) -> Dict:
     for proxy_ip in PROXY_IPS:
         connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{proxy_ip}')
         async with aiohttp.ClientSession(connector=connector) as session:
-            async with session.get(url) as resp:
-                if resp.status == 200:
-                    return await resp.json()
+            try:
+                async with session.get(url) as resp:
+                    if resp.status == 200:
+                        return await resp.json()
+                    print(session)
+            except ProxyError:
+                break
     # Trying to get a response without a proxy
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
