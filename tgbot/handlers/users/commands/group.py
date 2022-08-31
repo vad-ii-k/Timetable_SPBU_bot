@@ -1,3 +1,4 @@
+from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 
 from tgbot.keyboards.inline.student_navigaton_buttons import create_study_divisions_keyboard
@@ -6,13 +7,15 @@ from utils.timetable.api import get_study_divisions
 
 
 @dp.message_handler(commands="group", state="*")
-async def bot_group_command(message: Message) -> None:
+async def bot_group_command(message: Message, state: FSMContext) -> None:
     """
     Handler for command: group.
 
     :param message: message from user
+    :param state: user's state
     :return:
     """
+    await state.finish()
     answer = await message.answer("Выберите направление для поиска группы: ")
     study_divisions = await get_study_divisions()
     await answer.edit_reply_markup(

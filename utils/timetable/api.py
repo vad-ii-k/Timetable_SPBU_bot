@@ -83,7 +83,7 @@ async def fill_timetable_from_tt(tt_id: int, user_type: str) -> None:
     monday = (await calculator_of_week_days(week_counter=-1))[0]
     url = f"{TT_API_URL}{'/groups' if user_type == 'student' else '/educators'}/" \
           f"{tt_id}/events/{monday}/" + \
-          f"{monday.year}-08-01" if monday < date(monday.year, 8, 1) else f"{monday.year + 1}-02-01"
+          (f"{monday.year}-08-01" if monday < date(monday.year, 8, 1) else f"{monday.year + 1}-02-01")
     response = await request(url)
 
     days_info = response["Days"] if user_type == "student" else response["EducatorEventsDays"]

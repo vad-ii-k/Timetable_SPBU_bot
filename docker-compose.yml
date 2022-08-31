@@ -5,7 +5,7 @@ services:
   bot:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfile
     environment:
       TZ: Europe/Moscow
       ADMINS: ${ADMINS}
@@ -46,7 +46,7 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ../pg Init Database:/docker-entrypoint-initdb.d
+      - ./pg_init_database:/docker-entrypoint-initdb.d
       - .:/var/lib/postgresql/data
     ports:
       - ${PG_PORT}:${PG_PORT}
