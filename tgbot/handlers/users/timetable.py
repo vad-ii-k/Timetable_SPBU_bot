@@ -32,7 +32,6 @@ async def timetable_keyboard_handler_helper(
 async def timetable_days_handler(
         query: CallbackQuery, callback_data: dict, state: FSMContext
 ) -> None:
-    await query.answer(cache_time=1)
     logging.info("call = %s", callback_data)
 
     is_picture = await check_message_content_type(query.message)
@@ -55,20 +54,25 @@ async def timetable_days_handler(
                 state_data["day_counter"] += 1
     data = await state.get_data()
 
-    text = await get_timetable(
-        tt_id=int(data["tt_id"]),
-        is_picture=is_picture,
-        user_type=data["user_type"],
-        day_counter=data.get("day_counter"),
-    )
+    try:
+        text = await get_timetable(
+            tt_id=int(data["tt_id"]),
+            is_picture=is_picture,
+            user_type=data["user_type"],
+            day_counter=data.get("day_counter"),
+        )
+    except KeyError:
+        text = "Ошибка 😖\n" \
+               "Попробуйте вызвать команду /start"
+        logging.error(KeyError)
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
+    await query.answer(cache_time=1)
 
 
 @dp.callback_query_handler(timetable_callback.filter(button=["2-1", "2-2"]))
 async def timetable_weeks_handler(
         query: CallbackQuery, callback_data: dict, state: FSMContext
 ) -> None:
-    await query.answer(cache_time=2)
     logging.info("call = %s", callback_data)
 
     is_picture = await check_message_content_type(query.message)
@@ -89,20 +93,25 @@ async def timetable_weeks_handler(
                 state_data["week_counter"] += 1
     data = await state.get_data()
 
-    text = await get_timetable(
-        tt_id=int(data["tt_id"]),
-        is_picture=is_picture,
-        user_type=data["user_type"],
-        week_counter=data.get("week_counter"),
-    )
+    try:
+        text = await get_timetable(
+            tt_id=int(data["tt_id"]),
+            is_picture=is_picture,
+            user_type=data["user_type"],
+            week_counter=data.get("week_counter"),
+        )
+    except KeyError:
+        text = "Ошибка 😖\n" \
+               "Попробуйте вызвать команду /start"
+        logging.error(KeyError)
     await timetable_keyboard_handler_helper(query, await state.get_data(), text)
+    await query.answer(cache_time=2)
 
 
 @dp.callback_query_handler(timetable_callback.filter(button="3-1"))
 async def timetable_type_handler(
         query: CallbackQuery, callback_data: dict, state: FSMContext
 ) -> None:
-    await query.answer(cache_time=5)
     logging.info("call = %s", callback_data)
 
     is_picture = not await check_message_content_type(query.message)
@@ -133,3 +142,4 @@ async def timetable_type_handler(
             is_picture=is_picture, day_counter=0 if day_counter is None else day_counter
         )
     )
+    await query.answer(cache_time=5)

@@ -15,7 +15,6 @@ from tgbot.loader import dp, db
 
 @dp.callback_query_handler(settings_callback.filter(type='daily_summary'))
 async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict) -> None:
-    await query.answer(cache_time=1)
     logging.info("call = %s", callback_data)
     settings = await db.set_settings()
     await query.message.edit_text(
@@ -25,6 +24,7 @@ async def settings_keyboard_handler_1(query: CallbackQuery, callback_data: dict)
     await query.message.edit_reply_markup(
         reply_markup=await create_daily_summary_keyboard(settings.daily_summary)
     )
+    await query.answer(cache_time=1)
 
 
 @dp.callback_query_handler(settings_daily_summary_callback.filter())
