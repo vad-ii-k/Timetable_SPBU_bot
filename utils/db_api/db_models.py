@@ -10,7 +10,7 @@ class User(db_gino.Model):
     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
     tg_id = Column(BigInteger)
     full_name = Column(String(100))
-    language = Column(String(2))
+    language = Column(String(10))
     username = Column(String(50))
 
 

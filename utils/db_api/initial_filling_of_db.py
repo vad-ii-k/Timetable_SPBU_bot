@@ -87,7 +87,7 @@ def chunks_generator(lst: List[str], chuck_size: int) -> Iterable[List[str]]:
 
 
 async def collecting_groups_info(_program_ids: List[str]) -> None:
-    program_ids_by_parts = list(chunks_generator(_program_ids, 100))
+    program_ids_by_parts = list(chunks_generator(_program_ids, 50))
     proxies_pool = cycle(PROXY_IPS)
     for chunk in program_ids_by_parts:
         connector = ProxyConnector.from_url(

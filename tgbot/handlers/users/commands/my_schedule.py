@@ -1,3 +1,5 @@
+import logging
+
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
@@ -15,7 +17,14 @@ async def bot_my_schedule_command(query: CallbackQuery, state: FSMContext) -> No
     :return:
     """
     user_db = await db.get_user()
-    student = await db.get_student(user_db)
+    try:
+        student = await db.get_student(user_db)
+    except AttributeError:
+        text = "Ошибка 😖\n" \
+               "Попробуйте вызвать команду /start"
+        logging.error(AttributeError)
+        await query.answer(text)
+        return
     message: Message = await query.answer("...")
     if student:
         group = await db.get_group(student.group_id)

@@ -21,6 +21,11 @@ from utils.db_api.db_models import (
 
 class DBCommands:
     @staticmethod
+    async def get_number_of_users() -> int:
+        number_of_users = await db_gino.func.count(User.user_id).gino.scalar()
+        return number_of_users
+
+    @staticmethod
     async def get_user() -> User:
         user_tg = types.User.get_current()
         user = await User.query.where(User.tg_id == user_tg.id).gino.first()
