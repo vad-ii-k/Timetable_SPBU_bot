@@ -1,4 +1,5 @@
 from datetime import date
+from random import shuffle
 from typing import Dict, List, Tuple
 
 import aiohttp
@@ -10,6 +11,7 @@ from utils.timetable.helpers import calculator_of_week_days
 
 
 async def request(url: str) -> Dict:
+    shuffle(PROXY_IPS)
     # Iterating through the proxy until we get the OK status
     for proxy_ip in PROXY_IPS:
         connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{proxy_ip}')

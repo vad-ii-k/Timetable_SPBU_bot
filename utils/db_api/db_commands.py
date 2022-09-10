@@ -26,6 +26,11 @@ class DBCommands:
         return number_of_users
 
     @staticmethod
+    async def get_tg_ids_of_users() -> List[int]:
+        tg_ids = list(map(lambda tg_id: int(tg_id[0]), await User.select("tg_id").gino.all()))
+        return tg_ids
+
+    @staticmethod
     async def get_user() -> User:
         user_tg = types.User.get_current()
         user = await User.query.where(User.tg_id == user_tg.id).gino.first()

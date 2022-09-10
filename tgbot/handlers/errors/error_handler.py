@@ -22,6 +22,11 @@ async def errors_handler(update: Update, exception: Exception):
 
     if isinstance(exception, CantParseEntities):
         logging.exception(f"CantParseEntities: {exception} \nUpdate: {update}")
+        await update.callback_query.message.answer(
+            text="🆘 Расписание не может быть отображено в текстовом виде,\n"
+                 "   из-за особенностей сайта timetable.spbu.ru\n"
+                 "⚙️ Измените вид расписания по умолчанию в /setting"
+        )
         return True
 
     if isinstance(exception, TelegramAPIError):
