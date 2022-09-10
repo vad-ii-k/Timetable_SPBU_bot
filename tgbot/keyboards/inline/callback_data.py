@@ -6,7 +6,7 @@ choice_teacher_callback = CallbackData("choice_teacher", "tt_id", "user_type")
 
 choice_group_callback = CallbackData("choice_group", "tt_id", "user_type")
 
-timetable_callback = CallbackData("timetable", "button")
+timetable_callback = CallbackData("timetable", "button", "tt_id")
 
 settings_callback = CallbackData("settings", "type")
 

@@ -11,7 +11,7 @@ from utils.timetable.get_timetable import get_timetable
 
 
 async def timetable_keyboard_handler_helper(
-        query: CallbackQuery, state_data: dict, text: str
+        query: CallbackQuery, state_data: dict, text: str, tt_id: str
 ) -> None:
     is_picture = await check_message_content_type(query.message)
     if is_picture:
@@ -24,7 +24,7 @@ async def timetable_keyboard_handler_helper(
 
     day_counter = state_data.get("day_counter") if state_data.get("day_counter") else 0
     await answer_msg.edit_reply_markup(
-        reply_markup=await create_timetable_keyboard(day_counter=day_counter, is_picture=is_picture)
+        reply_markup=await create_timetable_keyboard(day_counter=day_counter, is_picture=is_picture, tt_id=tt_id)
     )
 
 
@@ -54,18 +54,14 @@ async def timetable_days_handler(
                 state_data["day_counter"] += 1
     data = await state.get_data()
 
-    try:
-        text = await get_timetable(
-            tt_id=int(data["tt_id"]),
-            is_picture=is_picture,
-            user_type=data["user_type"],
-            day_counter=data.get("day_counter"),
-        )
-    except KeyError:
-        text = "Ошибка 😖\n" \
-               "Попробуйте вызвать команду /start"
-        logging.error(KeyError)
-    await timetable_keyboard_handler_helper(query, await state.get_data(), text)
+    tt_id = callback_data["tt_id"]
+    text = await get_timetable(
+        tt_id=int(tt_id),
+        is_picture=is_picture,
+        user_type=data["user_type"],
+        day_counter=data.get("day_counter"),
+    )
+    await timetable_keyboard_handler_helper(query, await state.get_data(), text, callback_data["tt_id"])
     await query.answer(cache_time=1)
 
 
@@ -93,18 +89,14 @@ async def timetable_weeks_handler(
                 state_data["week_counter"] += 1
     data = await state.get_data()
 
-    try:
-        text = await get_timetable(
-            tt_id=int(data["tt_id"]),
-            is_picture=is_picture,
-            user_type=data["user_type"],
-            week_counter=data.get("week_counter"),
-        )
-    except KeyError:
-        text = "Ошибка 😖\n" \
-               "Попробуйте вызвать команду /start"
-        logging.error(KeyError)
-    await timetable_keyboard_handler_helper(query, await state.get_data(), text)
+    tt_id = callback_data["tt_id"]
+    text = await get_timetable(
+        tt_id=int(data["tt_id"]),
+        is_picture=is_picture,
+        user_type=data["user_type"],
+        week_counter=data.get("week_counter"),
+    )
+    await timetable_keyboard_handler_helper(query, await state.get_data(), text, tt_id)
     await query.answer(cache_time=2)
 
 
@@ -119,20 +111,17 @@ async def timetable_type_handler(
 
     data = await state.get_data()
     day_counter, week_counter = data.get("day_counter"), data.get("week_counter")
-    try:
-        text = await get_timetable(
-            tt_id=int(data["tt_id"]),
-            is_picture=is_picture,
-            user_type=data["user_type"],
-            day_counter=day_counter,
-            week_counter=0
-            if day_counter is None and week_counter is None
-            else week_counter,
-        )
-    except KeyError:
-        text = "Ошибка 😖\n" \
-               "Попробуйте вызвать команду /start"
-        logging.error(KeyError)
+
+    tt_id = callback_data["tt_id"]
+    text = await get_timetable(
+        tt_id=int(tt_id),
+        is_picture=is_picture,
+        user_type=data["user_type"],
+        day_counter=day_counter,
+        week_counter=0
+        if day_counter is None and week_counter is None
+        else week_counter,
+    )
 
     if is_picture:
         answer_msg = await query.message.answer_photo(
@@ -144,7 +133,7 @@ async def timetable_type_handler(
     await query.message.delete()
     await answer_msg.edit_reply_markup(
         reply_markup=await create_timetable_keyboard(
-            is_picture=is_picture, day_counter=0 if day_counter is None else day_counter
+            is_picture=is_picture, day_counter=0 if day_counter is None else day_counter, tt_id=tt_id
         )
     )
     await query.answer(cache_time=5)

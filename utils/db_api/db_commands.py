@@ -81,9 +81,6 @@ class DBCommands:
     async def set_teacher_spbu(self, tt_id: int, full_name: str) -> TeacherSPBU:
         old_teacher_spbu = await self.get_teacher_spbu_by_tt_id(tt_id)
         if old_teacher_spbu:
-            if old_teacher_spbu.full_name is None:
-                # This condition is a patch due to a bug, you can remove it
-                await old_teacher_spbu.update(full_name=full_name).apply()
             return old_teacher_spbu
         new_teacher_spbu = TeacherSPBU()
         new_teacher_spbu.tt_id = tt_id
@@ -467,7 +464,4 @@ class DBCommands:
 async def create_db() -> None:
     pg_url = f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_NAME}"
     await db_gino.set_bind(pg_url)
-    # Create tables
-    # db.gino: GinoSchemaVisitor
-    # await db_gino.gino.drop_all()
     await db_gino.gino.create_all()

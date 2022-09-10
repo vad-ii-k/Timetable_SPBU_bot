@@ -26,17 +26,18 @@ async def send_schedule(
 
     settings = await db.set_settings()
     is_picture: bool = settings.schedule_view_is_picture
+    tt_id = callback_data["tt_id"]
     text = await get_timetable(
-        tt_id=int(callback_data["tt_id"]),
+        tt_id=int(tt_id),
         user_type=callback_data["user_type"],
         is_picture=is_picture,
         week_counter=0,
     )
-    answer_msg = await create_answer_based_on_content(message, text, is_picture)
+    await state.update_data(user_type=callback_data["user_type"], tt_id=tt_id)
 
-    await state.update_data(user_type=callback_data["user_type"], tt_id=callback_data["tt_id"])
+    answer_msg = await create_answer_based_on_content(message, text, is_picture)
     await answer_msg.edit_reply_markup(
-        reply_markup=await create_timetable_keyboard(is_picture=is_picture))
+        reply_markup=await create_timetable_keyboard(is_picture=is_picture, tt_id=tt_id))
 
     if subscription:
         await send_subscription_question(answer_msg)
