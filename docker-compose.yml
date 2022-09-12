@@ -25,7 +25,7 @@ services:
     depends_on:
       - postgres
       - redis
-    restart: unless-stopped
+    restart: always
 
   redis:
     image: redis:alpine
@@ -35,7 +35,7 @@ services:
       TZ: Europe/Moscow
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
-    restart: on-failure
+    restart: always
 
   postgres:
     image: postgres:alpine
@@ -50,4 +50,4 @@ services:
       - .:/var/lib/postgresql/data
     ports:
       - ${PG_PORT}:${PG_PORT}
-    restart: on-failure
+    restart: always
