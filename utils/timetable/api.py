@@ -3,6 +3,7 @@ from random import shuffle
 from typing import Dict, List, Tuple
 
 import aiohttp
+from aiohttp_client_cache import CachedSession
 from aiohttp_socks import ProxyConnector, ProxyError
 
 from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
@@ -15,12 +16,12 @@ async def request(url: str) -> Dict:
     # Iterating through the proxy until we get the OK status
     for proxy_ip in PROXY_IPS:
         connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{proxy_ip}')
-        async with aiohttp.ClientSession(connector=connector) as session:
+        from tgbot.loader import redis_cache
+        async with CachedSession(cache=redis_cache, connector=connector) as session:
             try:
                 async with session.get(url) as resp:
                     if resp.status == 200:
                         return await resp.json()
-                    print(session)
             except ProxyError:
                 break
     # Trying to get a response without a proxy
