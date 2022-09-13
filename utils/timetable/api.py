@@ -3,21 +3,32 @@ from random import shuffle
 from typing import Dict, List, Tuple
 
 import aiohttp
-from aiohttp_client_cache import CachedSession
+from aiohttp_client_cache import CachedSession, RedisBackend
 from aiohttp_socks import ProxyConnector, ProxyError
 
-from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD
+from tgbot.config import PROXY_IPS, PROXY_LOGIN, PROXY_PASSWORD, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
 from utils.db_api.db_timetable import add_timetable_to_db
 from utils.timetable.helpers import calculator_of_week_days
 
 
-async def request(url: str) -> Dict:
+def get_cache(expire_after: int):
+    redis_cache = RedisBackend(
+        cache_name='aiohttp-cache',
+        address=f'redis://{REDIS_HOST}',
+        port=REDIS_PORT,
+        password=REDIS_PASSWORD,
+        db=2,
+        expire_after=expire_after,
+    )
+    return redis_cache
+
+
+async def request(url: str, expire_after: int) -> Dict:
     shuffle(PROXY_IPS)
     # Iterating through the proxy until we get the OK status
     for proxy_ip in PROXY_IPS:
         connector = ProxyConnector.from_url(f'HTTP://{PROXY_LOGIN}:{PROXY_PASSWORD}@{proxy_ip}')
-        from tgbot.loader import redis_cache
-        async with CachedSession(cache=redis_cache, connector=connector) as session:
+        async with CachedSession(cache=get_cache(expire_after=expire_after), connector=connector) as session:
             try:
                 async with session.get(url) as resp:
                     if resp.status == 200:
@@ -37,7 +48,7 @@ TT_API_URL = "https://timetable.spbu.ru/api/v1"
 
 async def teacher_search(last_name: str) -> List[Dict[str, str]]:
     url = f"{TT_API_URL}/educators/search/{last_name}"
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 3)
 
     teachers = []
     if "Educators" in response:
@@ -48,7 +59,7 @@ async def teacher_search(last_name: str) -> List[Dict[str, str]]:
 
 async def get_study_divisions() -> List[Dict[str, str]]:
     url = f"{TT_API_URL}/study/divisions"
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 10)
 
     study_divisions = []
     for division in response:
@@ -58,7 +69,7 @@ async def get_study_divisions() -> List[Dict[str, str]]:
 
 async def get_study_levels(alias: str) -> Tuple[List[Dict[str, str]], Dict]:
     url = f"{TT_API_URL}/study/divisions/{alias}/programs/levels"
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 10)
 
     study_levels = []
     for serial, level in enumerate(response):
@@ -68,7 +79,7 @@ async def get_study_levels(alias: str) -> Tuple[List[Dict[str, str]], Dict]:
 
 async def get_groups(program_id: str) -> List[Dict[str, str]]:
     url = f"{TT_API_URL}/progams/{program_id}/groups"
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 10)
 
     groups = []
     for group in response["Groups"]:
@@ -87,7 +98,7 @@ async def fill_timetable_from_tt(tt_id: int, user_type: str) -> None:
     url = f"{TT_API_URL}{'/groups' if user_type == 'student' else '/educators'}/" \
           f"{tt_id}/events/{monday}/" + \
           (f"{monday.year}-08-01" if monday < date(monday.year, 8, 1) else f"{monday.year + 1}-02-01")
-    response = await request(url)
+    response = await request(url, 60 * 60 * 10)
 
     days_info = response["Days"] if user_type == "student" else response["EducatorEventsDays"]
     if len(days_info) > 0:

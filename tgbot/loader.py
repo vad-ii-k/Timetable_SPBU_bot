@@ -1,7 +1,6 @@
 import pytz
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
-from aiohttp_client_cache import RedisBackend
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.util import astimezone
@@ -22,13 +21,4 @@ redis_job_storage.remove_all_jobs()
 scheduler = AsyncIOScheduler(
     jobstores={"redis": redis_job_storage},
     timezone=astimezone(pytz.timezone("Europe/Moscow")),
-)
-
-redis_cache = RedisBackend(
-    cache_name='aiohttp-cache',
-    address=f'redis://{REDIS_HOST}',
-    port=REDIS_PORT,
-    password=REDIS_PASSWORD,
-    db=2,
-    expire_after=60 * 60 * 3,
 )

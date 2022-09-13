@@ -1,8 +1,5 @@
 <p align="center">
     <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/timetable_SPBU_bot?logo=github">
-    <a href="https://www.codefactor.io/repository/github/vad-ii-k/timetable_spbu_bot/overview/master">
-        <img src="https://www.codefactor.io/repository/github/vad-ii-k/timetable_spbu_bot/badge/master" alt="CodeFactor" />
-    </a>
 </p>
 <img alt="Bot logo" align="right" width="150" src="data/github/bot_logo.png"/>
 
