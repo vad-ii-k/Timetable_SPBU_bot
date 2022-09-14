@@ -1,8 +1,5 @@
 <p align="center">
     <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/timetable_SPBU_bot?logo=github">
-    <a href="https://www.codefactor.io/repository/github/vad-ii-k/timetable_spbu_bot/overview/master">
-        <img src="https://www.codefactor.io/repository/github/vad-ii-k/timetable_spbu_bot/badge/master" alt="CodeFactor" />
-    </a>
 </p>
 <img alt="Bot logo" align="right" width="150" src="data/github/bot_logo.png"/>
 
@@ -13,14 +10,13 @@
 # [Bot](https://t.me/timetable_SPBU_bot?start)
 <div>
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
-        <img alt="Telegram logo" align="left" src="data/github/telegram_logo.gif" width="90">
+        <img alt="Telegram logo" align="left" src="data/github/telegram_logo.png" width="80">
   </a>
+    <hr>
+    <p align="center">🤖 This is a bot for quick access to the schedule of classes for students and teachers of SPBU</p>
+    <hr>
 </div>
 
----
-<p align="center">🤖 This is a bot for quick access to the schedule of classes for students and teachers of SPBU</p>
-
----
 
 ## Demonstration
 |     | Student                                       | Teacher                                       |     |

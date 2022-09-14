@@ -1,21 +1,51 @@
+from dataclasses import dataclass
+from typing import List
+
 from environs import Env
 
-env = Env()
-env.read_env()
 
-BOT_TOKEN = env.str("BOT_TOKEN")
-ADMINS = env.list("ADMINS")
+@dataclass(slots=True, frozen=True)
+class DbConfig:
+    host: str
+    password: str
+    user: str
+    database: str
 
-PG_USER = env.str("PG_USER")
-PG_PASSWORD = env.str("PG_PASSWORD")
-PG_HOST = env.str("PG_HOST")
-PG_PORT = env.str("PG_PORT")
-PG_NAME = env.str("PG_NAME")
 
-REDIS_HOST = env.str("REDIS_HOST")
-REDIS_PORT = env.int("REDIS_PORT")
-REDIS_PASSWORD = env.str("REDIS_PASSWORD")
+@dataclass(slots=True, frozen=True)
+class TgBot:
+    token: str
+    admin_ids: List[int]
+    use_redis: bool
 
-PROXY_LOGIN = env.str("PROXY_LOGIN")
-PROXY_PASSWORD = env.str("PROXY_PASSWORD")
-PROXY_IPS = ["154.16.150.112:45785", "194.233.150.56:45785", "185.33.85.246:45785"]
+
+@dataclass(slots=True, frozen=True)
+class Miscellaneous:
+    other_params: str = None
+
+
+@dataclass(slots=True, frozen=True)
+class Config:
+    tg_bot: TgBot
+    db: DbConfig
+    misc: Miscellaneous
+
+
+def load_config(path: str = None):
+    env = Env()
+    env.read_env(path)
+
+    return Config(
+        tg_bot=TgBot(
+            token=env.str("BOT_TOKEN"),
+            admin_ids=list(map(int, env.list("ADMINS"))),
+            use_redis=env.bool("USE_REDIS"),
+        ),
+        db=DbConfig(
+            host=env.str('DB_HOST'),
+            password=env.str('DB_PASS'),
+            user=env.str('DB_USER'),
+            database=env.str('DB_NAME')
+        ),
+        misc=Miscellaneous()
+    )
