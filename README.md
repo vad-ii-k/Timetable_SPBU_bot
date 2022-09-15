@@ -1,5 +1,8 @@
 <p align="center">
     <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/timetable_SPBU_bot?logo=github">
+    <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
+        <img alt="Telegram badge" src="https://img.shields.io/badge/Telegram-%40Timetable__SPBU__bot-2FA8DF?logo=Telegram">
+    </a>
 </p>
 <img alt="Bot logo" align="right" width="150" src="data/github/bot_logo.png"/>
 
@@ -11,7 +14,7 @@
 <div>
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
         <img alt="Telegram logo" align="left" src="data/github/telegram_logo.png" width="80">
-  </a>
+    </a>
     <hr>
     <p align="center">🤖 This is a bot for quick access to the schedule of classes for students and teachers of SPBU</p>
     <hr>

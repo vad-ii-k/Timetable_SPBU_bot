@@ -4,6 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from tgbot.commands import set_commands
 from tgbot.config import load_config
 from tgbot.handlers.admin import admin_router
 from tgbot.handlers.user import user_router
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 async def on_startup(bot: Bot, admin_ids: list[int]):
-    await broadcaster.broadcast(bot, admin_ids, "The bot has been launched...")
+    await broadcaster.broadcast(bot, admin_ids, "🆙 The bot has been launched!")
 
 
 def register_global_middlewares(dp: Dispatcher, config):
@@ -27,11 +28,13 @@ async def main():
         level=logging.INFO,
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
-    logger.info("Starting bot")
+    logger.info("Starting bot...")
     config = load_config(".env")
 
-    storage = MemoryStorage()
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
+    await set_commands(bot)
+
+    storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
 
     for router in [
