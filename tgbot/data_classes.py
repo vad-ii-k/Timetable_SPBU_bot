@@ -8,7 +8,7 @@ class StudyDivision:
 
 
 @dataclass(slots=True, frozen=True)
-class TeacherSearchInfo:
+class EducatorSearchInfo:
     tt_id: int
     full_name: str
 

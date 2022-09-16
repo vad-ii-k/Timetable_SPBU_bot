@@ -4,7 +4,7 @@ from aiogram.client.session import aiohttp
 
 from tgbot.data_classes import (
     StudyDivision,
-    TeacherSearchInfo,
+    EducatorSearchInfo,
     StudyLevel,
     AdmissionYear,
     ProgramCombination,
@@ -33,14 +33,14 @@ async def get_study_divisions() -> list[StudyDivision]:
     return study_divisions
 
 
-async def educator_search(last_name: str) -> list[TeacherSearchInfo]:
+async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
     url = f"{TT_API_URL}/educators/search/{last_name}"
     response = await request(url)
 
-    educators: list[TeacherSearchInfo] = []
+    educators: list[EducatorSearchInfo] = []
     if "Educators" in response:
         for educator in response["Educators"]:
-            educators.append(TeacherSearchInfo(tt_id=educator["Id"], full_name=educator["FullName"]))
+            educators.append(EducatorSearchInfo(tt_id=educator["Id"], full_name=educator["FullName"]))
     return educators
 
 

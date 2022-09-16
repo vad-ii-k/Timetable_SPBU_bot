@@ -1,15 +1,26 @@
 from tgbot.cb_data import StudyDivisionCallbackFactory, StudyLevelCallbackFactory, ProgramCombinationsCallbackFactory, \
-    AdmissionYearsCallbackFactory, GroupChoiceCallbackFactory
-from tgbot.data_classes import StudyDivision, StudyLevel, ProgramCombination, AdmissionYear, GroupSearchInfo
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+    AdmissionYearsCallbackFactory, GroupChoiceCallbackFactory, StartMenuCallbackFactory, EducatorChoiceCallbackFactory
+from tgbot.data_classes import StudyDivision, StudyLevel, ProgramCombination, AdmissionYear, GroupSearchInfo, \
+    EducatorSearchInfo
+from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
-    keyboard.row(InlineKeyboardButton(text="Названию группы", callback_data="student_group"))
-    keyboard.row(InlineKeyboardButton(text="Навигации по программам", callback_data="student_navigation"))
-    keyboard.row(InlineKeyboardButton(text="ФИО преподавателя", callback_data="teacher"))
+    keyboard.button(
+        text="Названию группы",
+        callback_data=StartMenuCallbackFactory(type="student_search")
+    )
+    keyboard.button(
+        text="Навигации по программам",
+        callback_data=StartMenuCallbackFactory(type="student_navigation")
+    )
+    keyboard.button(
+        text="ФИО преподавателя",
+        callback_data=StartMenuCallbackFactory(type="educator_search")
+    )
+    keyboard.adjust(1)
     return keyboard.as_markup()
 
 
@@ -67,3 +78,13 @@ async def create_groups_keyboard(groups: list[GroupSearchInfo]) -> InlineKeyboar
     keyboard.adjust(1)
     return keyboard.as_markup()
 
+
+async def create_educators_keyboard(educators: list[EducatorSearchInfo]) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    for educator in educators:
+        keyboard.button(
+            text=educator.full_name,
+            callback_data=EducatorChoiceCallbackFactory(tt_id=educator.tt_id)
+        )
+    keyboard.adjust(1)
+    return keyboard.as_markup()

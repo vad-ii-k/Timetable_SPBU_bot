@@ -1,6 +1,8 @@
 from aiogram.filters.callback_data import CallbackData
 
-from tgbot.data_classes import ProgramCombination
+
+class StartMenuCallbackFactory(CallbackData, prefix="start_menu"):
+    type: str
 
 
 class StudyDivisionCallbackFactory(CallbackData, prefix="study_division"):
@@ -19,5 +21,9 @@ class AdmissionYearsCallbackFactory(CallbackData, prefix="admission_years"):
     study_program_id: str
 
 
-class GroupChoiceCallbackFactory(CallbackData, prefix="admission_years"):
+class GroupChoiceCallbackFactory(CallbackData, prefix="group_choice"):
+    tt_id: str
+
+
+class EducatorChoiceCallbackFactory(CallbackData, prefix="educator_choice"):
     tt_id: str
