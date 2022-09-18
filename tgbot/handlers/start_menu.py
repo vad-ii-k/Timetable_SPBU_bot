@@ -13,7 +13,7 @@ router = Router()
 
 
 @router.callback_query(StartMenuCallbackFactory.filter(F.type == "student_search"))
-async def educator_search_callback(callback: CallbackQuery, state: FSMContext):
+async def group_search_callback(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_text("👨‍👩‍👧‍👦 Введите название группы:\n *️⃣ <i>например, 20.Б08-мм</i>")
     await state.set_state(SearchGroup.getting_choice)
 

@@ -30,7 +30,7 @@ def register_global_middlewares(dp: Dispatcher, config):
 async def main():
     logging.basicConfig(
         level=logging.INFO,
-        format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
+        format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
     logger.info("Starting bot...")
     config = load_config(".env")
