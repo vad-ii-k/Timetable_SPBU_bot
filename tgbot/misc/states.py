@@ -8,6 +8,11 @@ class SearchEducator(StatesGroup):
     choosing = State()
 
 
+class SearchGroup(StatesGroup):
+    getting_choice = State()
+    choosing = State()
+
+
 class UserType(str, Enum):
     STUDENT = "student"
     EDUCATOR = "educator"

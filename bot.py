@@ -7,9 +7,11 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from tgbot.commands import set_commands
 from tgbot.config import load_config
 from tgbot.handlers.admin import admin_router
+from tgbot.handlers.commands import router as commands_router
+from tgbot.handlers.start_menu import router as start_menu_router
+from tgbot.handlers.search_group import router as search_group_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
 from tgbot.handlers.search_educator import router as search_educator_router
-from tgbot.handlers.start import router as start_router
 from tgbot.middlewares.config import ConfigMiddleware
 from tgbot.services import broadcaster
 
@@ -41,7 +43,9 @@ async def main():
 
     for router in [
         admin_router,
-        start_router,
+        commands_router,
+        start_menu_router,
+        search_group_router,
         student_navigation_router,
         search_educator_router,
     ]:

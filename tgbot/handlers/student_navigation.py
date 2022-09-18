@@ -64,7 +64,8 @@ async def admission_years_navigation_callback(
 
 
 @router.callback_query(AdmissionYearsCallbackFactory.filter())
-async def group_choice_navigation_callback(callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory):
+async def group_choice_navigation_callback(
+        callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext):
     await change_message_to_progress(callback.message)
     groups = await get_groups(callback_data.study_program_id)
     if len(groups) > 0:
@@ -72,6 +73,6 @@ async def group_choice_navigation_callback(callback: CallbackQuery, callback_dat
             text="⬇️ Выберите группу:",
             reply_markup=await create_groups_keyboard(groups)
         )
-        # await GroupChoice.choosing.set()
+        # await state.set_state(GroupChoice.choosing)
     else:
         await callback.message.edit_text("❌ По данной программе группы не найдены!")
