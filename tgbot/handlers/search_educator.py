@@ -1,7 +1,7 @@
 from aiogram import Router
+from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-from aiogram import html
 
 from tgbot.cb_data import EducatorChoiceCallbackFactory
 from tgbot.keyboards.inline import create_educators_keyboard

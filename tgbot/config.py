@@ -20,6 +20,13 @@ class TgBot:
 
 
 @dataclass(slots=True, frozen=True)
+class Proxy:
+    login: str
+    password: str
+    ips: list[str]
+
+
+@dataclass(slots=True, frozen=True)
 class Miscellaneous:
     other_params: str = None
 
@@ -28,10 +35,11 @@ class Miscellaneous:
 class Config:
     tg_bot: TgBot
     db: DbConfig
+    proxy: Proxy
     misc: Miscellaneous
 
 
-def load_config(path: str = None):
+def load_config(path: str = None) -> Config:
     env = Env()
     env.read_env(path)
 
@@ -46,6 +54,11 @@ def load_config(path: str = None):
             password=env.str('DB_PASS'),
             user=env.str('DB_USER'),
             database=env.str('DB_NAME')
+        ),
+        proxy=Proxy(
+            login=env.str('PROXY_LOGIN'),
+            password=env.str('PROXY_PASSWORD'),
+            ips=list(map(str, env.list("PROXY_IPS"))),
         ),
         misc=Miscellaneous()
     )

@@ -3,6 +3,7 @@ import logging
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
+
 from tgbot.keyboards.inline import create_start_choice_keyboard
 from tgbot.misc.states import SearchEducator, SearchGroup
 

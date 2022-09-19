@@ -1,7 +1,5 @@
 from typing import Final
 
-from aiogram.client.session import aiohttp
-
 from tgbot.data_classes import (
     StudyDivision,
     EducatorSearchInfo,
@@ -10,17 +8,9 @@ from tgbot.data_classes import (
     ProgramCombination,
     GroupSearchInfo,
 )
+from tgbot.services.timetable_api.api_request import request
 
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
-
-
-async def request(url: str) -> dict:
-    # Trying to get a response without a proxy
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            if resp.status == 200:
-                return await resp.json()
-    return {}
 
 
 async def get_study_divisions() -> list[StudyDivision]:
