@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Final
 
 from tgbot.data_classes import (
@@ -8,7 +9,9 @@ from tgbot.data_classes import (
     ProgramCombination,
     GroupSearchInfo,
 )
+from tgbot.misc.states import UserType
 from tgbot.services.timetable_api.api_request import request
+from tgbot.services.timetable_api.helpers import _get_monday_and_sunday_dates
 
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
 
@@ -54,10 +57,21 @@ async def get_study_levels(alias: str) -> list[StudyLevel]:
 
 
 async def get_groups(program_id: str) -> list[GroupSearchInfo]:
-    url = f"{TT_API_URL}/progams/{program_id}/groups"
+    url = f"{TT_API_URL}/progams/{program_id}/groups"  # Typo in api
     response = await request(url)
 
     groups: list[GroupSearchInfo] = []
     for group in response["Groups"]:
         groups.append(GroupSearchInfo(tt_id=group["StudentGroupId"], name=group["StudentGroupName"]))
     return groups
+
+
+async def get_schedule_from_tt(tt_id: int, user_type: UserType) -> dict:
+    """We get the schedule for the rest of the current half-year"""
+    monday, _ = await _get_monday_and_sunday_dates(week_counter=-1)
+    url = f"{TT_API_URL}{'/groups' if user_type.STUDENT else '/educators'}/{tt_id}/events/{monday}/" + \
+          f"{monday.year}-08-01" if monday < date(monday.year, 8, 1) else f"{monday.year + 1}-02-01"
+    response = await request(url)
+
+    info_about_events_for_semester = response["Days"] if user_type.STUDENT else response["EducatorEventsDays"]
+    return info_about_events_for_semester

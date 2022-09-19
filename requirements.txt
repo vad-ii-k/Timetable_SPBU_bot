@@ -1,4 +1,5 @@
 aiogram==3.0.0b4
+aiohttp~=3.8.1
 aiohttp_socks==0.7.1
 aioredis~=2.0
 environs~=9.0
