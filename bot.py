@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from tgbot.commands import set_commands
-from tgbot.config import load_config, Config
+from tgbot.config import config
 from tgbot.handlers.admin import admin_router
 from tgbot.handlers.commands import router as commands_router
 from tgbot.handlers.search_educator import router as search_educator_router
@@ -16,7 +16,6 @@ from tgbot.middlewares.config import ConfigMiddleware
 from tgbot.services import broadcaster
 
 logger = logging.getLogger(__name__)
-config: Config = load_config(".env")
 
 
 async def on_startup(bot: Bot, admin_ids: list[int]):
@@ -31,7 +30,7 @@ def register_global_middlewares(dp: Dispatcher):
 async def main():
     logging.basicConfig(
         level=logging.INFO,
-        format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
+        format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
     logger.info("Starting bot...")
 

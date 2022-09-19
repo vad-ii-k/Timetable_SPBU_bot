@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 from environs import Env
 
@@ -15,7 +14,7 @@ class DbConfig:
 @dataclass(slots=True, frozen=True)
 class TgBot:
     token: str
-    admin_ids: List[int]
+    admin_ids: list[int]
     use_redis: bool
 
 
@@ -62,3 +61,6 @@ def load_config(path: str = None) -> Config:
         ),
         misc=Miscellaneous()
     )
+
+
+config: Config = load_config(".env")

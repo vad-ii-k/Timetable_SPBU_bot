@@ -1,10 +1,23 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from tgbot.cb_data import StudyDivisionCallbackFactory, StudyLevelCallbackFactory, ProgramCombinationsCallbackFactory, \
-    AdmissionYearsCallbackFactory, GroupChoiceCallbackFactory, StartMenuCallbackFactory, EducatorChoiceCallbackFactory
-from tgbot.data_classes import StudyDivision, StudyLevel, ProgramCombination, AdmissionYear, GroupSearchInfo, \
-    EducatorSearchInfo
+from tgbot.cb_data import (
+    StudyDivisionCallbackFactory,
+    StudyLevelCallbackFactory,
+    ProgramCombinationsCallbackFactory,
+    AdmissionYearsCallbackFactory,
+    GroupChoiceCallbackFactory,
+    StartMenuCallbackFactory,
+    EducatorChoiceCallbackFactory,
+)
+from tgbot.data_classes import (
+    StudyDivision,
+    StudyLevel,
+    ProgramCombination,
+    AdmissionYear,
+    GroupSearchInfo,
+    EducatorSearchInfo,
+)
 
 
 async def create_start_choice_keyboard() -> InlineKeyboardMarkup:

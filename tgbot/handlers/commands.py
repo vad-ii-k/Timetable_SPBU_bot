@@ -33,7 +33,7 @@ async def educator_search_command(message: Message, state: FSMContext):
 
 @router.message(commands=["group"], state="*")
 async def group_search_command(message: Message, state: FSMContext):
-    await message.answer("👨‍👩‍👧‍👦 Введите название группы для поиска:\n"
+    await message.answer("🔎 Введите название группы для поиска:\n"
                          "*️⃣ <i>например, 20.Б08-мм</i>")
     await state.set_state(SearchGroup.getting_choice)
 

@@ -4,9 +4,10 @@ from aiogram.client.session import aiohttp
 from aiohttp import ClientSession
 from aiohttp_socks import ProxyConnector, ProxyError
 
+from tgbot.config import config
+
 
 async def request(url: str) -> dict:
-    from bot import config
     shuffle(config.proxy.ips)
     # Iterating through the proxy until we get the OK status
     for proxy_ip in config.proxy.ips:
