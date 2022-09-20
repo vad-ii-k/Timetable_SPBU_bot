@@ -1,6 +1,7 @@
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
+from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import (
     StudyDivisionCallbackFactory,
@@ -30,7 +31,7 @@ async def study_divisions_navigation_callback(
     study_levels = await get_study_levels(callback_data.alias)
     await callback.message.delete()
     await callback.message.answer(
-        text="⬇️ Выберите уровень подготовки:",
+        text=_("⬇️ Выберите уровень подготовки:"),
         reply_markup=await create_study_levels_keyboard(study_levels)
     )
     await state.update_data(study_levels=study_levels)
@@ -46,7 +47,7 @@ async def study_levels_navigation_callback(
     await state.update_data(program_combinatons=study_level.program_combinations)
 
     await callback.message.edit_text(
-        text="⬇️ Выберите программу подготовки: ",
+        text=_("⬇️ Выберите программу подготовки: "),
         reply_markup=await create_study_programs_keyboard(study_level.program_combinations)
     )
 
@@ -60,7 +61,7 @@ async def admission_years_navigation_callback(
     await state.set_data({})
 
     await callback.message.edit_text(
-        text="⬇️ Выберите год поступления: ",
+        text=_("⬇️ Выберите год поступления: "),
         reply_markup=await create_admission_years_keyboard(program_combinaton.admission_years)
     )
 
@@ -73,9 +74,9 @@ async def group_choice_navigation_callback(
     await callback.message.delete()
     if len(groups) > 0:
         await callback.message.answer(
-            text="⬇️ Выберите группу:",
+            text=_("⬇️ Выберите группу:"),
             reply_markup=await create_groups_keyboard(groups)
         )
         await state.set_state(SearchGroup.choosing)
     else:
-        await callback.message.edit_text("❌ По данной программе группы не найдены!")
+        await callback.message.edit_text(_("❌ По данной программе группы не найдены!"))

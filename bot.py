@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from tgbot.commands import set_commands
 from tgbot.config import config
@@ -22,9 +23,10 @@ async def on_startup(bot: Bot, admin_ids: list[int]):
     await broadcaster.broadcast(bot, admin_ids, "🆙 The bot has been launched!")
 
 
-def register_global_middlewares(dp: Dispatcher):
+def register_global_middlewares(dp: Dispatcher, i18n: I18n):
     dp.message.middleware(ConfigMessageMiddleware(config))
     dp.callback_query.middleware(ConfigCallbackMiddleware(config))
+    dp.update.outer_middleware(SimpleI18nMiddleware(i18n))
 
 
 async def main():
@@ -50,7 +52,8 @@ async def main():
     ]:
         dp.include_router(router)
 
-    register_global_middlewares(dp)
+    i18n = I18n(path="tgbot/locales", default_locale="ru", domain="messages")
+    register_global_middlewares(dp, i18n)
 
     await on_startup(bot, config.tg_bot.admin_ids)
     await dp.start_polling(bot)

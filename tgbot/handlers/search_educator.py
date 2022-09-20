@@ -3,6 +3,7 @@ from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from magic_filter import F
+from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.handlers.helpers import send_schedule
@@ -17,13 +18,13 @@ router = Router()
 async def getting_choice_for_educator(message: Message, state: FSMContext):
     teachers_list = await educator_search(message.text)
     if len(teachers_list) == 0:
-        await message.answer("❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
-                             "Пожалуйста, введите другую фамилию:".format(last_name=html.quote(message.text)))
+        await message.answer(_("❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
+                               "Пожалуйста, введите другую фамилию:").format(last_name=html.quote(message.text)))
     elif len(teachers_list) > 50:
-        await message.answer("❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
-                             "Попробуйте ввести фамилию и первую букву имени:".format(last_name=message.text))
+        await message.answer(_("❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
+                               "Попробуйте ввести фамилию и первую букву имени:").format(last_name=message.text))
     else:
-        await message.answer(text="⬇️ Выберите преподавателя из списка:",
+        await message.answer(text=_("⬇️ Выберите преподавателя из списка:"),
                              reply_markup=await create_educators_keyboard(teachers_list))
         await state.set_state(SearchEducator.choosing)
 

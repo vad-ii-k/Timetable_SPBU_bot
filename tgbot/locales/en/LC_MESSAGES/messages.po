@@ -1,0 +1,158 @@
+# English translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-09-20 22:14+0300\n"
+"PO-Revision-Date: 2022-09-20 20:52+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: handlers/commands.py:19
+msgid ""
+"👋🏻 <b>Добро пожаловать, {name}!</b>\n"
+"ℹ️ Следуйте указаниям для настройки\n"
+"❕ Для корректной работы взаимодействуйте только с последним сообщением бота\n"
+"➖➖➖➖➖➖➖➖➖➖➖➖\n"
+"⬇️ Получить расписание по:"
+msgstr ""
+"👋🏻 <b>Welcome, {name}!</b>\n"
+"ℹ️ Follow the instructions to configure\n"
+"❕ For correct operation, interact only with the last message of the bot\n"
+"➖➖➖➖➖➖➖➖➖➖➖➖\n"
+"⬇️ Get the schedule by:"
+
+#: handlers/commands.py:31
+msgid "🔎 Введите фамилию преподавателя для поиска:"
+msgstr "🔎 Enter the last name of the teacher to search:"
+
+#: handlers/commands.py:37
+msgid ""
+"🔎 Введите название группы для поиска:\n"
+"*️⃣ <i>например, 20.Б08-мм</i>"
+msgstr ""
+"🔎 Enter the name of the group to search for:\n"
+"*️⃣ <i>for example, 20.Б08-мм</i>"
+
+#: handlers/helpers.py:11
+msgid "🕒 <i>Загрузка...</i>"
+msgstr "🕒 <i>Loading...</i>"
+
+#: handlers/search_educator.py:21
+msgid ""
+"❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
+"Пожалуйста, введите другую фамилию:"
+msgstr ""
+"❌ Teacher \"<i>{last_name}</i>\" was not found!\n"
+"Please enter another surname:"
+
+#: handlers/search_educator.py:24
+msgid ""
+"❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
+"Попробуйте ввести фамилию и первую букву имени:"
+msgstr ""
+"❌ The surname \"<i>{last_name}</i>\" is very common\n"
+"Try to enter the last name and the first letter of the name:"
+
+#: handlers/search_educator.py:27
+msgid "⬇️ Выберите преподавателя из списка:"
+msgstr "⬇️ Select a teacher from the list:"
+
+#: handlers/search_group.py:27
+msgid "⬇️ Выберите группу из списка:"
+msgstr "⬇️ Select a group from the list:"
+
+#: handlers/search_group.py:40
+msgid ""
+"Группа \"<i>{group_name}</i>\" не найдена!\n"
+"Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /group:"
+msgstr ""
+"The group \"<i>{group_name}</i>\" was not found!\n"
+"Try again or use the navigation with the /group command:"
+
+#: handlers/search_group.py:47
+msgid ""
+"Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
+"Попробуйте ввести подробнее:"
+msgstr ""
+"There are too many groups containing \"<i>{group_name}</i>\" in the name!\n"
+"Try to enter more details:"
+
+#: handlers/start_menu.py:18
+msgid ""
+"👨‍👩‍👧‍👦 Введите название группы:\n"
+" *️⃣ <i>например, 20.Б08-мм</i>"
+msgstr ""
+"👨‍👩‍👧‍👦 Enter the name of the group:\n"
+" *️⃣ <i>for example, 20.Б08-мм</i>"
+
+#: handlers/start_menu.py:28
+msgid "⬇️ Выберите направление: "
+msgstr "⬇️ Choose a field of study: "
+
+#: handlers/start_menu.py:36
+msgid "🧑‍🏫 Введите фамилию преподавателя:"
+msgstr "🧑‍🏫 Enter the teacher's last name:"
+
+#: handlers/student_navigation.py:34
+msgid "⬇️ Выберите уровень подготовки:"
+msgstr "⬇️ Choose the level of education:"
+
+#: handlers/student_navigation.py:50
+msgid "⬇️ Выберите программу подготовки: "
+msgstr "⬇️ Choose an educational program: "
+
+#: handlers/student_navigation.py:64
+msgid "⬇️ Выберите год поступления: "
+msgstr "⬇️ Choose the admission year: "
+
+#: handlers/student_navigation.py:77
+msgid "⬇️ Выберите группу:"
+msgstr "⬇️ Choose a group:"
+
+#: handlers/student_navigation.py:82
+msgid "❌ По данной программе группы не найдены!"
+msgstr "❌ No groups were found for this program!"
+
+#: keyboards/inline.py:30
+msgid "Названию группы"
+msgstr "Group name"
+
+#: keyboards/inline.py:33
+msgid "Навигации по программам"
+msgstr "Program navigation"
+
+#: keyboards/inline.py:36
+msgid "ФИО преподавателя"
+msgstr "Teacher's full name"
+
+#: keyboards/inline.py:112
+msgid "Сегодня"
+msgstr "Today"
+
+#: keyboards/inline.py:125
+msgid "⏹ Эта неделя"
+msgstr "⏹ This week"
+
+#: keyboards/inline.py:129
+msgid "След. неделя ⏩"
+msgstr "Next week ⏩"
+
+#: keyboards/inline.py:135
+msgid "📝 Текстом 📝"
+msgstr "📝 as a Text 📝"
+
+#: keyboards/inline.py:135
+msgid "🖼 Картинкой 🖼"
+msgstr "🖼 as a Picture 🖼"
+

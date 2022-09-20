@@ -3,6 +3,7 @@ from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from magic_filter import F
+from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.handlers.helpers import send_schedule
@@ -23,7 +24,7 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
         await groups_are_too_many(answer_msg=loading_msg, received_msg_text=message.text)
     else:
         await loading_msg.edit_text(
-            text="⬇️ Выберите группу из списка:",
+            text=_("⬇️ Выберите группу из списка:"),
             reply_markup=await create_groups_keyboard(groups_list)
         )
         await state.set_state(SearchGroup.choosing)
@@ -36,18 +37,15 @@ async def choosing_teacher(message: Message):
 
 async def groups_not_found(answer_msg: Message, received_msg_text: str):
     await answer_msg.edit_text(
-        "Группа \"<i>{group_name}</i>\" не найдена!\n"
-        "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /group:".format(
-            group_name=html.quote(received_msg_text)
-        )
+        _("Группа \"<i>{group_name}</i>\" не найдена!\n"
+          "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /group:").format(
+            group_name=html.quote(received_msg_text))
     )
 
 
 async def groups_are_too_many(answer_msg: Message, received_msg_text: str):
-    await answer_msg.edit_text(
-        "Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
-        "Попробуйте ввести подробнее:".format(group_name=received_msg_text)
-    )
+    await answer_msg.edit_text(_("Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
+                                 "Попробуйте ввести подробнее:").format(group_name=received_msg_text))
 
 
 @router.callback_query(

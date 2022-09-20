@@ -2,6 +2,7 @@ from datetime import date, timedelta
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import (
     StudyDivisionCallbackFactory,
@@ -25,9 +26,15 @@ from tgbot.misc.states import UserType
 
 async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(text="Названию группы", callback_data=StartMenuCallbackFactory(type="student_search"))
-    keyboard.button(text="Навигации по программам", callback_data=StartMenuCallbackFactory(type="student_navigation"))
-    keyboard.button(text="ФИО преподавателя", callback_data=StartMenuCallbackFactory(type="educator_search"))
+    keyboard.button(
+        text=_("Названию группы"), callback_data=StartMenuCallbackFactory(type="student_search")
+    )
+    keyboard.button(
+        text=_("Навигации по программам"), callback_data=StartMenuCallbackFactory(type="student_navigation")
+    )
+    keyboard.button(
+        text=_("ФИО преподавателя"), callback_data=StartMenuCallbackFactory(type="educator_search")
+    )
     keyboard.adjust(1)
     return keyboard.as_markup()
 
@@ -102,7 +109,7 @@ async def create_schedule_keyboard(
         callback_data=ScheduleCallbackFactory(button="1-1", tt_id=tt_id, user_type=user_type).pack(),
     )
     today_button = InlineKeyboardButton(
-        text="Сегодня",
+        text=_("Сегодня"),
         callback_data=ScheduleCallbackFactory(button="1-2", tt_id=tt_id, user_type=user_type).pack(),
     )
     next_day_button = InlineKeyboardButton(
@@ -115,17 +122,17 @@ async def create_schedule_keyboard(
         timetable_keyboard.row(today_button, next_day_button)
 
     this_week_button = InlineKeyboardButton(
-        text="⏹ Эта неделя",
+        text=_("⏹ Эта неделя"),
         callback_data=ScheduleCallbackFactory(button="2-1", tt_id=tt_id, user_type=user_type).pack(),
     )
     next_week_button = InlineKeyboardButton(
-        text="След. неделя ⏩",
+        text=_("След. неделя ⏩"),
         callback_data=ScheduleCallbackFactory(button="2-2", tt_id=tt_id, user_type=user_type).pack(),
     )
     timetable_keyboard.row(this_week_button, next_week_button)
 
     schedule_view = InlineKeyboardButton(
-        text="📝 Текстом 📝" if is_photo else "🖼 Картинкой 🖼",
+        text=_("📝 Текстом 📝") if is_photo else _("🖼 Картинкой 🖼"),
         callback_data=ScheduleCallbackFactory(button="3-1", tt_id=tt_id, user_type=user_type).pack(),
     )
     timetable_keyboard.row(schedule_view)

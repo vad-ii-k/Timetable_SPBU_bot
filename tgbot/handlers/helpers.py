@@ -1,4 +1,5 @@
 from aiogram.types import Message, BufferedInputFile
+from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.keyboards.inline import create_schedule_keyboard
@@ -7,7 +8,7 @@ from tgbot.keyboards.inline import create_schedule_keyboard
 async def change_message_to_loading(message: Message) -> bool:
     message_content_type_is_photo = message.content_type == "photo"
     if message_content_type_is_photo:
-        await message.edit_caption("🕒 <i>Загрузка...</i>")
+        await message.edit_caption(_("🕒 <i>Загрузка...</i>"))
     else:
         await message.edit_text("⏳")
     return message_content_type_is_photo
