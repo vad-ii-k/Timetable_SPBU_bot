@@ -25,18 +25,9 @@ from tgbot.misc.states import UserType
 
 async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(
-        text="Названию группы",
-        callback_data=StartMenuCallbackFactory(type="student_search")
-    )
-    keyboard.button(
-        text="Навигации по программам",
-        callback_data=StartMenuCallbackFactory(type="student_navigation")
-    )
-    keyboard.button(
-        text="ФИО преподавателя",
-        callback_data=StartMenuCallbackFactory(type="educator_search")
-    )
+    keyboard.button(text="Названию группы", callback_data=StartMenuCallbackFactory(type="student_search"))
+    keyboard.button(text="Навигации по программам", callback_data=StartMenuCallbackFactory(type="student_navigation"))
+    keyboard.button(text="ФИО преподавателя", callback_data=StartMenuCallbackFactory(type="educator_search"))
     keyboard.adjust(1)
     return keyboard.as_markup()
 
@@ -44,10 +35,7 @@ async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
 async def create_study_divisions_keyboard(study_divisions: list[StudyDivision]) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     for division in study_divisions:
-        keyboard.button(
-            text=division.name,
-            callback_data=StudyDivisionCallbackFactory(alias=division.alias)
-        )
+        keyboard.button(text=division.name, callback_data=StudyDivisionCallbackFactory(alias=division.alias))
     keyboard.adjust(1)
     return keyboard.as_markup()
 
@@ -55,10 +43,7 @@ async def create_study_divisions_keyboard(study_divisions: list[StudyDivision]) 
 async def create_study_levels_keyboard(study_levels: list[StudyLevel]) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     for serial, level in enumerate(study_levels):
-        keyboard.button(
-            text=level.name,
-            callback_data=StudyLevelCallbackFactory(serial=serial)
-        )
+        keyboard.button(text=level.name, callback_data=StudyLevelCallbackFactory(serial=serial))
     keyboard.adjust(1)
     return keyboard.as_markup()
 
@@ -66,10 +51,7 @@ async def create_study_levels_keyboard(study_levels: list[StudyLevel]) -> Inline
 async def create_study_programs_keyboard(program_combinations: list[ProgramCombination]) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     for serial, program in enumerate(program_combinations):
-        keyboard.button(
-            text=program.name,
-            callback_data=ProgramCombinationsCallbackFactory(serial=serial)
-        )
+        keyboard.button(text=program.name, callback_data=ProgramCombinationsCallbackFactory(serial=serial))
     keyboard.adjust(1)
     return keyboard.as_markup()
 
