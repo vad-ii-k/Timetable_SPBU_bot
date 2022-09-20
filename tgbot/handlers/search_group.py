@@ -50,7 +50,9 @@ async def groups_are_too_many(answer_msg: Message, received_msg_text: str):
     )
 
 
-@router.callback_query(TTObjectChoiceCallbackFactory.filter(F.user_type.STUDENT), SearchGroup.choosing)
+@router.callback_query(
+    TTObjectChoiceCallbackFactory.filter(F.user_type.STUDENT), SearchGroup.choosing, flags={'chat_action': 'typing'}
+)
 async def group_viewing_schedule_handler(
         callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ) -> None:

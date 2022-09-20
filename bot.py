@@ -12,7 +12,7 @@ from tgbot.handlers.search_educator import router as search_educator_router
 from tgbot.handlers.search_group import router as search_group_router
 from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
-from tgbot.middlewares.config import ConfigMiddleware
+from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware
 from tgbot.services import broadcaster
 
 logger = logging.getLogger(__name__)
@@ -23,8 +23,8 @@ async def on_startup(bot: Bot, admin_ids: list[int]):
 
 
 def register_global_middlewares(dp: Dispatcher):
-    dp.message.outer_middleware(ConfigMiddleware(config))
-    dp.callback_query.outer_middleware(ConfigMiddleware(config))
+    dp.message.middleware(ConfigMessageMiddleware(config))
+    dp.callback_query.middleware(ConfigCallbackMiddleware(config))
 
 
 async def main():

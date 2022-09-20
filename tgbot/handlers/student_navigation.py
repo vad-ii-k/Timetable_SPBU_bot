@@ -22,13 +22,14 @@ from tgbot.services.timetable_api.timetable_api import get_study_levels, get_gro
 router = Router()
 
 
-@router.callback_query(StudyDivisionCallbackFactory.filter())
+@router.callback_query(StudyDivisionCallbackFactory.filter(), flags={'chat_action': 'typing'})
 async def study_divisions_navigation_callback(
         callback: CallbackQuery, callback_data: StudyDivisionCallbackFactory, state: FSMContext
 ):
     await change_message_to_loading(callback.message)
     study_levels = await get_study_levels(callback_data.alias)
-    await callback.message.edit_text(
+    await callback.message.delete()
+    await callback.message.answer(
         text="⬇️ Выберите уровень подготовки:",
         reply_markup=await create_study_levels_keyboard(study_levels)
     )
@@ -64,13 +65,14 @@ async def admission_years_navigation_callback(
     )
 
 
-@router.callback_query(AdmissionYearsCallbackFactory.filter())
+@router.callback_query(AdmissionYearsCallbackFactory.filter(), flags={'chat_action': 'typing'})
 async def group_choice_navigation_callback(
         callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext):
     await change_message_to_loading(callback.message)
     groups = await get_groups(callback_data.study_program_id)
+    await callback.message.delete()
     if len(groups) > 0:
-        await callback.message.edit_text(
+        await callback.message.answer(
             text="⬇️ Выберите группу:",
             reply_markup=await create_groups_keyboard(groups)
         )

@@ -13,19 +13,18 @@ from tgbot.services.timetable_api.timetable_api import educator_search
 router = Router()
 
 
-@router.message(SearchEducator.getting_choice)
+@router.message(SearchEducator.getting_choice, flags={'chat_action': 'typing'})
 async def getting_choice_for_educator(message: Message, state: FSMContext):
-    loading_msg = await message.answer("⏳")
     teachers_list = await educator_search(message.text)
     if len(teachers_list) == 0:
-        await wrong_last_name(answer_msg=loading_msg, received_msg_text=message.text)
+        await message.answer("❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
+                             "Пожалуйста, введите другую фамилию:".format(last_name=html.quote(message.text)))
     elif len(teachers_list) > 50:
-        await widespread_last_name(answer_msg=loading_msg, received_msg_text=message.text)
+        await message.answer("❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
+                             "Попробуйте ввести фамилию и первую букву имени:".format(last_name=message.text))
     else:
-        await loading_msg.edit_text(
-            text="⬇️ Выберите преподавателя из списка:",
-            reply_markup=await create_educators_keyboard(teachers_list)
-        )
+        await message.answer(text="⬇️ Выберите преподавателя из списка:",
+                             reply_markup=await create_educators_keyboard(teachers_list))
         await state.set_state(SearchEducator.choosing)
 
 
@@ -34,21 +33,9 @@ async def choosing_teacher(message: Message):
     await message.delete()
 
 
-async def wrong_last_name(answer_msg: Message, received_msg_text: str):
-    await answer_msg.edit_text(
-        "❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
-        "Пожалуйста, введите другую фамилию:".format(last_name=html.quote(received_msg_text))
-    )
-
-
-async def widespread_last_name(answer_msg: Message, received_msg_text: str):
-    await answer_msg.edit_text(
-        '❌ Фамилия "<i>{last_name}</i>" очень распространена\n'
-        "Попробуйте ввести фамилию и первую букву имени:".format(last_name=received_msg_text)
-    )
-
-
-@router.callback_query(TTObjectChoiceCallbackFactory.filter(F.user_type.EDUCATOR), SearchEducator.choosing)
+@router.callback_query(
+    TTObjectChoiceCallbackFactory.filter(F.user_type.EDUCATOR), SearchEducator.choosing, flags={'chat_action': 'typing'}
+)
 async def teacher_viewing_schedule_handler(
         callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ) -> None:
