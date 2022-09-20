@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery
 from magic_filter import F
 
 from tgbot.cb_data import StartMenuCallbackFactory
-from tgbot.handlers.helpers import change_message_to_progress
+from tgbot.handlers.helpers import change_message_to_loading
 from tgbot.keyboards.inline import create_study_divisions_keyboard
 from tgbot.misc.states import SearchEducator, SearchGroup
 from tgbot.services.timetable_api.timetable_api import get_study_divisions
@@ -20,7 +20,7 @@ async def group_search_callback(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(StartMenuCallbackFactory.filter(F.type == "student_navigation"))
 async def student_navigation_callback(callback: CallbackQuery):
-    await change_message_to_progress(callback.message)
+    await change_message_to_loading(callback.message)
     study_divisions = await get_study_divisions()
     await callback.message.edit_text(
         text=f"⬇️ Выберите направление: ",

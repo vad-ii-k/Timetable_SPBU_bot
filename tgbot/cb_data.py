@@ -1,5 +1,7 @@
 from aiogram.filters.callback_data import CallbackData
 
+from tgbot.misc.states import UserType
+
 
 class StartMenuCallbackFactory(CallbackData, prefix="start_menu"):
     type: str
@@ -21,9 +23,14 @@ class AdmissionYearsCallbackFactory(CallbackData, prefix="admission_years"):
     study_program_id: str
 
 
-class GroupChoiceCallbackFactory(CallbackData, prefix="group_choice"):
+class TTObjectChoiceCallbackFactory(CallbackData, prefix="timetable_object_choice"):
     tt_id: str
+    user_type: UserType
 
 
-class EducatorChoiceCallbackFactory(CallbackData, prefix="educator_choice"):
-    tt_id: str
+class ScheduleCallbackFactory(CallbackData, prefix="schedule"):
+    tt_id: int
+    user_type: UserType
+    button: str
+    day_counter: int | None
+    week_counter: int | None

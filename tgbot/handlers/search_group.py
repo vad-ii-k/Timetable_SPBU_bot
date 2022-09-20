@@ -2,8 +2,10 @@ from aiogram import Router
 from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
+from magic_filter import F
 
-from tgbot.cb_data import GroupChoiceCallbackFactory
+from tgbot.cb_data import TTObjectChoiceCallbackFactory
+from tgbot.handlers.helpers import send_schedule
 from tgbot.keyboards.inline import create_groups_keyboard
 from tgbot.misc.states import SearchGroup
 
@@ -48,10 +50,10 @@ async def groups_are_too_many(answer_msg: Message, received_msg_text: str):
     )
 
 
-@router.callback_query(GroupChoiceCallbackFactory.filter(), SearchGroup.choosing)
+@router.callback_query(TTObjectChoiceCallbackFactory.filter(F.user_type.STUDENT), SearchGroup.choosing)
 async def group_viewing_schedule_handler(
-        callback: CallbackQuery, callback_data: GroupChoiceCallbackFactory, state: FSMContext
+        callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ) -> None:
     await state.set_state(state=None)
-    # await send_schedule(callback.message, callback_data, state, subscription=True)
+    await send_schedule(callback.message, callback_data, subscription=True)
     await callback.answer(cache_time=1)

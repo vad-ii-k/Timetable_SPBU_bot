@@ -9,13 +9,14 @@ from tgbot.cb_data import (
     AdmissionYearsCallbackFactory,
 )
 from tgbot.data_classes import StudyLevel, ProgramCombination
-from tgbot.handlers.helpers import change_message_to_progress
+from tgbot.handlers.helpers import change_message_to_loading
 from tgbot.keyboards.inline import (
     create_study_levels_keyboard,
     create_study_programs_keyboard,
     create_admission_years_keyboard,
     create_groups_keyboard,
 )
+from tgbot.misc.states import SearchGroup
 from tgbot.services.timetable_api.timetable_api import get_study_levels, get_groups
 
 router = Router()
@@ -25,7 +26,7 @@ router = Router()
 async def study_divisions_navigation_callback(
         callback: CallbackQuery, callback_data: StudyDivisionCallbackFactory, state: FSMContext
 ):
-    await change_message_to_progress(callback.message)
+    await change_message_to_loading(callback.message)
     study_levels = await get_study_levels(callback_data.alias)
     await callback.message.edit_text(
         text="⬇️ Выберите уровень подготовки:",
@@ -66,13 +67,13 @@ async def admission_years_navigation_callback(
 @router.callback_query(AdmissionYearsCallbackFactory.filter())
 async def group_choice_navigation_callback(
         callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext):
-    await change_message_to_progress(callback.message)
+    await change_message_to_loading(callback.message)
     groups = await get_groups(callback_data.study_program_id)
     if len(groups) > 0:
         await callback.message.edit_text(
             text="⬇️ Выберите группу:",
             reply_markup=await create_groups_keyboard(groups)
         )
-        # await state.set_state(GroupChoice.choosing)
+        await state.set_state(SearchGroup.choosing)
     else:
         await callback.message.edit_text("❌ По данной программе группы не найдены!")

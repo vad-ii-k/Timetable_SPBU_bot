@@ -2,8 +2,10 @@ from aiogram import Router
 from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
+from magic_filter import F
 
-from tgbot.cb_data import EducatorChoiceCallbackFactory
+from tgbot.cb_data import TTObjectChoiceCallbackFactory
+from tgbot.handlers.helpers import send_schedule
 from tgbot.keyboards.inline import create_educators_keyboard
 from tgbot.misc.states import SearchEducator
 from tgbot.services.timetable_api.timetable_api import educator_search
@@ -46,10 +48,10 @@ async def widespread_last_name(answer_msg: Message, received_msg_text: str):
     )
 
 
-@router.callback_query(EducatorChoiceCallbackFactory.filter(), SearchEducator.choosing)
+@router.callback_query(TTObjectChoiceCallbackFactory.filter(F.user_type.EDUCATOR), SearchEducator.choosing)
 async def teacher_viewing_schedule_handler(
-        callback: CallbackQuery, callback_data: EducatorChoiceCallbackFactory, state: FSMContext
+        callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ) -> None:
     await state.set_state(state=None)
-    # await send_schedule(callback.message, callback_data, state, subscription=True)
+    await send_schedule(callback.message, callback_data, subscription=True)
     await callback.answer(cache_time=1)

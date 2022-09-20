@@ -41,8 +41,8 @@ async def main():
     dp = Dispatcher(storage=storage)
 
     for router in [
-        admin_router,
         commands_router,
+        admin_router,
         start_menu_router,
         search_group_router,
         student_navigation_router,
