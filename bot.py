@@ -15,6 +15,7 @@ from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
 from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware
 from tgbot.services import broadcaster
+from tgbot.services.db_api.db_models import create_db
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,12 @@ async def main():
         level=logging.INFO,
         format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
+    root_logger = logging.getLogger("gino")
+    if root_logger.level == logging.NOTSET:
+        root_logger.setLevel(logging.WARN)
     logger.info("Starting bot...")
+
+    await create_db()
 
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     await set_commands(bot)

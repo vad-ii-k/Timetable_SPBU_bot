@@ -2,8 +2,8 @@ from aiogram import Router
 from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-from magic_filter import F
 from aiogram.utils.i18n import gettext as _
+from magic_filter import F
 
 from tgbot.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.handlers.helpers import send_schedule

@@ -6,9 +6,14 @@ from environs import Env
 @dataclass(slots=True, frozen=True)
 class DbConfig:
     host: str
+    port: str
     password: str
     user: str
     database: str
+
+    def get_connection_url(self):
+        pg_url = f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+        return pg_url
 
 
 @dataclass(slots=True, frozen=True)
@@ -50,6 +55,7 @@ def load_config(path: str = None) -> Config:
         ),
         db=DbConfig(
             host=env.str('DB_HOST'),
+            port=env.str('DB_PORT'),
             password=env.str('DB_PASS'),
             user=env.str('DB_USER'),
             database=env.str('DB_NAME')
