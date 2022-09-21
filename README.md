@@ -1,7 +1,10 @@
 <p align="center">
-    <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/timetable_SPBU_bot?logo=github">
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
         <img alt="Telegram badge" src="https://img.shields.io/badge/Telegram-%40Timetable__SPBU__bot-2FA8DF?logo=Telegram">
+    </a>
+    <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/timetable_SPBU_bot?logo=github">
+    <a href="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml" target="_blank">
+        <img alt="Pylint"  src="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml/badge.svg">
     </a>
 </p>
 <img alt="Bot logo" align="right" width="150" src="data/github/bot_logo.png"/>
