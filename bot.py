@@ -48,7 +48,7 @@ async def main():
     await set_commands(bot)
 
     if config.tg_bot.use_redis:
-        redis = aioredis.Redis(host=config.redis.host, port=config.redis.port, password=config.redis.password, db=10)
+        redis = aioredis.Redis(host=config.redis.host, port=config.redis.port, password=config.redis.password, db=1)
         storage = RedisStorage(redis)
     else:
         storage = MemoryStorage()

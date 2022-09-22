@@ -18,7 +18,7 @@ TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
 
 async def get_study_divisions() -> list[StudyDivision]:
     url = f"{TT_API_URL}/study/divisions"
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 10)
 
     study_divisions: list[StudyDivision] = []
     for division in response:
@@ -28,7 +28,7 @@ async def get_study_divisions() -> list[StudyDivision]:
 
 async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
     url = f"{TT_API_URL}/educators/search/{last_name}"
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 3)
 
     educators: list[EducatorSearchInfo] = []
     if "Educators" in response:
@@ -39,7 +39,7 @@ async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
 
 async def get_study_levels(alias: str) -> list[StudyLevel]:
     url = f"{TT_API_URL}/study/divisions/{alias}/programs/levels"
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 10)
 
     study_levels: list[StudyLevel] = []
     for level in response:
@@ -58,7 +58,7 @@ async def get_study_levels(alias: str) -> list[StudyLevel]:
 
 async def get_groups(program_id: str) -> list[GroupSearchInfo]:
     url = f"{TT_API_URL}/progams/{program_id}/groups"  # Typo in api
-    response = await request(url)
+    response = await request(url, 60 * 60 * 24 * 10)
 
     groups: list[GroupSearchInfo] = []
     for group in response["Groups"]:
