@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-21 20:01+0300\n"
+"POT-Creation-Date: 2022-09-22 14:24+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -104,23 +104,23 @@ msgstr "⬇️ Choose a field of study: "
 msgid "🧑‍🏫 Введите фамилию преподавателя:"
 msgstr "🧑‍🏫 Enter the teacher's last name:"
 
-#: handlers/student_navigation.py:34
+#: handlers/student_navigation.py:36
 msgid "⬇️ Выберите уровень подготовки:"
 msgstr "⬇️ Choose the level of education:"
 
-#: handlers/student_navigation.py:50
+#: handlers/student_navigation.py:53
 msgid "⬇️ Выберите программу подготовки: "
 msgstr "⬇️ Choose an educational program: "
 
-#: handlers/student_navigation.py:64
+#: handlers/student_navigation.py:68
 msgid "⬇️ Выберите год поступления: "
 msgstr "⬇️ Choose the admission year: "
 
-#: handlers/student_navigation.py:77
+#: handlers/student_navigation.py:81
 msgid "⬇️ Выберите группу:"
 msgstr "⬇️ Choose a group:"
 
-#: handlers/student_navigation.py:82
+#: handlers/student_navigation.py:86
 msgid "❌ По данной программе группы не найдены!"
 msgstr "❌ No groups were found for this program!"
 
