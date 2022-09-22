@@ -7,6 +7,7 @@ from aiogram.utils.i18n import gettext as _
 
 from tgbot.keyboards.inline import create_start_choice_keyboard
 from tgbot.misc.states import SearchEducator, SearchGroup
+from tgbot.services.db_api.db_commands import database
 
 router = Router()
 
@@ -23,7 +24,7 @@ async def bot_start_command(message: Message, state: FSMContext) -> None:
                "⬇️ Получить расписание по:").format(name=message.from_user.full_name),
         reply_markup=await create_start_choice_keyboard(),
     )
-    # await db.add_new_user()
+    await database.add_new_user(tg_user=message.from_user)
 
 
 @router.message(commands=["educator"], state="*")

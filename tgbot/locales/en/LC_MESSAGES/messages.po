@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-22 14:24+0300\n"
+"POT-Creation-Date: 2022-09-22 21:44+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: handlers/commands.py:19
+#: handlers/commands.py:20
 msgid ""
 "👋🏻 <b>Добро пожаловать, {name}!</b>\n"
 "ℹ️ Следуйте указаниям для настройки\n"
@@ -32,11 +32,11 @@ msgstr ""
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
 "⬇️ Get the schedule by:"
 
-#: handlers/commands.py:31
+#: handlers/commands.py:32
 msgid "🔎 Введите фамилию преподавателя для поиска:"
 msgstr "🔎 Enter the last name of the teacher to search:"
 
-#: handlers/commands.py:37
+#: handlers/commands.py:38
 msgid ""
 "🔎 Введите название группы для поиска:\n"
 "*️⃣ <i>например, 20.Б08-мм</i>"
