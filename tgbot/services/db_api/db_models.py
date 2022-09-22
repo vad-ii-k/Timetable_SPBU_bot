@@ -95,6 +95,6 @@ class TeacherStudyEvent(db_gino.Model):
 
 
 async def create_db() -> None:
-    pg_url = config.db.get_connection_url()
+    pg_url = config.database.get_connection_url()
     await db_gino.set_bind(pg_url)
     await db_gino.gino.create_all()

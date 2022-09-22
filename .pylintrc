@@ -4,6 +4,7 @@ disable=
     C0115, # missing-class-docstring
     C0116, # missing-function-docstring
     E0401, # import-error
+    R0903, # too-few-public-methods
 
 
 [MAIN]

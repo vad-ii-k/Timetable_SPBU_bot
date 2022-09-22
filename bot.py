@@ -1,8 +1,10 @@
 import asyncio
 import logging
 
+import aioredis
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from tgbot.commands import set_commands
@@ -24,10 +26,10 @@ async def on_startup(bot: Bot, admin_ids: list[int]):
     await broadcaster.broadcast(bot, admin_ids, "🆙 The bot has been launched!")
 
 
-def register_global_middlewares(dp: Dispatcher, i18n: I18n):
-    dp.message.middleware(ConfigMessageMiddleware(config))
-    dp.callback_query.middleware(ConfigCallbackMiddleware(config))
-    dp.update.outer_middleware(SimpleI18nMiddleware(i18n))
+def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
+    dispatcher.message.middleware(ConfigMessageMiddleware(config))
+    dispatcher.callback_query.middleware(ConfigCallbackMiddleware(config))
+    dispatcher.update.outer_middleware(SimpleI18nMiddleware(i18n))
 
 
 async def main():
@@ -45,8 +47,12 @@ async def main():
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     await set_commands(bot)
 
-    storage = MemoryStorage()
-    dp = Dispatcher(storage=storage)
+    if config.tg_bot.use_redis:
+        redis = aioredis.Redis(host=config.redis.host, port=config.redis.port, password=config.redis.password, db=10)
+        storage = RedisStorage(redis)
+    else:
+        storage = MemoryStorage()
+    dispatcher = Dispatcher(storage=storage)
 
     for router in [
         commands_router,
@@ -56,13 +62,13 @@ async def main():
         student_navigation_router,
         search_educator_router,
     ]:
-        dp.include_router(router)
+        dispatcher.include_router(router)
 
     i18n = I18n(path="tgbot/locales", default_locale="ru", domain="messages")
-    register_global_middlewares(dp, i18n)
+    register_global_middlewares(dispatcher, i18n)
 
     await on_startup(bot, config.tg_bot.admin_ids)
-    await dp.start_polling(bot)
+    await dispatcher.start_polling(bot)
 
 
 if __name__ == '__main__':
