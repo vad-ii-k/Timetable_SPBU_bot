@@ -40,3 +40,7 @@ class ScheduleCallbackFactory(CallbackData, prefix="schedule"):
 
 class SettingsCallbackFactory(CallbackData, prefix="settings"):
     type: Literal["daily_summary", "schedule_view", "language"]
+
+
+class SettingsDailySummaryCallbackFactory(CallbackData, prefix="settings_daily_summary"):
+    choice: str

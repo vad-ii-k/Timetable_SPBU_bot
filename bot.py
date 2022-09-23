@@ -13,6 +13,7 @@ from tgbot.handlers.admin import admin_router
 from tgbot.handlers.commands import router as commands_router
 from tgbot.handlers.search_educator import router as search_educator_router
 from tgbot.handlers.search_group import router as search_group_router
+from tgbot.handlers.settings import router as settings_router
 from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
 from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware
@@ -61,6 +62,7 @@ async def main():
         search_group_router,
         student_navigation_router,
         search_educator_router,
+        settings_router,
     ]:
         dispatcher.include_router(router)
 

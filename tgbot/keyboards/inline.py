@@ -1,4 +1,4 @@
-from datetime import date, timedelta, time
+from datetime import date, timedelta, time, datetime
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.i18n import gettext as _
@@ -11,7 +11,7 @@ from tgbot.cb_data import (
     AdmissionYearsCallbackFactory,
     StartMenuCallbackFactory,
     ScheduleCallbackFactory,
-    TTObjectChoiceCallbackFactory, SettingsCallbackFactory,
+    TTObjectChoiceCallbackFactory, SettingsCallbackFactory, SettingsDailySummaryCallbackFactory,
 )
 from tgbot.data_classes import (
     StudyDivision,
@@ -165,3 +165,27 @@ async def create_settings_keyboard(settings: Settings):
     language = InlineKeyboardButton(text=text, callback_data=SettingsCallbackFactory(type="language").pack())
     settings_keyboard.row(language)
     return settings_keyboard.as_markup()
+
+
+async def create_settings_daily_summary_keyboard(selected_option: datetime):
+    daily_summary_keyboard = InlineKeyboardBuilder()
+
+    suggested_time = [(19, "🕖"), (7, "🕖"), (20, "🕗"), (8, "🕗"), (21, "🕘"), (9, "🕘")]
+    for option, sticker in suggested_time:
+        daily_summary_keyboard.button(
+            text=f"{'●' if selected_option is not None and option == selected_option.hour else '○'}"
+                 f" {option}:00 {sticker}",
+            callback_data=SettingsDailySummaryCallbackFactory(choice=option),
+        )
+    daily_summary_keyboard.adjust(2)
+    disabling_button = InlineKeyboardButton(
+        text=("●" if (selected_option is None) else "○") + _(" Не присылать 🔇"),
+        callback_data=SettingsDailySummaryCallbackFactory(choice="disabling").pack(),
+    )
+    daily_summary_keyboard.row(disabling_button)
+    back_button = InlineKeyboardButton(
+        text=_("Назад ↩️"),
+        callback_data=SettingsDailySummaryCallbackFactory(choice="back").pack(),
+    )
+    daily_summary_keyboard.row(back_button)
+    return daily_summary_keyboard.as_markup()
