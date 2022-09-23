@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.keyboards.inline import create_start_choice_keyboard
+from tgbot.keyboards.inline import create_start_choice_keyboard, create_settings_keyboard
 from tgbot.misc.states import SearchEducator, SearchGroup
 from tgbot.services.db_api.db_commands import database
 
@@ -13,7 +13,7 @@ router = Router()
 
 
 @router.message(commands=["start"], state="*")
-async def bot_start_command(message: Message, state: FSMContext) -> None:
+async def start_command(message: Message, state: FSMContext) -> None:
     await state.clear()
     logging.info("start -- id:%s", message.from_user.id)
     await message.answer(
@@ -38,6 +38,17 @@ async def group_search_command(message: Message, state: FSMContext):
     await message.answer(_("🔎 Введите название группы для поиска:\n"
                            "*️⃣ <i>например, 20.Б08-мм</i>"))
     await state.set_state(SearchGroup.getting_choice)
+
+
+@router.message(commands=["settings"], state="*")
+async def settings_command(message: Message):
+    user = await database.get_user(tg_user=message.from_user)
+    settings = await database.get_settings(user)
+
+    text = _("📅 Основное расписание:\n — ")
+    # Добавить получение расписания
+    text += _("\n\n⚙️ Текущие настройки:")
+    await message.answer(text=text, reply_markup=await create_settings_keyboard(settings))
 
 
 # @user_router.message(commands=["help"])

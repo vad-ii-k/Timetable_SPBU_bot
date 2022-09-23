@@ -1,8 +1,8 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, time
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.i18n import gettext as _
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from tgbot.cb_data import (
     StudyDivisionCallbackFactory,
@@ -11,7 +11,7 @@ from tgbot.cb_data import (
     AdmissionYearsCallbackFactory,
     StartMenuCallbackFactory,
     ScheduleCallbackFactory,
-    TTObjectChoiceCallbackFactory,
+    TTObjectChoiceCallbackFactory, SettingsCallbackFactory,
 )
 from tgbot.data_classes import (
     StudyDivision,
@@ -22,6 +22,7 @@ from tgbot.data_classes import (
     EducatorSearchInfo,
 )
 from tgbot.misc.states import UserType
+from tgbot.services.db_api.db_models import Settings
 
 
 async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
@@ -138,3 +139,29 @@ async def create_schedule_keyboard(
     timetable_keyboard.row(schedule_view)
 
     return timetable_keyboard.as_markup()
+
+
+async def create_settings_keyboard(settings: Settings):
+    settings_keyboard = InlineKeyboardBuilder()
+    text = _("Присылать сводку ")
+    if settings.daily_summary is None:
+        text += _("на день: 🔇")
+    else:
+        if settings.daily_summary > time(12):
+            text += _("за день до: в ")
+        else:
+            text += _("день в день: в ")
+        text += settings.daily_summary.strftime("%H:%M")
+    daily_summary = InlineKeyboardButton(text=text, callback_data=SettingsCallbackFactory(type="daily_summary").pack())
+    settings_keyboard.row(daily_summary)
+
+    text = _("Вид расписания по умолчанию: ")
+    text += "🖼" if settings.schedule_view_is_picture else "📝"
+    schedule_view = InlineKeyboardButton(text=text, callback_data=SettingsCallbackFactory(type="schedule_view").pack())
+    settings_keyboard.row(schedule_view)
+
+    text = _("Язык: ")
+    # text += "🇷🇺" if settings.language else "🇬🇧"
+    language = InlineKeyboardButton(text=text, callback_data=SettingsCallbackFactory(type="language").pack())
+    settings_keyboard.row(language)
+    return settings_keyboard.as_markup()

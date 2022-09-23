@@ -1,10 +1,12 @@
+from typing import Literal
+
 from aiogram.filters.callback_data import CallbackData
 
 from tgbot.misc.states import UserType
 
 
 class StartMenuCallbackFactory(CallbackData, prefix="start_menu"):
-    type: str
+    type: Literal["student_search", "student_navigation", "educator_search"]
 
 
 class StudyDivisionCallbackFactory(CallbackData, prefix="study_division"):
@@ -34,3 +36,7 @@ class ScheduleCallbackFactory(CallbackData, prefix="schedule"):
     button: str
     day_counter: int | None
     week_counter: int | None
+
+
+class SettingsCallbackFactory(CallbackData, prefix="settings"):
+    type: Literal["daily_summary", "schedule_view", "language"]
