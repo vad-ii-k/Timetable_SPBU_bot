@@ -42,7 +42,7 @@ async def group_search_command(message: Message, state: FSMContext):
 
 @router.message(commands=["settings"], state="*")
 async def settings_command(message: Message):
-    user = await database.get_user(tg_user=message.from_user)
+    user = await database.get_user(tg_user_id=message.chat.id)
     settings = await database.get_settings(user)
 
     text = _("📅 Основное расписание:\n — ")

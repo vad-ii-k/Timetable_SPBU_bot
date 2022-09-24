@@ -5,12 +5,12 @@ from tgbot.services.db_api.db_models import User, Settings
 
 class DBCommands:
     @staticmethod
-    async def get_user(tg_user: types.User) -> User:
-        user = await User.query.where(User.tg_id == tg_user.id).gino.first()
+    async def get_user(tg_user_id: int) -> User:
+        user = await User.query.where(User.tg_id == tg_user_id).gino.first()
         return user
 
     async def add_new_user(self, tg_user: types.User) -> User:
-        old_user = await self.get_user(tg_user)
+        old_user = await self.get_user(tg_user.id)
         if old_user:
             return old_user
         new_user = User()

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-23 23:28+0300\n"
+"POT-Creation-Date: 2022-09-24 10:39+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -106,15 +106,19 @@ msgstr ""
 "There are too many groups containing \"<i>{group_name}</i>\" in the name!\n"
 "Try to enter more details:"
 
-#: handlers/settings.py:18
+#: handlers/settings.py:21
 msgid ""
 "⚙️<b> Выберите время для получения\n"
 "ㅤㅤ сводки расписания на день</b>\n"
 "Заранее вечером в ┃ В день занятий в"
 msgstr ""
 "⚙️<b> Select the time to receive the\n"
-"ㅤ schedule summary for the day</b>\n"
-"In advance in the evening at ┃ On the day of classes at"
+"  schedule summary for the day</b>\n"
+" Day before at ┃ On day of classes at"
+
+#: handlers/settings.py:36
+msgid "Настройки обновлены ✅"
+msgstr "Settings updated ✅"
 
 #: handlers/start_menu.py:18
 msgid ""
