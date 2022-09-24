@@ -82,4 +82,4 @@ def load_config(path: str = None) -> Config:
     )
 
 
-config: Config = load_config(".env")
+app_config: Config = load_config(".env")

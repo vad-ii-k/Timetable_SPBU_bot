@@ -1,7 +1,9 @@
 aiogram==3.0.0b4
-aiohttp==3.8.2
+aiohttp==3.8.3
 aiohttp_socks==0.7.1
 aioredis~=2.0
+alembic~=1.8.1
 Babel~=2.10.3
 environs~=9.0
 gino~=1.0.1
+psycopg2~=2.9.3

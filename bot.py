@@ -8,7 +8,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from tgbot.commands import set_commands
-from tgbot.config import config
+from tgbot.config import app_config
 from tgbot.handlers.admin import admin_router
 from tgbot.handlers.commands import router as commands_router
 from tgbot.handlers.search_educator import router as search_educator_router
@@ -28,8 +28,8 @@ async def on_startup(bot: Bot, admin_ids: list[int]):
 
 
 def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
-    dispatcher.message.middleware(ConfigMessageMiddleware(config))
-    dispatcher.callback_query.middleware(ConfigCallbackMiddleware(config))
+    dispatcher.message.middleware(ConfigMessageMiddleware(app_config))
+    dispatcher.callback_query.middleware(ConfigCallbackMiddleware(app_config))
     dispatcher.update.outer_middleware(SimpleI18nMiddleware(i18n))
 
 
@@ -45,11 +45,16 @@ async def main():
 
     await create_db()
 
-    bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
+    bot = Bot(token=app_config.tg_bot.token, parse_mode='HTML')
     await set_commands(bot)
 
-    if config.tg_bot.use_redis:
-        redis = aioredis.Redis(host=config.redis.host, port=config.redis.port, password=config.redis.password, db=1)
+    if app_config.tg_bot.use_redis:
+        redis = aioredis.Redis(
+            host=app_config.redis.host,
+            port=app_config.redis.port,
+            password=app_config.redis.password,
+            db=1
+        )
         storage = RedisStorage(redis)
     else:
         storage = MemoryStorage()
@@ -69,7 +74,7 @@ async def main():
     i18n = I18n(path="tgbot/locales", default_locale="ru", domain="messages")
     register_global_middlewares(dispatcher, i18n)
 
-    await on_startup(bot, config.tg_bot.admin_ids)
+    await on_startup(bot, app_config.tg_bot.admin_ids)
     await dispatcher.start_polling(bot)
 
 

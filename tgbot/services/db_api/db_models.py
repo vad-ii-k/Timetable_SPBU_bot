@@ -1,7 +1,7 @@
 from gino import Gino
 from sqlalchemy import Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Date
 
-from tgbot.config import config
+from tgbot.config import app_config
 
 db_gino = Gino()
 
@@ -12,7 +12,6 @@ class User(db_gino.Model):
     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
     tg_id = Column(BigInteger)
     full_name = Column(String(100))
-    language = Column(String(10))
     username = Column(String(50))
 
 
@@ -24,6 +23,7 @@ class Settings(db_gino.Model):
     daily_summary = Column(Time)
     notification_of_lesson = Column(Time)
     schedule_view_is_picture = Column(Boolean, default=False)
+    language = Column(String(10))
 
 
 class TeacherSPBU(db_gino.Model):
@@ -95,6 +95,6 @@ class TeacherStudyEvent(db_gino.Model):
 
 
 async def create_db() -> None:
-    pg_url = config.database.get_connection_url()
+    pg_url = app_config.database.get_connection_url()
     await db_gino.set_bind(pg_url)
     await db_gino.gino.create_all()

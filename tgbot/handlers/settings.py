@@ -38,7 +38,7 @@ async def settings_daily_summary_callback(callback: CallbackQuery, callback_data
     await settings_command(callback.message)
 
 
-@router.callback_query(SettingsCallbackFactory.filter(F.type == "schedule_view" or F.type == "language"))
+@router.callback_query(SettingsCallbackFactory.filter(F.type.in_({"schedule_view", "language"})))
 async def settings_view_and_language_callback(callback: CallbackQuery, callback_data: SettingsCallbackFactory):
     user = await database.get_user(tg_user_id=callback.from_user.id)
     settings = await database.get_settings(user)
