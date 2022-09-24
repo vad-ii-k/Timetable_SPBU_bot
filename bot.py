@@ -5,7 +5,7 @@ import aioredis
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisStorage
-from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
+from aiogram.utils.i18n import I18n
 
 from tgbot.commands import set_commands
 from tgbot.config import app_config
@@ -16,7 +16,7 @@ from tgbot.handlers.search_group import router as search_group_router
 from tgbot.handlers.settings import router as settings_router
 from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
-from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware
+from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware, LanguageI18nMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import create_db
 
@@ -30,7 +30,7 @@ async def on_startup(bot: Bot, admin_ids: list[int]):
 def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
     dispatcher.message.middleware(ConfigMessageMiddleware(app_config))
     dispatcher.callback_query.middleware(ConfigCallbackMiddleware(app_config))
-    dispatcher.update.outer_middleware(SimpleI18nMiddleware(i18n))
+    dispatcher.update.outer_middleware(LanguageI18nMiddleware(i18n))
 
 
 async def main():

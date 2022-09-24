@@ -38,13 +38,23 @@ async def settings_daily_summary_callback(callback: CallbackQuery, callback_data
     await settings_command(callback.message)
 
 
-@router.callback_query(SettingsCallbackFactory.filter(F.type.in_({"schedule_view", "language"})))
-async def settings_view_and_language_callback(callback: CallbackQuery, callback_data: SettingsCallbackFactory):
+@router.callback_query(SettingsCallbackFactory.filter(F.type == "schedule_view"))
+async def settings_view_callback(callback: CallbackQuery):
     user = await database.get_user(tg_user_id=callback.from_user.id)
     settings = await database.get_settings(user)
-    if callback_data.type == "schedule_view":
-        await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
-    else:
-        await settings.update(language='en' if settings.language == 'ru' else 'ru').apply()
+    await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
     await callback.message.edit_reply_markup(reply_markup=await create_settings_keyboard(settings))
-    await callback.answer(cache_time=1)
+    await callback.answer(text=_("Настройки обновлены ✅"), show_alert=False)
+
+
+@router.callback_query(SettingsCallbackFactory.filter(F.type == "language"))
+async def settings_language_callback(callback: CallbackQuery):
+    user = await database.get_user(tg_user_id=callback.from_user.id)
+    settings = await database.get_settings(user)
+    await settings.update(language='en' if settings.language == 'ru' else 'ru').apply()
+    await callback.answer(
+        text=_("The language has been successfully changed to 🇬🇧\n"
+               "Messages will now be sent in English"),
+        show_alert=True
+    )
+    await callback.message.delete()
