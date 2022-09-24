@@ -23,7 +23,7 @@ class Settings(db_gino.Model):
     daily_summary = Column(Time)
     notification_of_lesson = Column(Time)
     schedule_view_is_picture = Column(Boolean, default=False)
-    language = Column(String(10))
+    language = Column(String(2))
 
 
 class TeacherSPBU(db_gino.Model):

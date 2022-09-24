@@ -161,7 +161,7 @@ async def create_settings_keyboard(settings: Settings):
     settings_keyboard.row(schedule_view)
 
     text = _("Язык: ")
-    # text += "🇷🇺" if settings.language else "🇬🇧"
+    text += "🇷🇺" if settings.language == 'ru' else "🇬🇧"
     language = InlineKeyboardButton(text=text, callback_data=SettingsCallbackFactory(type="language").pack())
     settings_keyboard.row(language)
     return settings_keyboard.as_markup()

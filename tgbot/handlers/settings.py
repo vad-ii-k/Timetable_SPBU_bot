@@ -45,6 +45,6 @@ async def settings_view_and_language_callback(callback: CallbackQuery, callback_
     if callback_data.type == "schedule_view":
         await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
     else:
-        await settings.update(language=not settings.language).apply()
+        await settings.update(language='en' if settings.language == 'ru' else 'ru').apply()
     await callback.message.edit_reply_markup(reply_markup=await create_settings_keyboard(settings))
     await callback.answer(cache_time=1)
