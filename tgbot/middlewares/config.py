@@ -49,5 +49,9 @@ class LanguageI18nMiddleware(I18nMiddleware):
     async def get_locale(self, event: TelegramObject, data: Dict[str, Any]):
         tg_user: User = data.get('event_from_user')
         user = await database.get_user(tg_user_id=tg_user.id)
-        settings = await database.get_settings(user)
+        try:
+            settings = await database.get_settings(user)
+        except AttributeError:
+            user = await database.add_new_user(tg_user=tg_user)
+            settings = await database.get_settings(user)
         return settings.language

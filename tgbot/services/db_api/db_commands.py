@@ -16,19 +16,19 @@ class DBCommands:
         new_user = User()
         new_user.tg_id = tg_user.id
         new_user.full_name = tg_user.full_name
-        if tg_user.language_code != "ru":
-            new_user.language = "en"
-        else:
-            new_user.language = "ru"
         new_user.username = tg_user.username
         await new_user.create()
-        await self.add_settings(new_user)
+        await self.add_settings(new_user, tg_user.language_code)
         return new_user
 
     @staticmethod
-    async def add_settings(user: User):
+    async def add_settings(user: User, language_code: str):
         new_settings = Settings()
         new_settings.user_id = user.user_id
+        if language_code != "ru":
+            new_settings.language = "en"
+        else:
+            new_settings.language = "ru"
         await new_settings.create()
 
     @staticmethod

@@ -13,7 +13,7 @@ router = Router()
 
 
 @router.message(commands=["start"], state="*")
-async def start_command(message: Message, state: FSMContext) -> None:
+async def start_command(message: Message, state: FSMContext):
     await state.clear()
     logging.info("start -- id:%s", message.from_user.id)
     await message.answer(
@@ -24,7 +24,6 @@ async def start_command(message: Message, state: FSMContext) -> None:
                "⬇️ Получить расписание по:").format(name=message.from_user.full_name),
         reply_markup=await create_start_choice_keyboard(),
     )
-    await database.add_new_user(tg_user=message.from_user)
 
 
 @router.message(commands=["educator"], state="*")
