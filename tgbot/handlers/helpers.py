@@ -3,7 +3,7 @@ from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.keyboards.inline import create_schedule_keyboard
-from tgbot.services.schedule.getting_shedule import get_schedule
+from tgbot.services.schedule.getting_shedule import get_educator_schedule
 
 
 async def change_message_to_loading(message: Message) -> bool:
@@ -20,7 +20,7 @@ async def send_schedule(message: Message, callback_data: TTObjectChoiceCallbackF
     # settings = await db.set_settings()
     # is_picture: bool = settings.schedule_view_is_picture
     is_photo = False
-    text = await get_schedule(tt_id=int(callback_data.tt_id), user_type=callback_data.user_type)
+    text = await get_educator_schedule(tt_id=int(callback_data.tt_id))
 # await get_timetable(tt_id=callback_data.tt_id, user_type=callback_data.user_type, is_photo=is_photo, week_counter=0)
     await message.delete()
     answer_msg = await message.answer(text=text)

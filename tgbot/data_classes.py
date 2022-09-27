@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import time, date
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, root_validator
 
 
 @dataclass(slots=True, frozen=True)
@@ -43,7 +43,8 @@ class GroupSearchInfo:
 class StudyEvent(BaseModel):
     start_time: time = Field(alias="Start")
     end_time: time = Field(alias="End")
-    subject: str = Field(alias="Subject")
+    subject_name: str = Field(alias="Subject")
+    subject_format: str | None
     location: str = Field(alias="LocationsDisplayText")
     is_canceled: bool = Field(alias="IsCancelled")
     groups: str = Field(alias="ContingentUnitName")
@@ -51,6 +52,11 @@ class StudyEvent(BaseModel):
     @validator('start_time', 'end_time', pre=True)
     def from_datetime_to_time(cls, value):
         return value.split('T')[1]
+
+    @root_validator
+    def separation_of_subject(cls, values):
+        values['subject_name'], values['subject_format'] = values['subject_name'].rsplit(sep=", ", maxsplit=1)
+        return values
 
 
 class EducatorEventsDay(BaseModel):
