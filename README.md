@@ -78,6 +78,9 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
     <a href="https://github.com/requests-cache/aiohttp-client-cache" target="_blank">
         <img alt="Aiohttp-client-cache logo" align="left" src="https://avatars.githubusercontent.com/u/105573137?s=200&v=4" height="35px">
     </a>
+    <a href="https://github.com/pydantic/pydantic" target="_blank">
+        <img alt="Pydantic logo" align="left" src="https://pydantic-docs.helpmanual.io/logo-white.svg" height="35px">
+    </a>
     <a href="https://github.com/python-pillow/Pillow" target="_blank">
         <img alt="Pillow logo" align="left" src="https://avatars.githubusercontent.com/u/2036701?s=200&v=4" height="35px">
     </a>

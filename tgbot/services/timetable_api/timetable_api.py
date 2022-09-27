@@ -1,3 +1,4 @@
+import json
 from typing import Final
 
 from tgbot.data_classes import (
@@ -6,9 +7,8 @@ from tgbot.data_classes import (
     StudyLevel,
     AdmissionYear,
     ProgramCombination,
-    GroupSearchInfo,
+    GroupSearchInfo, EducatorSchedule,
 )
-from tgbot.misc.states import UserType
 from tgbot.services.timetable_api.api_request import request
 
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
@@ -64,11 +64,15 @@ async def get_groups(program_id: str) -> list[GroupSearchInfo]:
     return groups
 
 
-async def get_schedule_from_tt(tt_id: int, user_type: UserType, from_date: str, to_date: str) -> dict:
-    if user_type == UserType.STUDENT:
-        url = f"{TT_API_URL}/groups/{tt_id}/events/{from_date}/{to_date}"
-    else:
-        url = f"{TT_API_URL}/educators/{tt_id}/events/{from_date}/{to_date}"
+async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> EducatorSchedule:
+    url = f"{TT_API_URL}/educators/{tt_id}/events/{from_date}/{to_date}"
+    response = await request(url)
+    educator_schedule = EducatorSchedule.parse_raw(json.dumps(response))
+    return educator_schedule
+
+
+async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> dict:
+    url = f"{TT_API_URL}/groups/{tt_id}/events/{from_date}/{to_date}"
     response = await request(url)
 
     return response

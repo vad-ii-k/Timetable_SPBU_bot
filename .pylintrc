@@ -6,6 +6,8 @@ disable=
     E0401, # import-error
     R0903, # too-few-public-methods
 
+ignore=alembic
+
 
 [MAIN]
 

@@ -1,57 +1,29 @@
-import json
-from datetime import date, time
+from datetime import date
 from typing import Final
 
 from babel.dates import format_date
 
 from tgbot.misc.states import UserType
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates
-from tgbot.services.timetable_api.timetable_api import get_schedule_from_tt
-from pydantic import BaseModel, Field, validator
-
-
-class StudyEvent(BaseModel):
-    start_time: time = Field(alias="Start")
-    end_time: time = Field(alias="End")
-    subject: str = Field(alias="Subject")
-    location: str = Field(alias="LocationsDisplayText")
-    is_canceled: bool = Field(alias="IsCancelled")
-    groups: str = Field(alias="ContingentUnitName")
-
-    @validator('start_time', 'end_time', pre=True)
-    def from_datetime_to_time(cls, v):
-        return v.split('T')[1]
-
-
-class EducatorEventsDay(BaseModel):
-    day: date = Field(alias="Day")
-    study_events: list[StudyEvent] = Field(alias="DayStudyEvents")
-
-    @validator('day', pre=True)
-    def from_datetime_to_date(cls, v):
-        return v.split('T')[0]
-
-
-class EducatorSchedule(BaseModel):
-    educator_tt_id: int = Field(alias="EducatorMasterId")
-    full_name: str = Field(alias="EducatorLongDisplayText")
-    events_days: list[EducatorEventsDay] = Field(alias="EducatorEventsDays")
+from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt
 
 
 async def get_schedule(tt_id: int, user_type: UserType) -> str:
     monday, sunday = await _get_monday_and_sunday_dates()
-    response = await get_schedule_from_tt(tt_id=tt_id, user_type=user_type, from_date=str(monday), to_date=str(sunday))
-    info = EducatorSchedule.parse_raw(json.dumps(response))
-    schedule = await educator_schedule_week_header(tt_id, info.full_name, monday, sunday)
-    if len(info.events_days) > 0:
-        for day in info.events_days:
-            day_schedule = await events_day_converter_to_msg(day=day.day)
-            if len(schedule) + len(day_schedule) < 4060:
-                schedule += day_schedule
-            else:
-                schedule += "\n\n📛 Сообщение слишком длинное..."
-                break
-    return schedule
+    if user_type == UserType.EDUCATOR:
+        educator_schedule = await get_educator_schedule_from_tt(tt_id=tt_id, from_date=str(monday), to_date=str(sunday))
+        schedule = await educator_schedule_week_header(tt_id, educator_schedule.full_name, monday, sunday)
+        if len(educator_schedule.events_days) > 0:
+            for day in educator_schedule.events_days:
+                day_schedule = await events_day_converter_to_msg(day=day.day)
+                if len(schedule) + len(day_schedule) <= 4060:
+                    schedule += day_schedule
+                else:
+                    schedule += "\n\n📛 Сообщение слишком длинное..."
+                    break
+        return schedule
+    else:
+        return "student_schedule"
 
 
 TT_URL: Final[str] = "https://timetable.spbu.ru/"
