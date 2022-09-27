@@ -1,4 +1,3 @@
-from datetime import date
 from typing import Final
 
 from tgbot.data_classes import (
@@ -67,11 +66,8 @@ async def get_groups(program_id: str) -> list[GroupSearchInfo]:
 
 
 async def get_schedule_from_tt(tt_id: int, user_type: UserType) -> dict:
-    """We get the schedule for the rest of the current half-year"""
-    monday, _ = await _get_monday_and_sunday_dates(week_counter=-1)
-    url = f"{TT_API_URL}{'/groups' if user_type.STUDENT else '/educators'}/{tt_id}/events/{monday}/" + \
-          f"{monday.year}-08-01" if monday < date(monday.year, 8, 1) else f"{monday.year + 1}-02-01"
+    monday, sunday = await _get_monday_and_sunday_dates(week_counter=-1)
+    url = f"{TT_API_URL}/{'groups' if user_type == UserType.STUDENT else 'educators'}/{tt_id}/events/{monday}/{sunday}"
     response = await request(url)
 
-    info_about_events_for_semester = response["Days"] if user_type.STUDENT else response["EducatorEventsDays"]
-    return info_about_events_for_semester
+    return response

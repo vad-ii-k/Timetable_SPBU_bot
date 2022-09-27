@@ -20,14 +20,10 @@ async def send_schedule(message: Message, callback_data: TTObjectChoiceCallbackF
     # settings = await db.set_settings()
     # is_picture: bool = settings.schedule_view_is_picture
     is_photo = False
-    text = await get_schedule()
+    text = await get_schedule(tt_id=int(callback_data.tt_id), user_type=callback_data.user_type)
 # await get_timetable(tt_id=callback_data.tt_id, user_type=callback_data.user_type, is_photo=is_photo, week_counter=0)
     await message.delete()
-    if is_photo:
-        photo = ""
-        answer_msg = await message.answer_photo(photo=photo, caption=text)
-    else:
-        answer_msg = await message.answer(text=text)
+    answer_msg = await message.answer(text=text)
     await answer_msg.edit_reply_markup(reply_markup=await create_schedule_keyboard(
         is_photo=is_photo, tt_id=int(callback_data.tt_id), user_type=callback_data.user_type)
     )
