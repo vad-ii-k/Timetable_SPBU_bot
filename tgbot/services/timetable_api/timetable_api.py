@@ -10,7 +10,6 @@ from tgbot.data_classes import (
 )
 from tgbot.misc.states import UserType
 from tgbot.services.timetable_api.api_request import request
-from tgbot.services.timetable_api.helpers import _get_monday_and_sunday_dates
 
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
 
@@ -65,9 +64,11 @@ async def get_groups(program_id: str) -> list[GroupSearchInfo]:
     return groups
 
 
-async def get_schedule_from_tt(tt_id: int, user_type: UserType) -> dict:
-    monday, sunday = await _get_monday_and_sunday_dates(week_counter=-1)
-    url = f"{TT_API_URL}/{'groups' if user_type == UserType.STUDENT else 'educators'}/{tt_id}/events/{monday}/{sunday}"
+async def get_schedule_from_tt(tt_id: int, user_type: UserType, from_date: str, to_date: str) -> dict:
+    if user_type == UserType.STUDENT:
+        url = f"{TT_API_URL}/groups/{tt_id}/events/{from_date}/{to_date}"
+    else:
+        url = f"{TT_API_URL}/educators/{tt_id}/events/{from_date}/{to_date}"
     response = await request(url)
 
     return response

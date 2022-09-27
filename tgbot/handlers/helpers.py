@@ -3,7 +3,7 @@ from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.keyboards.inline import create_schedule_keyboard
-from tgbot.services.getting_shedule import get_schedule
+from tgbot.services.schedule.getting_shedule import get_schedule
 
 
 async def change_message_to_loading(message: Message) -> bool:
