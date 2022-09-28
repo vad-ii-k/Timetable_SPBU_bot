@@ -1,16 +1,16 @@
 """language of user in settings
 
-Revision ID: 9bea9b771933
-Revises: 9474559c591d
-Create Date: 2022-09-24 12:37:05.687082
+Revision ID: 12b7d26b01d7
+Revises:
+Create Date: 2022-09-28 19:12:54.227874
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = '9bea9b771933'
-down_revision = '9474559c591d'
+revision = '12b7d26b01d7'
+down_revision = None
 branch_labels = None
 depends_on = None
 
