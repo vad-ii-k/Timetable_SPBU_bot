@@ -63,20 +63,6 @@ class StudyEvent(BaseModel, ABC):
         pass
 
 
-class EducatorStudyEvent(StudyEvent):
-    groups: str = Field(alias="ContingentUnitName")
-
-    def get_contingent(self, with_sticker: bool = False) -> str:
-        return '🎓' * with_sticker + self.groups
-
-
-class GroupStudyEvent(StudyEvent):
-    educators: str = Field(alias="EducatorsDisplayText")
-
-    def get_contingent(self, with_sticker: bool = False) -> str:
-        return '🧑‍🏫' * with_sticker + self.educators
-
-
 class EventsDay(BaseModel):
     day: date = Field(alias="Day")
 
@@ -85,15 +71,40 @@ class EventsDay(BaseModel):
         return value.split('T')[0]
 
 
+class EducatorStudyEvent(StudyEvent):
+    groups: str = Field(alias="ContingentUnitName")
+
+    def get_contingent(self, with_sticker: bool = False) -> str:
+        return '🎓 ' * with_sticker + self.groups
+
+
 class EducatorEventsDay(EventsDay):
     study_events: list[EducatorStudyEvent] = Field(alias="DayStudyEvents")
-
-
-class GroupEventsDay(EventsDay):
-    study_events: list[GroupStudyEvent] = Field(alias="DayStudyEvents")
 
 
 class EducatorSchedule(BaseModel):
     educator_tt_id: int = Field(alias="EducatorMasterId")
     full_name: str = Field(alias="EducatorLongDisplayText")
     events_days: list[EducatorEventsDay] = Field(alias="EducatorEventsDays")
+
+
+class GroupStudyEvent(StudyEvent):
+    educators: str = Field(alias="EducatorsDisplayText")
+
+    @validator('educators', pre=True)
+    def removing_academic_degrees(cls, educators):
+        educators = "".join(_educator.rsplit(", ", maxsplit=1)[0] + "; " for _educator in educators.split(sep=";"))[:-2]
+        return educators
+
+    def get_contingent(self, with_sticker: bool = False) -> str:
+        return '🧑‍🏫 ' * with_sticker + self.educators
+
+
+class GroupEventsDay(EventsDay):
+    study_events: list[GroupStudyEvent] = Field(alias="DayStudyEvents")
+
+
+class GroupSchedule(BaseModel):
+    student_tt_id: int = Field(alias="StudentGroupId")
+    group_name: str = Field(alias="StudentGroupDisplayName")
+    events_days: list[GroupEventsDay] = Field(alias="Days")

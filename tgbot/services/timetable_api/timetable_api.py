@@ -7,7 +7,7 @@ from tgbot.data_classes import (
     StudyLevel,
     AdmissionYear,
     ProgramCombination,
-    GroupSearchInfo, EducatorSchedule,
+    GroupSearchInfo, EducatorSchedule, GroupSchedule,
 )
 from tgbot.services.timetable_api.api_request import request
 
@@ -71,8 +71,8 @@ async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str
     return educator_schedule
 
 
-async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> dict:
+async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> GroupSchedule:
     url = f"{TT_API_URL}/groups/{tt_id}/events/{from_date}/{to_date}"
     response = await request(url)
-
-    return response
+    group_schedule = GroupSchedule.parse_raw(json.dumps(response))
+    return group_schedule
