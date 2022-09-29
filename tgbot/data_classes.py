@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import time, date
 
@@ -40,14 +41,13 @@ class GroupSearchInfo:
     name: str
 
 
-class StudyEvent(BaseModel):
+class StudyEvent(BaseModel, ABC):
     start_time: time = Field(alias="Start")
     end_time: time = Field(alias="End")
     subject_name: str = Field(alias="Subject")
     subject_format: str | None
     location: str = Field(alias="LocationsDisplayText")
     is_canceled: bool = Field(alias="IsCancelled")
-    groups: str = Field(alias="ContingentUnitName")
 
     @validator('start_time', 'end_time', pre=True)
     def from_datetime_to_time(cls, value):
@@ -58,14 +58,39 @@ class StudyEvent(BaseModel):
         values['subject_name'], values['subject_format'] = values['subject_name'].rsplit(sep=", ", maxsplit=1)
         return values
 
+    @abstractmethod
+    def get_contingent(self, with_sticker: bool = False) -> str:
+        pass
 
-class EducatorEventsDay(BaseModel):
+
+class EducatorStudyEvent(StudyEvent):
+    groups: str = Field(alias="ContingentUnitName")
+
+    def get_contingent(self, with_sticker: bool = False) -> str:
+        return '🎓' * with_sticker + self.groups
+
+
+class GroupStudyEvent(StudyEvent):
+    educators: str = Field(alias="EducatorsDisplayText")
+
+    def get_contingent(self, with_sticker: bool = False) -> str:
+        return '🧑‍🏫' * with_sticker + self.educators
+
+
+class EventsDay(BaseModel):
     day: date = Field(alias="Day")
-    study_events: list[StudyEvent] = Field(alias="DayStudyEvents")
 
     @validator('day', pre=True)
     def from_datetime_to_date(cls, value):
         return value.split('T')[0]
+
+
+class EducatorEventsDay(EventsDay):
+    study_events: list[EducatorStudyEvent] = Field(alias="DayStudyEvents")
+
+
+class GroupEventsDay(EventsDay):
+    study_events: list[GroupStudyEvent] = Field(alias="DayStudyEvents")
 
 
 class EducatorSchedule(BaseModel):

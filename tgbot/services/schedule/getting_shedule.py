@@ -20,6 +20,7 @@ async def get_educator_schedule(tt_id: int) -> str:
             else:
                 schedule += "\n\n📛 Сообщение слишком длинное..."
                 break
+    schedule += "\n🏖 Занятий на этой неделе нет"
     return schedule
 
 
@@ -30,15 +31,12 @@ async def events_day_converter_to_msg(day: date, events: list[StudyEvent]) -> st
     day_timetable = await schedule_weekday_header(format_date(day, "EEEE, d MMMM", locale="ru_RU"))
     for event in events:
         day_timetable += (
-            '   ┈┈┈┈┈┈┈┈┈┈┈┈\n'
-            f'{"<s>" if event.is_canceled else ""}'
-            f'    <b>{event.subject_name}</b>'
-            f'{"</s>" if event.is_canceled else ""}\n'
-            f'    🕟 <u>{event.start_time:%H:%M}-{event.end_time:%H:%M}</u>\n'
-            f'    ✍🏻 <i>{event.subject_format}</i>\n'
-            f"    {'🧑‍🏫'}"
-            f" <i>{event.groups}</i>\n"
-            f"    🚩 <i>{event.location}</i>\n"
+            f'     ┈┈┈┈┈┈┈┈┈┈┈┈\n'
+            f'    {"<s>" * event.is_canceled}<b>{event.subject_name}</b>{"</s>" * event.is_canceled}\n'
+            f'    <u>🕟 {event.start_time:%H:%M}-{event.end_time:%H:%M}</u>\n'
+            f'    <i>✍🏻 {event.subject_format}</i>\n'
+            f"    <i>{event.get_contingent(with_sticker=True)}</i>\n"
+            f"    <i>🚩 {event.location}</i>\n"
         )
     return day_timetable
 
