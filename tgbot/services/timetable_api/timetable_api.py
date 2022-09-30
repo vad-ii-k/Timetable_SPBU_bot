@@ -5,9 +5,9 @@ from tgbot.data_classes import (
     StudyDivision,
     EducatorSearchInfo,
     StudyLevel,
-    AdmissionYear,
-    ProgramCombination,
-    GroupSearchInfo, EducatorSchedule, GroupSchedule,
+    GroupSearchInfo,
+    EducatorSchedule,
+    GroupSchedule,
 )
 from tgbot.services.timetable_api.api_request import request
 
@@ -42,16 +42,7 @@ async def get_study_levels(alias: str) -> list[StudyLevel]:
 
     study_levels: list[StudyLevel] = []
     for level in response:
-        response_program_combinations = level["StudyProgramCombinations"]
-        program_combinations: list[ProgramCombination] = []
-        for program in response_program_combinations:
-            admission_years: list[AdmissionYear] = []
-            response_admission_years = program["AdmissionYears"]
-            for year in response_admission_years:
-                admission_years.append(AdmissionYear(year=year["YearName"], study_program_id=year["StudyProgramId"]))
-            program_combinations.append(ProgramCombination(name=program["Name"], admission_years=admission_years))
-        study_level = StudyLevel(name=level["StudyLevelName"], program_combinations=program_combinations)
-        study_levels.append(study_level)
+        study_levels.append(StudyLevel.parse_raw(json.dumps(level)))
     return study_levels
 
 

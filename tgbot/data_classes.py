@@ -19,22 +19,19 @@ class EducatorSearchInfo:
     full_name: str
 
 
-@dataclass(slots=True, frozen=True)
-class AdmissionYear:
-    year: str
-    study_program_id: str
+class AdmissionYear(BaseModel):
+    year: str = Field(alias="YearName")
+    study_program_id: str = Field(alias="StudyProgramId")
 
 
-@dataclass(slots=True, frozen=True)
-class ProgramCombination:
-    name: str
-    admission_years: list[AdmissionYear]
+class ProgramCombination(BaseModel):
+    name: str = Field(alias="Name")
+    admission_years: list[AdmissionYear] = Field(alias="AdmissionYears")
 
 
-@dataclass(slots=True, frozen=True)
-class StudyLevel:
-    name: str
-    program_combinations: list[ProgramCombination]
+class StudyLevel(BaseModel):
+    name: str = Field(alias="StudyLevelName")
+    program_combinations: list[ProgramCombination] = Field(alias="StudyProgramCombinations")
 
 
 @dataclass(slots=True, frozen=True)
