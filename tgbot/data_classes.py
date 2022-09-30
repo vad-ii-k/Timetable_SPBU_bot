@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import time, date
+from typing import TypeVar
 
 from pydantic import BaseModel, Field, validator, root_validator
 
@@ -41,6 +42,9 @@ class GroupSearchInfo:
     name: str
 
 
+SE = TypeVar('SE', bound='StudyEvent')
+
+
 class StudyEvent(BaseModel, ABC):
     start_time: time = Field(alias="Start")
     end_time: time = Field(alias="End")
@@ -55,12 +59,29 @@ class StudyEvent(BaseModel, ABC):
 
     @root_validator
     def separation_of_subject(cls, values):
-        values['subject_name'], values['subject_format'] = values['subject_name'].rsplit(sep=", ", maxsplit=1)
+        values['subject_name'], values['subject_format'] = values['subject_name'].rsplit(sep=", ", maxsplit=1)\
+            if values['subject_name'].rfind(", ") != -1 else (values['subject_name'], "—")
         return values
 
     @abstractmethod
     def get_contingent(self, with_sticker: bool = False) -> str:
         pass
+
+    @classmethod
+    def __verify_data(cls, other) -> SE:
+        if not isinstance(other, StudyEvent):
+            raise TypeError
+        return other
+
+    def __ne__(self, other) -> bool:
+        event = self.__verify_data(other)
+        return (
+                self.subject_name != event.subject_name
+                or self.subject_format != event.subject_format
+                or self.start_time != event.start_time
+                or self.end_time != event.end_time
+                or self.is_canceled != event.is_canceled
+        )
 
 
 class EventsDay(BaseModel):
@@ -111,6 +132,8 @@ class GroupStudyEvent(StudyEvent):
     @validator('educators', pre=True)
     def removing_academic_degrees(cls, educators):
         educators = "".join(_educator.rsplit(", ", maxsplit=1)[0] + "; " for _educator in educators.split(sep=";"))[:-2]
+        if educators == '':
+            educators = '—'
         return educators
 
     def get_contingent(self, with_sticker: bool = False) -> str:
