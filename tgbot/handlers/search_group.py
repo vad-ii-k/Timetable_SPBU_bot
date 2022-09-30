@@ -31,7 +31,7 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
 
 
 @router.message(SearchGroup.choosing)
-async def choosing_teacher(message: Message):
+async def choosing_group(message: Message):
     await message.delete()
 
 

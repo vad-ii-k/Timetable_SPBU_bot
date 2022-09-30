@@ -72,7 +72,8 @@ async def admission_years_navigation_callback(
 
 @router.callback_query(AdmissionYearsCallbackFactory.filter(), flags={'chat_action': 'typing'})
 async def group_choice_navigation_callback(
-        callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext):
+        callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext
+):
     await change_message_to_loading(callback.message)
     groups = await get_groups(callback_data.study_program_id)
     if len(groups) > 0:

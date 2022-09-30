@@ -5,8 +5,7 @@ disable=
     C0116, # missing-function-docstring
     E0401, # import-error
     R0903, # too-few-public-methods
-
-ignore=alembic
+    E0213, # no-self-argument
 
 
 [MAIN]

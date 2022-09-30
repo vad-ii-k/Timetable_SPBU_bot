@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Any, Awaitable
+from typing import Callable, Any, Awaitable
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
@@ -15,9 +15,9 @@ class ConfigMessageMiddleware(BaseMiddleware):
 
     async def __call__(
             self,
-            handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+            handler: Callable[[Message, dict[str, Any]], Awaitable[Any]],
             event: Message,
-            data: Dict[str, Any]
+            data: dict[str, Any]
     ) -> Any:
         data['config'] = self.config
         action = get_flag(data, "chat_action")
@@ -33,9 +33,9 @@ class ConfigCallbackMiddleware(BaseMiddleware):
 
     async def __call__(
             self,
-            handler: Callable[[CallbackQuery, Dict[str, Any]], Awaitable[Any]],
+            handler: Callable[[CallbackQuery, dict[str, Any]], Awaitable[Any]],
             event: CallbackQuery,
-            data: Dict[str, Any]
+            data: dict[str, Any]
     ) -> Any:
         data['config'] = self.config
         action = get_flag(data, "chat_action")
@@ -46,12 +46,10 @@ class ConfigCallbackMiddleware(BaseMiddleware):
 
 
 class LanguageI18nMiddleware(I18nMiddleware):
-    async def get_locale(self, event: TelegramObject, data: Dict[str, Any]):
+    async def get_locale(self, event: TelegramObject, data: dict[str, Any]):
         tg_user: User = data.get('event_from_user')
         user = await database.get_user(tg_user_id=tg_user.id)
-        try:
-            settings = await database.get_settings(user)
-        except AttributeError:
+        if user is None:
             user = await database.add_new_user(tg_user=tg_user)
-            settings = await database.get_settings(user)
+        settings = await database.get_settings(user)
         return settings.language

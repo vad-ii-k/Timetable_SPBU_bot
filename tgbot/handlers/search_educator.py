@@ -24,20 +24,22 @@ async def getting_choice_for_educator(message: Message, state: FSMContext):
         await message.answer(_("❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
                                "Попробуйте ввести фамилию и первую букву имени:").format(last_name=message.text))
     else:
-        await message.answer(text=_("⬇️ Выберите преподавателя из списка:"),
-                             reply_markup=await create_educators_keyboard(teachers_list))
+        await message.answer(
+            text=_("⬇️ Выберите преподавателя из списка:"),
+            reply_markup=await create_educators_keyboard(teachers_list)
+        )
         await state.set_state(SearchEducator.choosing)
 
 
 @router.message(SearchEducator.choosing)
-async def choosing_teacher(message: Message):
+async def choosing_educator(message: Message):
     await message.delete()
 
 
 @router.callback_query(
     TTObjectChoiceCallbackFactory.filter(F.user_type.EDUCATOR), SearchEducator.choosing, flags={'chat_action': 'typing'}
 )
-async def teacher_viewing_schedule_handler(
+async def educator_viewing_schedule_handler(
         callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ) -> None:
     await state.set_state(state=None)

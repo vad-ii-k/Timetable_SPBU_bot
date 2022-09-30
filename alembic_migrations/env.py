@@ -1,8 +1,7 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from tgbot.config import app_config
 from tgbot.services.db_api.db_models import db_gino
