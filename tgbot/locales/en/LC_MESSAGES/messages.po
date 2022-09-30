@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-24 17:49+0300\n"
+"POT-Creation-Date: 2022-09-30 20:48+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -17,6 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
+
+#: data_classes.py:123
+msgid "🧑‍🏫 Преподаватель: "
+msgstr "🧑‍🏫 Educator: "
+
+#: data_classes.py:124 data_classes.py:153
+msgid "📆 Неделя: "
+msgstr "📆 Week: "
+
+#: data_classes.py:152
+msgid "👨‍👩‍👧‍👦 Группа: "
+msgstr "👨‍👩‍👧‍👦 Group: "
 
 #: handlers/commands.py:20
 msgid ""
@@ -32,11 +44,11 @@ msgstr ""
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
 "⬇️ Get the schedule by:"
 
-#: handlers/commands.py:32
+#: handlers/commands.py:31
 msgid "🔎 Введите фамилию преподавателя для поиска:"
 msgstr "🔎 Enter the last name of the teacher to search:"
 
-#: handlers/commands.py:38
+#: handlers/commands.py:37
 msgid ""
 "🔎 Введите название группы для поиска:\n"
 "*️⃣ <i>например, 20.Б08-мм</i>"
@@ -44,7 +56,7 @@ msgstr ""
 "🔎 Enter the name of the group to search for:\n"
 "*️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: handlers/commands.py:48
+#: handlers/commands.py:47
 msgid ""
 "📅 Основное расписание:\n"
 " — "
@@ -52,7 +64,7 @@ msgstr ""
 "📅 Main schedule:\n"
 " — "
 
-#: handlers/commands.py:50
+#: handlers/commands.py:49
 msgid ""
 "\n"
 "\n"
@@ -156,11 +168,11 @@ msgstr "⬇️ Choose an educational program: "
 msgid "⬇️ Выберите год поступления: "
 msgstr "⬇️ Choose the admission year: "
 
-#: handlers/student_navigation.py:81
+#: handlers/student_navigation.py:80
 msgid "⬇️ Выберите группу:"
 msgstr "⬇️ Choose a group:"
 
-#: handlers/student_navigation.py:86
+#: handlers/student_navigation.py:85
 msgid "❌ По данной программе группы не найдены!"
 msgstr "❌ No groups were found for this program!"
 
@@ -227,4 +239,22 @@ msgstr " Do not send 🔇"
 #: keyboards/inline.py:187
 msgid "Назад ↩️"
 msgstr "Back ↩️"
+
+#: services/schedule/getting_shedule.py:49
+msgid ""
+"\n"
+"\n"
+"📛 Сообщение слишком длинное..."
+msgstr ""
+"\n"
+"\n"
+"📛 The message is too long..."
+
+#: services/schedule/getting_shedule.py:52
+msgid ""
+"\n"
+"🏖 Занятий на этой неделе нет"
+msgstr ""
+"\n"
+"🏖 There are no classes this week"
 

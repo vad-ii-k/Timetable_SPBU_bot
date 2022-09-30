@@ -75,7 +75,6 @@ async def group_choice_navigation_callback(
         callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext):
     await change_message_to_loading(callback.message)
     groups = await get_groups(callback_data.study_program_id)
-    await callback.message.delete()
     if len(groups) > 0:
         await callback.message.answer(
             text=_("⬇️ Выберите группу:"),
@@ -84,3 +83,4 @@ async def group_choice_navigation_callback(
         await state.set_state(SearchGroup.choosing)
     else:
         await callback.message.edit_text(_("❌ По данной программе группы не найдены!"))
+    await callback.message.delete()

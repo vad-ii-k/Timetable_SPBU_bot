@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from datetime import time, date
 from typing import TypeVar
 
+from aiogram.utils.i18n import gettext as _
 from pydantic import BaseModel, Field, validator, root_validator
 
 
@@ -119,10 +120,8 @@ class EducatorSchedule(Schedule):
     events_days: list[EducatorEventsDay] = Field(alias="EducatorEventsDays")
 
     def get_schedule_week_header(self) -> str:
-        header = (
-            f"🧑‍🏫 Преподаватель: <b>{self.full_name}</b>\n"
-            f"📆 Неделя: <a href='{self.tt_url}'>{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n"
-        )
+        header = _("🧑‍🏫 Преподаватель: ") + f"<b>{self.full_name}</b>\n" \
+                 + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
         return header
 
 
@@ -150,8 +149,6 @@ class GroupSchedule(Schedule):
     events_days: list[GroupEventsDay] = Field(alias="Days")
 
     def get_schedule_week_header(self) -> str:
-        header = (
-            f"👨‍👩‍👧‍👦 Группа: <b>{self.group_name}</b>\n"
-            f"📆 Неделя: <a href='{self.tt_url}'>{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n"
-        )
+        header = _("👨‍👩‍👧‍👦 Группа: ") + f"<b>{self.group_name}</b>\n"\
+                 + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
         return header

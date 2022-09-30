@@ -1,11 +1,13 @@
 from datetime import date
 
+from aiogram.utils.i18n import get_i18n
+from aiogram.utils.i18n import gettext as _
 from babel.dates import format_date
 
 from tgbot.data_classes import StudyEvent, GroupEventsDay, EducatorEventsDay
 from tgbot.misc.states import UserType
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, _get_time_sticker, \
-    _get_subject_format_sticker, _get_weekday_sticker
+    _get_subject_format_sticker, _get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
 
@@ -21,7 +23,7 @@ async def get_schedule(tt_id: int, user_type: UserType) -> str:
 
 
 async def events_day_converter_to_msg(day: date, events: list[StudyEvent]) -> str:
-    day_timetable = await schedule_weekday_header(format_date(day, "EEEE, d MMMM", locale="ru_RU"))
+    day_timetable = _get_schedule_weekday_header(format_date(day, "EEEE, d MMMM", locale=get_i18n().current_locale))
     for i, event in enumerate(events):
         if i == 0 or events[i-1] != event:
             day_timetable += (
@@ -44,14 +46,8 @@ async def schedule_week_body(schedule: str, events_days: list[GroupEventsDay | E
             if len(schedule) + len(day_schedule) <= 4060:
                 schedule += day_schedule
             else:
-                schedule += "\n\n📛 Сообщение слишком длинное..."
+                schedule += _("\n\n📛 Сообщение слишком длинное...")
                 break
     else:
-        schedule += "\n🏖 Занятий на этой неделе нет"
-    return schedule
-
-
-async def schedule_weekday_header(day_string: str) -> str:
-    weekday_sticker = _get_weekday_sticker(day_string)
-    header = f"\n\n{weekday_sticker} <b>{day_string}</b>\n"
-    return header
+        schedule += _("\n🏖 Занятий на этой неделе нет")
+    return schedule[:4096]
