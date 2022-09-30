@@ -71,6 +71,16 @@ class EventsDay(BaseModel):
         return value.split('T')[0]
 
 
+class Schedule(BaseModel, ABC):
+    tt_url: str
+    from_date: date
+    to_date: date
+
+    @abstractmethod
+    def get_schedule_week_header(self) -> str:
+        pass
+
+
 class EducatorStudyEvent(StudyEvent):
     groups: str = Field(alias="ContingentUnitName")
 
@@ -82,10 +92,17 @@ class EducatorEventsDay(EventsDay):
     study_events: list[EducatorStudyEvent] = Field(alias="DayStudyEvents")
 
 
-class EducatorSchedule(BaseModel):
+class EducatorSchedule(Schedule):
     educator_tt_id: int = Field(alias="EducatorMasterId")
     full_name: str = Field(alias="EducatorLongDisplayText")
     events_days: list[EducatorEventsDay] = Field(alias="EducatorEventsDays")
+
+    def get_schedule_week_header(self) -> str:
+        header = (
+            f"🧑‍🏫 Преподаватель: <b>{self.full_name}</b>\n"
+            f"📆 Неделя: <a href='{self.tt_url}'>{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n"
+        )
+        return header
 
 
 class GroupStudyEvent(StudyEvent):
@@ -104,7 +121,14 @@ class GroupEventsDay(EventsDay):
     study_events: list[GroupStudyEvent] = Field(alias="DayStudyEvents")
 
 
-class GroupSchedule(BaseModel):
-    student_tt_id: int = Field(alias="StudentGroupId")
+class GroupSchedule(Schedule):
+    group_tt_id: int = Field(alias="StudentGroupId")
     group_name: str = Field(alias="StudentGroupDisplayName")
     events_days: list[GroupEventsDay] = Field(alias="Days")
+
+    def get_schedule_week_header(self) -> str:
+        header = (
+            f"👨‍👩‍👧‍👦 Группа: <b>{self.group_name}</b>\n"
+            f"📆 Неделя: <a href='{self.tt_url}'>{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n"
+        )
+        return header
