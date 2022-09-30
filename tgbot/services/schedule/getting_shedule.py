@@ -33,10 +33,11 @@ async def events_day_converter_to_msg(day: date, events: list[StudyEvent]) -> st
         day_timetable += (
             f'     ┈┈┈┈┈┈┈┈┈┈┈┈\n'
             f'    {"<s>" * event.is_canceled}<b>{event.subject_name}</b>{"</s>" * event.is_canceled}\n'
-            f'    <u>🕟 {event.start_time:%H:%M}-{event.end_time:%H:%M}</u>\n'
-            f'    <i>✍🏻 {event.subject_format}</i>\n'
+            f'    <u>{await get_time_sticker(event.start_time.hour)}'
+            f' {event.start_time:%H:%M}-{event.end_time:%H:%M}</u>\n'
+            f'    <i>{await get_subject_format_sticker(event.subject_format)} {event.subject_format}</i>\n'
             f"    <i>{event.get_contingent(with_sticker=True)}</i>\n"
-            f"    <i>🚩 {event.location}</i>\n"
+            f"    <i>📍 {event.location}</i>\n"
         )
     return day_timetable
 
@@ -73,6 +74,62 @@ async def group_schedule_week_header(group_id: int, group_name: str, monday: dat
     return header
 
 
+async def schedule_weekday_header(day_string: str) -> str:
+    weekday_sticker = await get_weekday_sticker(day_string)
+    header = f"\n\n{weekday_sticker} <b>{day_string}</b>\n"
+    return header
+
+
+async def get_time_sticker(hour: int) -> str:
+    time_sticker = ""
+    match hour:
+        case 0 | 12:
+            time_sticker = "🕛"
+        case 1 | 13:
+            time_sticker = "🕐"
+        case 2 | 14:
+            time_sticker = "🕑"
+        case 3 | 15:
+            time_sticker = "🕒"
+        case 4 | 16:
+            time_sticker = "🕓"
+        case 5 | 17:
+            time_sticker = "🕔"
+        case 6 | 18:
+            time_sticker = "🕕"
+        case 7 | 19:
+            time_sticker = "🕖"
+        case 8 | 20:
+            time_sticker = "🕗"
+        case 9 | 21:
+            time_sticker = "🕘"
+        case 10 | 22:
+            time_sticker = "🕙"
+        case 11 | 23:
+            time_sticker = "🕚"
+    return time_sticker
+
+
+async def get_subject_format_sticker(subject_format: str) -> str:
+    format_sticker = "✍🏼"
+    match subject_format.split(" ")[0]:
+        case "лекция":
+            format_sticker = "🗣"
+        case "практическое":
+            format_sticker = "🧑🏻‍💻"
+        case "лабораторная":
+            format_sticker = "🔬"
+        case "семинар":
+            format_sticker = "💬"
+        case "консультация":
+            format_sticker = "🤝🏼"
+        case "экзамен":
+            format_sticker = "❗"
+        case "зачёт":
+            format_sticker = "⚠️"
+    return format_sticker
+
+
 async def get_weekday_sticker(day: str) -> str:
     weekday_sticker = ""
     match day.split(",")[0]:
@@ -91,9 +148,3 @@ async def get_weekday_sticker(day: str) -> str:
         case "воскресенье" | "Sunday":
             weekday_sticker = "7️⃣"
     return weekday_sticker
-
-
-async def schedule_weekday_header(day_string: str) -> str:
-    weekday_sticker = await get_weekday_sticker(day_string)
-    header = f"\n\n{weekday_sticker} <b>{day_string}</b>\n"
-    return header

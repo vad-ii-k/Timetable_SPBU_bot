@@ -97,7 +97,7 @@ class GroupStudyEvent(StudyEvent):
         return educators
 
     def get_contingent(self, with_sticker: bool = False) -> str:
-        return '🧑‍🏫 ' * with_sticker + self.educators
+        return '👨🏻‍🏫 ' * with_sticker + self.educators
 
 
 class GroupEventsDay(EventsDay):
