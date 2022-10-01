@@ -5,6 +5,7 @@ from typing import Iterable, Callable, Coroutine
 
 import aiohttp
 from aiohttp_socks import ProxyConnector
+from python_socks import ProxyConnectionError
 
 from tgbot.config import app_config
 from tgbot.data_classes import GroupSearchInfo, StudyLevel
@@ -16,9 +17,12 @@ remaining_program_ids: list[str] = []
 
 
 async def request(session: aiohttp.ClientSession, url: str) -> dict:
-    async with session.get(url) as response:
-        if response.status == 200:
-            return await response.json()
+    try:
+        async with session.get(url) as response:
+            if response.status == 200:
+                return await response.json()
+    except ProxyConnectionError as err:
+        print("Error: %s", err)
     return {}
 
 
@@ -38,7 +42,7 @@ async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[aioh
             for item in chunk:
                 task = asyncio.create_task(function(session, item))
                 tasks.append(task)
-                await asyncio.sleep(0.05)
+                await asyncio.sleep(0.1)
             await asyncio.gather(*tasks)
 
 
@@ -54,8 +58,7 @@ async def get_study_levels(session: aiohttp.ClientSession, alias: str) -> None:
 
 async def collecting_program_ids() -> None:
     study_divisions = await get_study_divisions()
-    # aliases = [division.alias for division in study_divisions]
-    aliases = [study_divisions[0].alias]
+    aliases = [division.alias for division in study_divisions]
     aliases_by_parts = list(chunks_generator(aliases, 4))
     await create_and_run_tasks(aliases_by_parts, get_study_levels)
 
@@ -74,17 +77,13 @@ async def get_groups(session: aiohttp.ClientSession, program_id: str) -> None:
 async def adding_groups_to_db() -> None:
     logging.info("Collecting programs...")
     await collecting_program_ids()
-    number_of_gathered_programs = 0
+    logging.info("Collecting groups...")
     while True:
         global program_ids
         program_ids_by_parts = list(chunks_generator(program_ids, 50))
         await create_and_run_tasks(program_ids_by_parts, get_groups)
-        number_of_gathered_programs += len(program_ids)
-        logging.info(
-            "Groups of %s programs are collected... %s left.", number_of_gathered_programs, len(remaining_program_ids)
-        )
-        #for group in groups:
-        #    await database.add_new_group(tt_id=group.tt_id, group_name=group.name)
+        logging.info("Groups are gathering for the %s remaining programs...", len(remaining_program_ids))
+
         if len(remaining_program_ids) == 0:
             break
         program_ids = remaining_program_ids.copy()

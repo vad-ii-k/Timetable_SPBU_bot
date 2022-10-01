@@ -33,7 +33,7 @@ class Group(db_gino.Model):
     tt_id = Column(Integer)
     name = Column(String(150))
 
-    _idx1 = Index('group_idx_name', 'name', unique=True)
+    _idx1 = Index('group_idx_name', 'name')
 
 
 class MainScheduleInfo(db_gino.Model):
