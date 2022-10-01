@@ -2,15 +2,14 @@ import asyncio
 import logging
 
 import aioredis
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.i18n import I18n
 
-from tgbot.commands import set_commands
-from tgbot.config import app_config
+from tgbot.config import app_config, bot
 from tgbot.handlers.admin import admin_router
-from tgbot.handlers.commands import router as commands_router
+from tgbot.handlers.commands import router as commands_router, set_commands
 from tgbot.handlers.search_educator import router as search_educator_router
 from tgbot.handlers.search_group import router as search_group_router
 from tgbot.handlers.settings import router as settings_router
@@ -23,7 +22,7 @@ from tgbot.services.db_api.db_models import create_db
 logger = logging.getLogger(__name__)
 
 
-async def on_startup(bot: Bot, admin_ids: list[int]):
+async def on_startup(_bot: Bot, admin_ids: list[int]):
     await broadcaster.broadcast(bot, admin_ids, "🆙 The bot has been launched!")
 
 
@@ -45,7 +44,6 @@ async def main():
 
     await create_db()
 
-    bot = Bot(token=app_config.tg_bot.token, parse_mode='HTML')
     await set_commands(bot)
 
     if app_config.tg_bot.use_redis:

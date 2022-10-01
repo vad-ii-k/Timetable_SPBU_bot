@@ -1,15 +1,35 @@
 import logging
 
-from aiogram import Router
+from aiogram import Router, Bot
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand, BotCommandScopeAllPrivateChats
 from aiogram.utils.i18n import gettext as _
 
+from tgbot.config import bot
 from tgbot.keyboards.inline import create_start_choice_keyboard, create_settings_keyboard
 from tgbot.misc.states import SearchEducator, SearchGroup
 from tgbot.services.db_api.db_commands import database
 
 router = Router()
+
+
+async def set_commands(_bot: Bot):
+    data = [
+        (
+            [
+                BotCommand(command="start", description="🔄 Перезапустить бота"),
+                BotCommand(command="my_schedule", description="📆 Получить своё расписание"),
+                BotCommand(command="settings", description="⚙️ Настройки"),
+                BotCommand(command="help", description="📒 Вывести справку о командах"),
+                BotCommand(command="educator", description="🧑‍🏫️ Посмотреть расписание преподавателя"),
+                BotCommand(command="group", description="👨‍👩‍👧‍👦 Посмотреть расписание группы"),
+            ],
+            BotCommandScopeAllPrivateChats(),
+            None
+        )
+    ]
+    for commands_list, commands_scope, language in data:
+        await bot.set_my_commands(commands=commands_list, scope=commands_scope, language_code=language)
 
 
 @router.message(commands=["start"], state="*")
@@ -50,10 +70,10 @@ async def settings_command(message: Message):
     await message.answer(text=text, reply_markup=await create_settings_keyboard(settings))
 
 
-# @user_router.message(commands=["help"])
-# async def bot_help_command(message: Message) -> None:
-#     answer = "🤖 Список команд: \n"
-#     commands = await bot.get_my_commands()
-#     for cmd in commands:
-#         answer += "/{command} — {description}\n".format(command=cmd['command'], description=cmd['description'])
-#     await message.answer(answer)
+@router.message(commands=["help"])
+async def bot_help_command(message: Message):
+    answer = _("🤖 Список команд: \n")
+    commands = await bot.get_my_commands()
+    for cmd in commands:
+        answer += f"/{cmd.command} — {cmd.description}\n"
+    await message.answer(answer)

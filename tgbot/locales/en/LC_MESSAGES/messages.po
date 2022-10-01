@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-30 20:48+0300\n"
+"POT-Creation-Date: 2022-10-01 11:30+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: data_classes.py:123
+#: data_classes.py:120
 msgid "🧑‍🏫 Преподаватель: "
 msgstr "🧑‍🏫 Educator: "
 
-#: data_classes.py:124 data_classes.py:153
+#: data_classes.py:121 data_classes.py:150
 msgid "📆 Неделя: "
 msgstr "📆 Week: "
 
-#: data_classes.py:152
+#: data_classes.py:149
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
-#: handlers/commands.py:20
+#: handlers/commands.py:40
 msgid ""
 "👋🏻 <b>Добро пожаловать, {name}!</b>\n"
 "ℹ️ Следуйте указаниям для настройки\n"
@@ -44,11 +44,11 @@ msgstr ""
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
 "⬇️ Get the schedule by:"
 
-#: handlers/commands.py:31
+#: handlers/commands.py:51
 msgid "🔎 Введите фамилию преподавателя для поиска:"
 msgstr "🔎 Enter the last name of the teacher to search:"
 
-#: handlers/commands.py:37
+#: handlers/commands.py:57
 msgid ""
 "🔎 Введите название группы для поиска:\n"
 "*️⃣ <i>например, 20.Б08-мм</i>"
@@ -56,7 +56,7 @@ msgstr ""
 "🔎 Enter the name of the group to search for:\n"
 "*️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: handlers/commands.py:47
+#: handlers/commands.py:67
 msgid ""
 "📅 Основное расписание:\n"
 " — "
@@ -64,7 +64,7 @@ msgstr ""
 "📅 Main schedule:\n"
 " — "
 
-#: handlers/commands.py:49
+#: handlers/commands.py:69
 msgid ""
 "\n"
 "\n"
@@ -73,6 +73,10 @@ msgstr ""
 "\n"
 "\n"
 "⚙️ Current settings:"
+
+#: handlers/commands.py:75
+msgid "🤖 Список команд: \n"
+msgstr "🤖 List of commands: \n"
 
 #: handlers/helpers.py:12
 msgid "🕒 <i>Загрузка...</i>"
@@ -94,7 +98,7 @@ msgstr ""
 "❌ The surname \"<i>{last_name}</i>\" is very common\n"
 "Try to enter the last name and the first letter of the name:"
 
-#: handlers/search_educator.py:27
+#: handlers/search_educator.py:28
 msgid "⬇️ Выберите преподавателя из списка:"
 msgstr "⬇️ Select a teacher from the list:"
 
@@ -160,11 +164,11 @@ msgstr "🧑‍🏫 Enter the teacher's last name:"
 msgid "⬇️ Выберите уровень подготовки:"
 msgstr "⬇️ Choose the level of education:"
 
-#: handlers/student_navigation.py:53
+#: handlers/student_navigation.py:52
 msgid "⬇️ Выберите программу подготовки: "
 msgstr "⬇️ Choose an educational program: "
 
-#: handlers/student_navigation.py:68
+#: handlers/student_navigation.py:67
 msgid "⬇️ Выберите год поступления: "
 msgstr "⬇️ Choose the admission year: "
 
