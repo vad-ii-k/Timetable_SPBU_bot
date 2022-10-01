@@ -10,6 +10,7 @@ from aiogram.utils.i18n import I18n
 from tgbot.config import app_config, bot
 from tgbot.handlers.admin import admin_router
 from tgbot.handlers.commands import router as commands_router, set_commands
+from tgbot.handlers.errors import router as errors_router
 from tgbot.handlers.search_educator import router as search_educator_router
 from tgbot.handlers.search_group import router as search_group_router
 from tgbot.handlers.settings import router as settings_router
@@ -59,6 +60,7 @@ async def main():
     dispatcher = Dispatcher(storage=storage)
 
     for router in [
+        errors_router,
         commands_router,
         admin_router,
         start_menu_router,

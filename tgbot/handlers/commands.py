@@ -71,7 +71,7 @@ async def settings_command(message: Message):
 
 
 @router.message(commands=["help"])
-async def bot_help_command(message: Message):
+async def help_command(message: Message):
     answer = _("🤖 Список команд: \n")
     commands = await bot.get_my_commands()
     for cmd in commands:

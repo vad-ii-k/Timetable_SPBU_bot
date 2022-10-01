@@ -22,7 +22,7 @@ async def send_message(bot: Bot, user_id, text: str, disable_notification: bool 
     return False
 
 
-async def broadcast(bot, users, text):
+async def broadcast(bot, users, text, disable_notification: bool = False):
     """
     Simple broadcaster
     :return: Count of messages
@@ -30,7 +30,7 @@ async def broadcast(bot, users, text):
     count = 0
     try:
         for user_id in users:
-            if await send_message(bot, user_id, text):
+            if await send_message(bot, user_id, text, disable_notification):
                 count += 1
             await asyncio.sleep(0.1)  # 10 messages per second (Limit: 30 messages per second)
     finally:
