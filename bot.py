@@ -19,6 +19,7 @@ from tgbot.handlers.student_navigation import router as student_navigation_route
 from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware, LanguageI18nMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import create_db
+from tgbot.services.db_api.initial_filling_of_groups import adding_groups_to_db
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,8 @@ async def main():
     logger.info("Starting bot...")
 
     await create_db()
+    if not app_config.database.are_groups_collected:
+        await adding_groups_to_db()
 
     await set_commands(bot)
 

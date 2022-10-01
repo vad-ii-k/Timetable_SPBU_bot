@@ -11,6 +11,7 @@ class DbConfig:
     password: str
     user: str
     database: str
+    are_groups_collected: bool
 
     def get_connection_url(self):
         pg_uri = f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
@@ -68,6 +69,7 @@ def load_config(path: str = None) -> Config:
             password=env.str('DB_PASS'),
             user=env.str('DB_USER'),
             database=env.str('DB_NAME'),
+            are_groups_collected=env.bool('ARE_GROUPS_COLLECTED'),
         ),
         redis=RedisConfig(
             host=env.str('REDIS_HOST'),

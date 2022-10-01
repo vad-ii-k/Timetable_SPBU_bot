@@ -1,5 +1,5 @@
 from gino import Gino
-from sqlalchemy import Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time
+from sqlalchemy import Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Index
 
 from tgbot.config import app_config
 
@@ -33,6 +33,8 @@ class Group(db_gino.Model):
     tt_id = Column(Integer)
     name = Column(String(150))
 
+    _idx1 = Index('group_idx_name', 'name', unique=True)
+
 
 class MainScheduleInfo(db_gino.Model):
     __tablename__ = "main_schedule_info"
@@ -40,6 +42,9 @@ class MainScheduleInfo(db_gino.Model):
     user_id = Column(None, ForeignKey("user.user_id"))
     timetable_id = Column(Integer)
     user_type_is_student = Column(Boolean)
+    name = Column(String(150))
+
+    _idx1 = Index('main_schedule_info_idx_user_id', 'user_id', unique=True)
 
 
 async def create_db() -> None:
