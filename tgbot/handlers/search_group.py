@@ -9,21 +9,23 @@ from tgbot.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.handlers.helpers import send_schedule
 from tgbot.keyboards.inline import create_groups_keyboard
 from tgbot.misc.states import SearchGroup
+from tgbot.services.db_api.db_commands import database
 
 router = Router()
 
 
 @router.message(SearchGroup.getting_choice)
 async def getting_choice_for_student(message: Message, state: FSMContext):
-    loading_msg = await message.answer("⏳")
-    groups_list = []
-    # groups_list = await db.get_groups_by_name(message.text)
+    groups_list = await database.get_groups_by_name(message.text)
     if len(groups_list) == 0:
-        await groups_not_found(answer_msg=loading_msg, received_msg_text=message.text)
+        await message.answer(_("Группа \"<i>{group_name}</i>\" не найдена!\n"
+                               "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:").
+                             format(group_name=html.quote(message.text)))
     elif len(groups_list) > 50:
-        await groups_are_too_many(answer_msg=loading_msg, received_msg_text=message.text)
+        await message.answer(_("Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
+                               "Попробуйте ввести подробнее:").format(group_name=message.text))
     else:
-        await loading_msg.edit_text(
+        await message.answer(
             text=_("⬇️ Выберите группу из списка:"),
             reply_markup=await create_groups_keyboard(groups_list)
         )
@@ -33,19 +35,6 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
 @router.message(SearchGroup.choosing)
 async def choosing_group(message: Message):
     await message.delete()
-
-
-async def groups_not_found(answer_msg: Message, received_msg_text: str):
-    await answer_msg.edit_text(
-        _("Группа \"<i>{group_name}</i>\" не найдена!\n"
-          "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /group:").format(
-            group_name=html.quote(received_msg_text))
-    )
-
-
-async def groups_are_too_many(answer_msg: Message, received_msg_text: str):
-    await answer_msg.edit_text(_("Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
-                                 "Попробуйте ввести подробнее:").format(group_name=received_msg_text))
 
 
 @router.callback_query(

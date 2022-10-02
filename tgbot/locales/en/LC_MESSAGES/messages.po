@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-01 11:30+0300\n"
+"POT-Creation-Date: 2022-10-02 13:55+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -102,25 +102,25 @@ msgstr ""
 msgid "⬇️ Выберите преподавателя из списка:"
 msgstr "⬇️ Select a teacher from the list:"
 
-#: handlers/search_group.py:27
-msgid "⬇️ Выберите группу из списка:"
-msgstr "⬇️ Select a group from the list:"
-
-#: handlers/search_group.py:40
+#: handlers/search_group.py:21
 msgid ""
 "Группа \"<i>{group_name}</i>\" не найдена!\n"
-"Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /group:"
+"Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:"
 msgstr ""
 "The group \"<i>{group_name}</i>\" was not found!\n"
-"Try again or use the navigation with the /group command:"
+"Try again or use the navigation with the /start command:"
 
-#: handlers/search_group.py:47
+#: handlers/search_group.py:25
 msgid ""
 "Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
 "Попробуйте ввести подробнее:"
 msgstr ""
 "There are too many groups containing \"<i>{group_name}</i>\" in the name!\n"
 "Try to enter more details:"
+
+#: handlers/search_group.py:29
+msgid "⬇️ Выберите группу из списка:"
+msgstr "⬇️ Select a group from the list:"
 
 #: handlers/settings.py:21
 msgid ""

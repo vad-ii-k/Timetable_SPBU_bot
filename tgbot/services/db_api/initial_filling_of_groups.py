@@ -9,6 +9,7 @@ from python_socks import ProxyConnectionError
 
 from tgbot.config import app_config
 from tgbot.data_classes import GroupSearchInfo, StudyLevel
+from tgbot.services.db_api.db_commands import database
 from tgbot.services.timetable_api.timetable_api import TT_API_URL, get_study_divisions
 
 program_ids: list[str] = []
@@ -83,7 +84,8 @@ async def adding_groups_to_db() -> None:
         program_ids_by_parts = list(chunks_generator(program_ids, 50))
         await create_and_run_tasks(program_ids_by_parts, get_groups)
         logging.info("Groups are gathering for the %s remaining programs...", len(remaining_program_ids))
-
+        for group in groups:
+            await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
         if len(remaining_program_ids) == 0:
             break
         program_ids = remaining_program_ids.copy()
