@@ -11,15 +11,17 @@ from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, _get_t
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
 
-async def get_schedule(tt_id: int, user_type: UserType, week_counter: int = 0) -> str:
+async def get_schedule(tt_id: int, user_type: UserType, week_counter: int = 0) -> tuple[str, str]:
     monday, sunday = _get_monday_and_sunday_dates(week_counter)
     if user_type == UserType.STUDENT:
         schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
+        schedule_name = schedule_from_timetable.group_name
     else:
         schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
+        schedule_name = schedule_from_timetable.full_name
     schedule = schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_week_body(schedule, schedule_from_timetable.events_days)
-    return schedule
+    return schedule, schedule_name
 
 
 async def events_day_converter_to_msg(day: date, events: list[StudyEvent]) -> str:

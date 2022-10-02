@@ -1,12 +1,18 @@
 import datetime
 
 from aiogram import Router
+from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
 from magic_filter import F
 
-from tgbot.cb_data import SettingsCallbackFactory, SettingsDailySummaryCallbackFactory
+from tgbot.cb_data import (
+    SettingsCallbackFactory,
+    SettingsDailySummaryCallbackFactory,
+    ScheduleSubscriptionCallbackFactory,
+)
 from tgbot.handlers.commands import settings_command
+from tgbot.handlers.helpers import _delete_message
 from tgbot.keyboards.inline import create_settings_daily_summary_keyboard, create_settings_keyboard
 from tgbot.services.db_api.db_commands import database
 
@@ -58,3 +64,29 @@ async def settings_language_callback(callback: CallbackQuery):
         show_alert=True
     )
     await callback.message.delete()
+
+
+@router.callback_query(ScheduleSubscriptionCallbackFactory.filter())
+async def schedule_subscription_callback(
+        callback: CallbackQuery, callback_data: ScheduleSubscriptionCallbackFactory, state: FSMContext
+):
+    if callback_data.answer:
+        data = await state.get_data()
+        await database.set_main_schedule(
+            tg_user_id=callback.from_user.id,
+            tt_id=int(data.get("tt_id")),
+            user_type=data.get("user_type"),
+            schedule_name=data.get("schedule_name")
+        )
+        instruction = await callback.message.answer(
+            text=_("Вы подписались на расписание! ✅\n"
+                   "Воспользуйтесь командой:\n"
+                   "— /my_schedule для просмотра своего основного расписания\n"
+                   "— /settings для настройки уведомлений")
+        )
+        await callback.message.delete()
+        await _delete_message(instruction, 20)
+        await state.set_data({})
+    else:
+        await callback.message.delete()
+        await callback.answer(text=_("Вы отказались от подписки! ❌"), show_alert=False)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-02 13:55+0300\n"
+"POT-Creation-Date: 2022-10-02 19:01+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -78,9 +78,13 @@ msgstr ""
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
-#: handlers/helpers.py:12
+#: handlers/helpers.py:19
 msgid "🕒 <i>Загрузка...</i>"
 msgstr "🕒 <i>Loading...</i>"
+
+#: handlers/helpers.py:33
+msgid "⚙️ Хотите сделать это расписание своим основным?"
+msgstr "⚙️ Do you want to make this schedule your main one?"
 
 #: handlers/search_educator.py:21
 msgid ""
@@ -122,7 +126,7 @@ msgstr ""
 msgid "⬇️ Выберите группу из списка:"
 msgstr "⬇️ Select a group from the list:"
 
-#: handlers/settings.py:21
+#: handlers/settings.py:27
 msgid ""
 "⚙️<b> Выберите время для получения\n"
 "ㅤㅤ сводки расписания на день</b>\n"
@@ -132,17 +136,33 @@ msgstr ""
 "  schedule summary for the day</b>\n"
 " Day before at ┃ On day of classes at"
 
-#: handlers/settings.py:36 handlers/settings.py:47
+#: handlers/settings.py:42 handlers/settings.py:53
 msgid "Настройки обновлены ✅"
 msgstr "Settings updated ✅"
 
-#: handlers/settings.py:56
+#: handlers/settings.py:62
 msgid ""
 "The language has been successfully changed to 🇬🇧\n"
 "Messages will now be sent in English"
 msgstr ""
 "Язык успешно изменён на 🇷🇺\n"
 "Теперь сообщения будут присылаться на русском"
+
+#: handlers/settings.py:82
+msgid ""
+"Вы подписались на расписание! ✅\n"
+"Воспользуйтесь командой:\n"
+"— /my_schedule для просмотра своего основного расписания\n"
+"— /settings для настройки уведомлений"
+msgstr ""
+"You have subscribed to the schedule! ✅\n"
+"Use the command:\n"
+"— /my_schedule to view your main schedule\n"
+"— /settings to configure notifications"
+
+#: handlers/settings.py:92
+msgid "Вы отказались от подписки! ❌"
+msgstr "You have unsubscribed! ❌ "
 
 #: handlers/start_menu.py:18
 msgid ""
@@ -180,71 +200,71 @@ msgstr "⬇️ Choose a group:"
 msgid "❌ По данной программе группы не найдены!"
 msgstr "❌ No groups were found for this program!"
 
-#: keyboards/inline.py:31
+#: keyboards/inline.py:32
 msgid "Названию группы"
 msgstr "Group name"
 
-#: keyboards/inline.py:34
+#: keyboards/inline.py:35
 msgid "Навигации по программам"
 msgstr "Program navigation"
 
-#: keyboards/inline.py:37
+#: keyboards/inline.py:38
 msgid "ФИО преподавателя"
 msgstr "Teacher's full name"
 
-#: keyboards/inline.py:113
+#: keyboards/inline.py:114
 msgid "Сегодня"
 msgstr "Today"
 
-#: keyboards/inline.py:126
+#: keyboards/inline.py:127
 msgid "⏹ Эта неделя"
 msgstr "⏹ This week"
 
-#: keyboards/inline.py:130
+#: keyboards/inline.py:131
 msgid "След. неделя ⏩"
 msgstr "Next week ⏩"
 
-#: keyboards/inline.py:136
+#: keyboards/inline.py:137
 msgid "📝 Текстом 📝"
 msgstr "📝 as a Text 📝"
 
-#: keyboards/inline.py:136
+#: keyboards/inline.py:137
 msgid "🖼 Картинкой 🖼"
 msgstr "🖼 as a Picture 🖼"
 
-#: keyboards/inline.py:146
+#: keyboards/inline.py:147
 msgid "Присылать сводку "
 msgstr "Send a summary "
 
-#: keyboards/inline.py:148
+#: keyboards/inline.py:149
 msgid "на день: 🔇"
 msgstr "for a day: 🔇"
 
-#: keyboards/inline.py:151
+#: keyboards/inline.py:152
 msgid "за день до: в "
 msgstr "a day before: at "
 
-#: keyboards/inline.py:153
+#: keyboards/inline.py:154
 msgid "день в день: в "
 msgstr "day to day: at "
 
-#: keyboards/inline.py:158
+#: keyboards/inline.py:159
 msgid "Вид расписания по умолчанию: "
 msgstr "Default schedule view: "
 
-#: keyboards/inline.py:163
+#: keyboards/inline.py:164
 msgid "Язык: "
 msgstr "Language: "
 
-#: keyboards/inline.py:182
+#: keyboards/inline.py:183
 msgid " Не присылать 🔇"
 msgstr " Do not send 🔇"
 
-#: keyboards/inline.py:187
+#: keyboards/inline.py:188
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
-#: services/schedule/getting_shedule.py:49
+#: services/schedule/getting_shedule.py:51
 msgid ""
 "\n"
 "\n"
@@ -254,7 +274,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: services/schedule/getting_shedule.py:52
+#: services/schedule/getting_shedule.py:54
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"

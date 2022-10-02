@@ -1,7 +1,8 @@
 from aiogram import types
 from sqlalchemy import asc
 
-from tgbot.services.db_api.db_models import User, Settings, Group
+from tgbot.misc.states import UserType
+from tgbot.services.db_api.db_models import User, Settings, Group, MainScheduleInfo
 
 
 class DBCommands:
@@ -55,6 +56,23 @@ class DBCommands:
     async def get_groups_by_name(group_name: str) -> list[Group]:
         groups = await Group.query.where(Group.name.contains(group_name)).order_by(asc(Group.name)).gino.all()
         return groups
+
+    async def set_main_schedule(self, tg_user_id: int, tt_id: int, user_type: UserType, schedule_name) -> None:
+        user = await self.get_user(tg_user_id)
+        old_main_schedule = await self.get_main_schedule(user.user_id)
+        if old_main_schedule:
+            await MainScheduleInfo.delete.where(MainScheduleInfo.user_id == user.user_id).gino.status()
+        new_main_schedule = MainScheduleInfo()
+        new_main_schedule.user_id = user.user_id
+        new_main_schedule.timetable_id = tt_id
+        new_main_schedule.user_type_is_student = (user_type == UserType.STUDENT)
+        new_main_schedule.name = schedule_name
+        await new_main_schedule.create()
+
+    @staticmethod
+    async def get_main_schedule(user_id: int) -> MainScheduleInfo:
+        main_schedule = await MainScheduleInfo.query.where(MainScheduleInfo.user_id == user_id).gino.first()
+        return main_schedule
 
 
 database = DBCommands()

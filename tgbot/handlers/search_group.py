@@ -44,5 +44,6 @@ async def group_viewing_schedule_handler(
         callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ) -> None:
     await state.set_state(state=None)
-    await send_schedule(callback, callback_data, subscription=True)
+    await state.update_data({'tt_id': callback_data.tt_id, 'user_type': callback_data.user_type})
+    await send_schedule(callback, state, subscription=True)
     await callback.answer(cache_time=1)
