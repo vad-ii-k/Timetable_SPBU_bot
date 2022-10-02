@@ -44,3 +44,7 @@ class SettingsCallbackFactory(CallbackData, prefix="settings"):
 
 class SettingsDailySummaryCallbackFactory(CallbackData, prefix="settings_daily_summary"):
     choice: str
+
+
+class ScheduleSubscriptionCallbackFactory(CallbackData, prefix="schedule_subscription"):
+    answer: bool

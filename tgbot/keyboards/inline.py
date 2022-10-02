@@ -12,6 +12,7 @@ from tgbot.cb_data import (
     StartMenuCallbackFactory,
     ScheduleCallbackFactory,
     TTObjectChoiceCallbackFactory, SettingsCallbackFactory, SettingsDailySummaryCallbackFactory,
+    ScheduleSubscriptionCallbackFactory,
 )
 from tgbot.data_classes import (
     StudyDivision,
@@ -189,3 +190,19 @@ async def create_settings_daily_summary_keyboard(selected_option: datetime):
     )
     daily_summary_keyboard.row(back_button)
     return daily_summary_keyboard.as_markup()
+
+
+async def create_schedule_subscription_keyboard() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+
+    keyboard.button(
+        text="Да, сделать основным ✅",
+        callback_data=ScheduleSubscriptionCallbackFactory(answer=True),
+    )
+    keyboard.button(
+        text="Нет, только посмотреть ❌",
+        callback_data=ScheduleSubscriptionCallbackFactory(answer=False),
+    )
+
+    keyboard.adjust(1)
+    return keyboard.as_markup()
