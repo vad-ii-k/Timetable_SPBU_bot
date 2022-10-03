@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-02 19:01+0300\n"
+"POT-Creation-Date: 2022-10-04 00:00+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -56,33 +56,37 @@ msgstr ""
 "🔎 Enter the name of the group to search for:\n"
 "*️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: handlers/commands.py:67
+#: handlers/commands.py:68
 msgid ""
-"📅 Основное расписание:\n"
-" — "
+"📅 <b>Основное расписание:</b>\n"
+"ㅤㅤ"
 msgstr ""
-"📅 Main schedule:\n"
-" — "
+"📅 <b>Main schedule:</b>\n"
+"ㅤㅤ"
 
-#: handlers/commands.py:69
+#: handlers/commands.py:72
+msgid "🚫 Не выбрано"
+msgstr "🚫 Not selected"
+
+#: handlers/commands.py:73
 msgid ""
 "\n"
 "\n"
-"⚙️ Текущие настройки:"
+"⚙️ <b>Текущие настройки:</b>"
 msgstr ""
 "\n"
 "\n"
-"⚙️ Current settings:"
+"⚙️ <b>Current settings:</b>"
 
-#: handlers/commands.py:75
+#: handlers/commands.py:79
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
-#: handlers/helpers.py:19
+#: handlers/helpers.py:17
 msgid "🕒 <i>Загрузка...</i>"
 msgstr "🕒 <i>Loading...</i>"
 
-#: handlers/helpers.py:33
+#: handlers/helpers.py:31
 msgid "⚙️ Хотите сделать это расписание своим основным?"
 msgstr "⚙️ Do you want to make this schedule your main one?"
 

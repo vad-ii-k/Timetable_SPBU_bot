@@ -63,10 +63,14 @@ async def group_search_command(message: Message, state: FSMContext):
 async def settings_command(message: Message):
     user = await database.get_user(tg_user_id=message.chat.id)
     settings = await database.get_settings(user)
+    main_schedule = await database.get_main_schedule(user_id=user.user_id)
 
-    text = _("📅 Основное расписание:\n — ")
-    # Добавить получение расписания
-    text += _("\n\n⚙️ Текущие настройки:")
+    text = _("📅 <b>Основное расписание:</b>\nㅤㅤ")
+    if main_schedule:
+        text += f"{'👨‍👩‍👧‍👦' if main_schedule.user_type_is_student else '👨🏼‍🏫'} {main_schedule.name}"
+    else:
+        text += _("🚫 Не выбрано")
+    text += _("\n\n⚙️ <b>Текущие настройки:</b>")
     await message.answer(text=text, reply_markup=await create_settings_keyboard(settings))
 
 
