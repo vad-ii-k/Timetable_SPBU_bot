@@ -8,7 +8,7 @@ from aiogram.utils.i18n import gettext as _
 from tgbot.config import bot
 from tgbot.handlers.helpers import send_schedule
 from tgbot.keyboards.inline import create_start_choice_keyboard, create_settings_keyboard
-from tgbot.misc.states import SearchEducator, SearchGroup, UserType
+from tgbot.misc.states import Searching, UserType
 from tgbot.services.db_api.db_commands import database
 
 router = Router()
@@ -50,14 +50,14 @@ async def start_command(message: Message, state: FSMContext):
 @router.message(commands=["educator"], state="*")
 async def educator_search_command(message: Message, state: FSMContext):
     await message.answer(_("🔎 Введите фамилию преподавателя для поиска:"))
-    await state.set_state(SearchEducator.getting_choice)
+    await state.set_state(Searching.getting_educator_choice)
 
 
 @router.message(commands=["group"], state="*")
 async def group_search_command(message: Message, state: FSMContext):
     await message.answer(_("🔎 Введите название группы для поиска:\n"
                            "*️⃣ <i>например, 20.Б08-мм</i>"))
-    await state.set_state(SearchGroup.getting_choice)
+    await state.set_state(Searching.getting_group_choice)
 
 
 @router.message(commands=["settings"], state="*")

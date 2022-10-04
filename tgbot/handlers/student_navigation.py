@@ -19,7 +19,7 @@ from tgbot.keyboards.inline import (
     create_admission_years_keyboard,
     create_groups_keyboard,
 )
-from tgbot.misc.states import SearchGroup
+from tgbot.misc.states import Searching
 from tgbot.services.timetable_api.timetable_api import get_study_levels, get_groups
 
 router = Router()
@@ -80,7 +80,7 @@ async def group_choice_navigation_callback(
             text=_("⬇️ Выберите группу:"),
             reply_markup=await create_groups_keyboard(groups)
         )
-        await state.set_state(SearchGroup.choosing)
+        await state.set_state(Searching.choosing)
     else:
         await callback.message.edit_text(_("❌ По данной программе группы не найдены!"))
     await callback.message.delete()

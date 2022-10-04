@@ -1,13 +1,8 @@
-from datetime import date
-
-from aiogram.utils.i18n import get_i18n
 from aiogram.utils.i18n import gettext as _
-from babel.dates import format_date
 
-from tgbot.data_classes import StudyEvent, GroupEventsDay, EducatorEventsDay
+from tgbot.data_classes import GroupEventsDay, EducatorEventsDay
 from tgbot.misc.states import UserType
-from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, _get_time_sticker, \
-    _get_subject_format_sticker, _get_schedule_weekday_header
+from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
 
@@ -15,36 +10,18 @@ async def get_schedule(tt_id: int, user_type: UserType, week_counter: int = 0) -
     monday, sunday = _get_monday_and_sunday_dates(week_counter)
     if user_type == UserType.STUDENT:
         schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
-        schedule_name = schedule_from_timetable.group_name
     else:
         schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
-        schedule_name = schedule_from_timetable.full_name
-    schedule = schedule_from_timetable.get_schedule_week_header()
+    schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_week_body(schedule, schedule_from_timetable.events_days)
+    schedule_name = schedule_from_timetable.name
     return schedule, schedule_name
-
-
-async def events_day_converter_to_msg(day: date, events: list[StudyEvent]) -> str:
-    day_timetable = _get_schedule_weekday_header(format_date(day, "EEEE, d MMMM", locale=get_i18n().current_locale))
-    for i, event in enumerate(events):
-        if i == 0 or events[i-1] != event:
-            day_timetable += (
-                f'     ┈┈┈┈┈┈┈┈┈┈┈┈\n'
-                f'    {"<s>" * event.is_canceled}<b>{event.subject_name}</b>{"</s>" * event.is_canceled}\n'
-                f'    {_get_time_sticker(event.start_time.hour)} {event.start_time:%H:%M}-{event.end_time:%H:%M}\n'
-                f'    <i>{_get_subject_format_sticker(event.subject_format)} {event.subject_format}</i>\n'
-            )
-        day_timetable += (
-            f"    <i>{event.get_contingent(with_sticker=True)}</i>\n"
-            f"    <i>📍 {event.location}</i>\n"
-        )
-    return day_timetable
 
 
 async def schedule_week_body(schedule: str, events_days: list[GroupEventsDay | EducatorEventsDay]) -> str:
     if len(events_days) > 0:
         for day in events_days:
-            day_schedule = await events_day_converter_to_msg(day=day.day, events=day.study_events)
+            day_schedule = await day.events_day_converter_to_msg(day=day.day)
             if len(schedule) + len(day_schedule) <= 4060:
                 schedule += day_schedule
             else:
