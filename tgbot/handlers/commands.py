@@ -6,8 +6,9 @@ from aiogram.types import Message, BotCommand, BotCommandScopeAllPrivateChats
 from aiogram.utils.i18n import gettext as _
 
 from tgbot.config import bot
+from tgbot.handlers.helpers import send_schedule
 from tgbot.keyboards.inline import create_start_choice_keyboard, create_settings_keyboard
-from tgbot.misc.states import SearchEducator, SearchGroup
+from tgbot.misc.states import SearchEducator, SearchGroup, UserType
 from tgbot.services.db_api.db_commands import database
 
 router = Router()
@@ -72,6 +73,15 @@ async def settings_command(message: Message):
         text += _("🚫 Не выбрано")
     text += _("\n\n⚙️ <b>Текущие настройки:</b>")
     await message.answer(text=text, reply_markup=await create_settings_keyboard(settings))
+
+
+@router.message(commands=["my_schedule"], state="*", flags={'chat_action': 'typing'})
+async def my_schedule_command(message: Message, state: FSMContext):
+    user = await database.get_user(tg_user_id=message.chat.id)
+    main_schedule = await database.get_main_schedule(user_id=user.user_id)
+    user_type = UserType.STUDENT if main_schedule.user_type_is_student else UserType.EDUCATOR
+    await state.update_data({'tt_id': main_schedule.timetable_id, 'user_type': user_type})
+    await send_schedule(state, subscription=False, tg_user_id=message.from_user.id)
 
 
 @router.message(commands=["help"])
