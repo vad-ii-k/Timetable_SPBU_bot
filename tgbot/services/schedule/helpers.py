@@ -8,13 +8,13 @@ def _get_monday_and_sunday_dates(week_counter: int = 0) -> tuple[date, date]:
     return monday, sunday
 
 
-def _get_schedule_weekday_header(day_string: str) -> str:
+def get_schedule_weekday_header(day_string: str) -> str:
     weekday_sticker = _get_weekday_sticker(day_string)
     header = f"\n\n{weekday_sticker} <b>{day_string}</b>\n"
     return header
 
 
-def _get_time_sticker(hour: int) -> str:
+def get_time_sticker(hour: int) -> str:
     time_sticker = ""
     match hour:
         case 0 | 12:
@@ -44,7 +44,7 @@ def _get_time_sticker(hour: int) -> str:
     return time_sticker
 
 
-def _get_subject_format_sticker(subject_format: str) -> str:
+def get_subject_format_sticker(subject_format: str) -> str:
     format_sticker = "✍🏼"
     match subject_format.split(" ")[0]:
         case "лекция":

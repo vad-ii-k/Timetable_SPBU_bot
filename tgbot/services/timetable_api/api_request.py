@@ -32,7 +32,7 @@ async def request(url: str, expire_after: int = 60) -> dict:
                     if resp.status == 200:
                         return await resp.json()
             except ProxyError:
-                break
+                continue
     # Trying to get a response without a proxy
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:

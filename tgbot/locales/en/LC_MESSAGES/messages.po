@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-04 20:59+0300\n"
+"POT-Creation-Date: 2022-10-05 10:06+0300\n"
 "PO-Revision-Date: 2022-09-20 20:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: data_classes.py:120
+#: data_classes.py:157
 msgid "🧑‍🏫 Преподаватель: "
 msgstr "🧑‍🏫 Educator: "
 
-#: data_classes.py:121 data_classes.py:150
+#: data_classes.py:158 data_classes.py:195
 msgid "📆 Неделя: "
 msgstr "📆 Week: "
 
-#: data_classes.py:149
+#: data_classes.py:194
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
@@ -268,7 +268,7 @@ msgstr " Do not send 🔇"
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
-#: services/schedule/getting_shedule.py:51
+#: services/schedule/getting_shedule.py:27
 msgid ""
 "\n"
 "\n"
@@ -278,7 +278,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: services/schedule/getting_shedule.py:54
+#: services/schedule/getting_shedule.py:30
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"

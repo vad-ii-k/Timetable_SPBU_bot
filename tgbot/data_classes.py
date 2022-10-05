@@ -7,7 +7,7 @@ from aiogram.utils.i18n import gettext as _, get_i18n
 from babel.dates import format_date
 from pydantic import BaseModel, Field, validator, root_validator
 
-from tgbot.services.schedule.helpers import _get_schedule_weekday_header, _get_time_sticker, _get_subject_format_sticker
+from tgbot.services.schedule.helpers import get_schedule_weekday_header, get_time_sticker, get_subject_format_sticker
 
 
 @dataclass(slots=True, frozen=True)
@@ -97,15 +97,16 @@ class EventsDay(BaseModel):
     def events(self):
         pass
 
-    async def events_day_converter_to_msg(self, day: date) -> str:
-        day_timetable = _get_schedule_weekday_header(format_date(day, "EEEE, d MMMM", locale=get_i18n().current_locale))
+    async def events_day_converter_to_msg(self) -> str:
+        formatted_date = format_date(self.day, "EEEE, d MMMM", locale=get_i18n().current_locale)
+        day_timetable = get_schedule_weekday_header(formatted_date)
         for i, event in enumerate(self.events):
             if i == 0 or self.events[i - 1] != event:
                 day_timetable += (
                     f'     ┈┈┈┈┈┈┈┈┈┈┈┈\n'
                     f'    {"<s>" * event.is_canceled}<b>{event.subject_name}</b>{"</s>" * event.is_canceled}\n'
-                    f'    {_get_time_sticker(event.start_time.hour)} {event.start_time:%H:%M}-{event.end_time:%H:%M}\n'
-                    f'    <i>{_get_subject_format_sticker(event.subject_format)} {event.subject_format}</i>\n'
+                    f'    {get_time_sticker(event.start_time.hour)} {event.start_time:%H:%M}-{event.end_time:%H:%M}\n'
+                    f'    <i>{get_subject_format_sticker(event.subject_format)} {event.subject_format}</i>\n'
                 )
             day_timetable += (
                 f"    <i>{event.get_contingent(with_sticker=True)}</i>\n"
@@ -146,15 +147,15 @@ class EducatorEventsDay(EventsDay):
 
 class EducatorSchedule(Schedule):
     educator_tt_id: int = Field(alias="EducatorMasterId")
-    _full_name: str = Field(alias="EducatorLongDisplayText")
+    full_name: str = Field(alias="EducatorLongDisplayText")
     events_days: list[EducatorEventsDay] = Field(alias="EducatorEventsDays")
 
     @property
     def name(self):
-        return self._full_name
+        return self.full_name
 
     async def get_schedule_week_header(self) -> str:
-        header = _("🧑‍🏫 Преподаватель: ") + f"<b>{self._full_name}</b>\n" \
+        header = _("🧑‍🏫 Преподаватель: ") + f"<b>{self.name}</b>\n" \
                  + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
         return header
 
@@ -183,15 +184,14 @@ class GroupEventsDay(EventsDay):
 
 class GroupSchedule(Schedule):
     group_tt_id: int = Field(alias="StudentGroupId")
-    _group_name: str = Field(alias="StudentGroupDisplayName")
+    group_name: str = Field(alias="StudentGroupDisplayName")
     events_days: list[GroupEventsDay] = Field(alias="Days")
 
     @property
-    @abstractmethod
     def name(self):
-        return self._group_name
+        return self.group_name
 
     async def get_schedule_week_header(self) -> str:
-        header = _("👨‍👩‍👧‍👦 Группа: ") + f"<b>{self._group_name}</b>\n"\
+        header = _("👨‍👩‍👧‍👦 Группа: ") + f"<b>{self.name}</b>\n"\
                  + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
         return header

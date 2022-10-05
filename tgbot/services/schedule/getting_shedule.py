@@ -14,14 +14,13 @@ async def get_schedule(tt_id: int, user_type: UserType, week_counter: int = 0) -
         schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
     schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_week_body(schedule, schedule_from_timetable.events_days)
-    schedule_name = schedule_from_timetable.name
-    return schedule, schedule_name
+    return schedule, schedule_from_timetable.name
 
 
 async def schedule_week_body(schedule: str, events_days: list[GroupEventsDay | EducatorEventsDay]) -> str:
     if len(events_days) > 0:
         for day in events_days:
-            day_schedule = await day.events_day_converter_to_msg(day=day.day)
+            day_schedule = await day.events_day_converter_to_msg()
             if len(schedule) + len(day_schedule) <= 4060:
                 schedule += day_schedule
             else:
