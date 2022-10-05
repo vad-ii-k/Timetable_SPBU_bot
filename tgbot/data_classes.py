@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import time, date
-from typing import TypeVar
+from typing import TypeVar, Generic, Self
 
 from aiogram.utils.i18n import gettext as _, get_i18n
 from babel.dates import format_date
 from pydantic import BaseModel, Field, validator, root_validator
+from pydantic.generics import GenericModel
 
 from tgbot.services.schedule.helpers import get_schedule_weekday_header, get_time_sticker, get_subject_format_sticker
 
@@ -43,9 +44,6 @@ class GroupSearchInfo:
     name: str
 
 
-SE = TypeVar('SE', bound='StudyEvent')
-
-
 class StudyEvent(BaseModel, ABC):
     start_time: time = Field(alias="Start")
     end_time: time = Field(alias="End")
@@ -69,7 +67,7 @@ class StudyEvent(BaseModel, ABC):
         pass
 
     @classmethod
-    def __verify_data(cls, other) -> SE:
+    def __verify_data(cls, other) -> Self:
         if not isinstance(other, StudyEvent):
             raise TypeError
         return other
@@ -85,21 +83,37 @@ class StudyEvent(BaseModel, ABC):
         )
 
 
-class EventsDay(BaseModel):
+TSE = TypeVar('TSE')
+
+
+class EventsDay(GenericModel, Generic[TSE]):
     day: date = Field(alias="Day")
+    events: list[TSE] = Field(alias="DayStudyEvents")
+
+    general_location: str | None = None
 
     @validator('day', pre=True)
     def from_datetime_to_date(cls, value):
         return value.split('T')[0]
 
-    @property
-    @abstractmethod
-    def events(self):
-        pass
+    @root_validator
+    def combining_locations_of_events(cls, values):
+        events: list[TSE] = values['events']
+        if len(events) > 0:
+            locations_without_office = list(map(lambda e: e.location.rsplit(",", maxsplit=1)[0], events))
+            if locations_without_office.count(locations_without_office[0]) == len(locations_without_office):
+                values['general_location'] = locations_without_office[0]
+                for value in events:
+                    try:
+                        value.location = value.location.rsplit(",", maxsplit=1)[1].strip(' ')
+                    except IndexError:
+                        value.location = '—'
+            values['events'] = events
+        return values
 
     async def events_day_converter_to_msg(self) -> str:
         formatted_date = format_date(self.day, "EEEE, d MMMM", locale=get_i18n().current_locale)
-        day_timetable = get_schedule_weekday_header(formatted_date)
+        day_timetable = get_schedule_weekday_header(formatted_date, self.general_location)
         for i, event in enumerate(self.events):
             if i == 0 or self.events[i - 1] != event:
                 day_timetable += (
@@ -109,8 +123,8 @@ class EventsDay(BaseModel):
                     f'    <i>{get_subject_format_sticker(event.subject_format)} {event.subject_format}</i>\n'
                 )
             day_timetable += (
-                f"    <i>{event.get_contingent(with_sticker=True)}</i>\n"
-                f"    <i>📍 {event.location}</i>\n"
+                f"    <i>{event.get_contingent(with_sticker=True)}\n"
+                f"    {'🚪 каб.' if self.general_location else '📍'} {event.location}</i>\n"
             )
         return day_timetable
 
@@ -137,18 +151,14 @@ class EducatorStudyEvent(StudyEvent):
         return '🎓 ' * with_sticker + self.groups
 
 
-class EducatorEventsDay(EventsDay):
-    study_events: list[EducatorStudyEvent] = Field(alias="DayStudyEvents")
-
-    @property
-    def events(self):
-        return self.study_events
+class EducatorEventsDay(EventsDay[TSE], Generic[TSE]):
+    pass
 
 
 class EducatorSchedule(Schedule):
     educator_tt_id: int = Field(alias="EducatorMasterId")
     full_name: str = Field(alias="EducatorLongDisplayText")
-    events_days: list[EducatorEventsDay] = Field(alias="EducatorEventsDays")
+    events_days: list[EducatorEventsDay[EducatorStudyEvent]] = Field(alias="EducatorEventsDays")
 
     @property
     def name(self):
@@ -174,18 +184,14 @@ class GroupStudyEvent(StudyEvent):
         return '👨🏻‍🏫 ' * with_sticker + self.educators
 
 
-class GroupEventsDay(EventsDay):
-    study_events: list[GroupStudyEvent] = Field(alias="DayStudyEvents")
-
-    @property
-    def events(self):
-        return self.study_events
+class GroupEventsDay(EventsDay[TSE], Generic[TSE]):
+    pass
 
 
 class GroupSchedule(Schedule):
     group_tt_id: int = Field(alias="StudentGroupId")
     group_name: str = Field(alias="StudentGroupDisplayName")
-    events_days: list[GroupEventsDay] = Field(alias="Days")
+    events_days: list[GroupEventsDay[GroupStudyEvent]] = Field(alias="Days")
 
     @property
     def name(self):

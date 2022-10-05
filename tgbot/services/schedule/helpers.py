@@ -8,9 +8,11 @@ def _get_monday_and_sunday_dates(week_counter: int = 0) -> tuple[date, date]:
     return monday, sunday
 
 
-def get_schedule_weekday_header(day_string: str) -> str:
+def get_schedule_weekday_header(day_string: str, general_location: str) -> str:
     weekday_sticker = _get_weekday_sticker(day_string)
     header = f"\n\n{weekday_sticker} <b>{day_string}</b>\n"
+    if general_location:
+        header += f"📍 {general_location}\n"
     return header
 
 
