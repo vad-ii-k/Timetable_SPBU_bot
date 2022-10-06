@@ -4,6 +4,7 @@ from aiogram import Router, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, BotCommand, BotCommandScopeAllPrivateChats
 from aiogram.utils.i18n import gettext as _
+from aiogram.filters import Command
 
 from tgbot.config import bot
 from tgbot.handlers.helpers import send_schedule
@@ -33,7 +34,7 @@ async def set_commands(_bot: Bot):
         await bot.set_my_commands(commands=commands_list, scope=commands_scope, language_code=language)
 
 
-@router.message(commands=["start"], state="*")
+@router.message(Command("start"))
 async def start_command(message: Message, state: FSMContext):
     await state.clear()
     logging.info("start -- id:%s", message.from_user.id)
@@ -47,20 +48,20 @@ async def start_command(message: Message, state: FSMContext):
     )
 
 
-@router.message(commands=["educator"], state="*")
+@router.message(Command("educator"))
 async def educator_search_command(message: Message, state: FSMContext):
     await message.answer(_("🔎 Введите фамилию преподавателя для поиска:"))
     await state.set_state(Searching.getting_educator_choice)
 
 
-@router.message(commands=["group"], state="*")
+@router.message(Command("group"))
 async def group_search_command(message: Message, state: FSMContext):
     await message.answer(_("🔎 Введите название группы для поиска:\n"
                            "*️⃣ <i>например, 20.Б08-мм</i>"))
     await state.set_state(Searching.getting_group_choice)
 
 
-@router.message(commands=["settings"], state="*")
+@router.message(Command("settings"))
 async def settings_command(message: Message):
     user = await database.get_user(tg_user_id=message.chat.id)
     settings = await database.get_settings(user)
@@ -75,7 +76,7 @@ async def settings_command(message: Message):
     await message.answer(text=text, reply_markup=await create_settings_keyboard(settings))
 
 
-@router.message(commands=["my_schedule"], state="*", flags={'chat_action': 'typing'})
+@router.message(Command("my_schedule"), flags={'chat_action': 'typing'})
 async def my_schedule_command(message: Message, state: FSMContext):
     user = await database.get_user(tg_user_id=message.chat.id)
     main_schedule = await database.get_main_schedule(user_id=user.user_id)
@@ -84,7 +85,7 @@ async def my_schedule_command(message: Message, state: FSMContext):
     await send_schedule(state, subscription=False, tg_user_id=message.from_user.id)
 
 
-@router.message(commands=["help"])
+@router.message(Command("help"))
 async def help_command(message: Message):
     answer = _("🤖 Список команд: \n")
     commands = await bot.get_my_commands()

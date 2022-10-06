@@ -1,5 +1,3 @@
-import pickle
-
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
@@ -11,7 +9,6 @@ from tgbot.cb_data import (
     ProgramCombinationsCallbackFactory,
     AdmissionYearsCallbackFactory,
 )
-from tgbot.data_classes import ProgramCombination, StudyLevel
 from tgbot.handlers.helpers import change_message_to_loading
 from tgbot.keyboards.inline import (
     create_study_levels_keyboard,
@@ -36,7 +33,7 @@ async def study_divisions_navigation_callback(
         text=_("⬇️ Выберите уровень подготовки:"),
         reply_markup=await create_study_levels_keyboard(study_levels)
     )
-    await state.set_data({"study_levels": pickle.dumps(study_levels)})
+    await state.set_data({"study_levels": [level.dict() for level in study_levels]})
 
 
 @router.callback_query(StudyLevelCallbackFactory.filter())
@@ -44,14 +41,12 @@ async def study_levels_navigation_callback(
         callback: CallbackQuery, callback_data: StudyLevelCallbackFactory, state: FSMContext
 ):
     data = await state.get_data()
-    study_levels: list[StudyLevel] = pickle.loads(data["study_levels"])
-    program_combinations = study_levels[callback_data.serial].program_combinations
-    await state.set_data({"program_combinations": pickle.dumps(program_combinations)})
-
+    program_combinations = data["study_levels"][callback_data.serial]["program_combinations"]
     await callback.message.edit_text(
         text=_("⬇️ Выберите программу подготовки: "),
         reply_markup=await create_study_programs_keyboard(program_combinations)
     )
+    await state.set_data({"program_combinations": program_combinations})
 
 
 @router.callback_query(ProgramCombinationsCallbackFactory.filter())
@@ -59,14 +54,12 @@ async def admission_years_navigation_callback(
         callback: CallbackQuery, callback_data: ProgramCombinationsCallbackFactory, state: FSMContext
 ):
     data = await state.get_data()
-    program_combinations: list[ProgramCombination] = pickle.loads(data["program_combinations"])
-    admission_years = program_combinations[callback_data.serial].admission_years
-    await state.set_data({})
-
+    admission_years = data["program_combinations"][callback_data.serial]["admission_years"]
     await callback.message.edit_text(
         text=_("⬇️ Выберите год поступления: "),
         reply_markup=await create_admission_years_keyboard(admission_years)
     )
+    await state.set_data({})
 
 
 @router.callback_query(AdmissionYearsCallbackFactory.filter(), flags={'chat_action': 'typing'})

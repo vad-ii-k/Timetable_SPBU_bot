@@ -2,7 +2,7 @@ import logging
 
 from aiogram import Router
 from aiogram.exceptions import AiogramError, TelegramAPIError
-from aiogram.types import Update
+from aiogram.types.error_event import ErrorEvent
 
 from tgbot.config import bot, app_config
 from tgbot.services import broadcaster
@@ -11,7 +11,8 @@ router = Router()
 
 
 @router.errors()
-async def errors_handler(update: Update, exception: Exception):
+async def errors_handler(exception: ErrorEvent):
+    update = exception.update
     if update.message is not None:
         await update.message.answer("⚠ Произошла ошибка :(")
     else:

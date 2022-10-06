@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import time, date
-from typing import TypeVar, Generic, Self
+from typing import TypeVar, Generic
 
 from aiogram.utils.i18n import gettext as _, get_i18n
 from babel.dates import format_date
@@ -67,7 +67,7 @@ class StudyEvent(BaseModel, ABC):
         pass
 
     @classmethod
-    def __verify_data(cls, other) -> Self:
+    def __verify_data(cls, other):
         if not isinstance(other, StudyEvent):
             raise TypeError
         return other
