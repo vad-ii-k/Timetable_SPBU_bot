@@ -1,23 +1,65 @@
 version: '3.9'
 
 services:
+
   bot:
-    image: "${BOT_IMAGE_NAME:-tg_bot-image}"
-    container_name: "${BOT_CONTAINER_NAME:-tg_bot-container}"
-    stop_signal: SIGINT
+    image: ${BOT_IMAGE_NAME:-tg_bot-image}
+    container_name: ${BOT_CONTAINER_NAME:-tg_bot-container}
+    working_dir: /usr/src/app/${BOT_NAME:-tg_bot}
     build:
       context: .
-    working_dir: "/usr/src/app/${BOT_NAME:-tg_bot}"
+      dockerfile: ./dockerfile
+    environment:
+      TZ: Europe/Moscow
+      ADMINS: ${ADMINS}
+      BOT_TOKEN: ${BOT_TOKEN}
+
+      PROXY_LOGIN: ${PROXY_LOGIN}
+      PROXY_PASSWORD: ${PROXY_PASSWORD}
+      PROXY_IPS: ${PROXY_IPS}
+
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      USE_REDIS: ${USE_REDIS}
+
+      PG_NAME: ${DB_NAME}
+      PG_USER: ${DB_USER}
+      PG_HOST: ${DB_HOST}
+      PG_PASSWORD: ${DB_PASS}
+      PG_PORT: ${DB_PORT}
+      ARE_GROUPS_COLLECTED: ${ARE_GROUPS_COLLECTED}
     volumes:
-    - .:/usr/src/app/${BOT_NAME:-tg_bot}
+        - .:/usr/src/app/${BOT_NAME:-tg_bot}
+    depends_on:
+      - postgres
+      - redis
     command: python3 -m bot
-    restart: always
-    env_file:
-      - ".env"
-    networks:
-    - tg_bot
+    network_mode: host
+    restart: unless-stopped
 
+  redis:
+    image: redis:alpine
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    environment:
+      TZ: Europe/Moscow
+    volumes:
+        - /usr/src/app/${BOT_NAME:-tg_bot}/redis/config:/usr/local/etc/redis
+        - /usr/src/app/${BOT_NAME:-tg_bot}/redis/data:/data
+    restart: unless-stopped
+    network_mode: host
 
-networks:
-  tg_bot:
-    driver: bridge
+  postgres:
+    image: postgres:alpine
+    environment:
+      TZ: Europe/Moscow
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - /usr/src/app/${BOT_NAME:-tg_bot}/pg/init:/docker-entrypoint-initdb.d
+      - /usr/src/app/${BOT_NAME:-tg_bot}/pg/data:/var/lib/postgresql/data
+    restart: unless-stopped
+    network_mode: host
