@@ -1,32 +1,33 @@
+from datetime import timedelta
 from random import shuffle
 
 from aiogram.client.session import aiohttp
 from aiohttp import ClientSession
-from aiohttp_client_cache import RedisBackend
+from aiohttp_client_cache import RedisBackend, CachedSession
 from aiohttp_socks import ProxyConnector, ProxyError
 
 from tgbot.config import app_config
 
 
-def get_cache(expire_after: int) -> RedisBackend:
+def get_cache(expire_after_days: float) -> RedisBackend:
     redis_cache = RedisBackend(
         cache_name='aiohttp-cache',
         address=f'redis://{app_config.redis.host}',
         port=app_config.redis.port,
         password=app_config.redis.password,
         db=2,
-        expire_after=expire_after,
+        expire_after=timedelta(days=expire_after_days),
     )
     return redis_cache
 
 
-async def request(url: str, expire_after: int = 60) -> dict:
+async def request(url: str, expire_after_days: float = 0.1) -> dict:
     shuffle(app_config.proxy.ips)
     # Iterating through the proxy until we get the OK status
     for proxy_ip in app_config.proxy.ips:
+        # async with ClientSession(connector=connector) as session:
         connector = ProxyConnector.from_url(f'HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{proxy_ip}')
-        # async with CachedSession(cache=get_cache(expire_after=expire_after), connector=connector) as session:
-        async with ClientSession(connector=connector) as session:
+        async with CachedSession(cache=get_cache(expire_after_days=expire_after_days), connector=connector) as session:
             try:
                 async with session.get(url) as resp:
                     if resp.status == 200:

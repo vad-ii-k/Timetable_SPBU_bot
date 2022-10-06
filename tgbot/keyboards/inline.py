@@ -57,20 +57,20 @@ async def create_study_levels_keyboard(study_levels: list[StudyLevel]) -> Inline
     return keyboard.as_markup()
 
 
-async def create_study_programs_keyboard(program_combinations: list[ProgramCombination]) -> InlineKeyboardMarkup:
+async def create_study_programs_keyboard(program_combinations: list[dict[str, str]]) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     for serial, program in enumerate(program_combinations):
-        keyboard.button(text=program.name, callback_data=ProgramCombinationsCallbackFactory(serial=serial))
+        keyboard.button(text=program['name'], callback_data=ProgramCombinationsCallbackFactory(serial=serial))
     keyboard.adjust(1)
     return keyboard.as_markup()
 
 
-async def create_admission_years_keyboard(admission_years: list[AdmissionYear]) -> InlineKeyboardMarkup:
+async def create_admission_years_keyboard(admission_years: list[dict[str, str]]) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     for year in admission_years:
         keyboard.button(
-            text=year.year,
-            callback_data=AdmissionYearsCallbackFactory(study_program_id=year.study_program_id)
+            text=year['year'],
+            callback_data=AdmissionYearsCallbackFactory(study_program_id=year['study_program_id'])
         )
     keyboard.adjust(1)
     return keyboard.as_markup()
