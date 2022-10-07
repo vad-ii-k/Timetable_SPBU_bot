@@ -98,9 +98,9 @@ async def create_educators_keyboard(educators: list[EducatorSearchInfo]) -> Inli
     return keyboard.as_markup()
 
 
-async def create_schedule_keyboard(
-        is_photo: bool, tt_id: int, user_type: UserType, day_counter: int = 0
-) -> InlineKeyboardMarkup:
+async def create_schedule_keyboard(is_photo: bool, callback_data: ScheduleCallbackFactory) -> InlineKeyboardMarkup:
+    tt_id, user_type, week_counter = callback_data.tt_id, callback_data.user_type, callback_data.week_counter
+    day_counter = 0 if callback_data.day_counter is None else callback_data.day_counter
     current_date = date.today() + timedelta(day_counter)
     prev_day_date = current_date - timedelta(days=1)
     next_day_date = current_date + timedelta(days=1)
@@ -108,15 +108,21 @@ async def create_schedule_keyboard(
     timetable_keyboard = InlineKeyboardBuilder()
     prev_day_button = InlineKeyboardButton(
         text=f"⬅ {prev_day_date:%d.%m}",
-        callback_data=ScheduleCallbackFactory(button="1-1", tt_id=tt_id, user_type=user_type).pack(),
+        callback_data=ScheduleCallbackFactory(
+            button="1-1", tt_id=tt_id, user_type=user_type, day_counter=day_counter, week_counter=week_counter
+        ).pack(),
     )
     today_button = InlineKeyboardButton(
         text=_("Сегодня"),
-        callback_data=ScheduleCallbackFactory(button="1-2", tt_id=tt_id, user_type=user_type).pack(),
+        callback_data=ScheduleCallbackFactory(
+            button="1-2", tt_id=tt_id, user_type=user_type, day_counter=day_counter, week_counter=week_counter
+        ).pack(),
     )
     next_day_button = InlineKeyboardButton(
         text=f"{next_day_date:%d.%m} ➡️",
-        callback_data=ScheduleCallbackFactory(button="1-3", tt_id=tt_id, user_type=user_type).pack(),
+        callback_data=ScheduleCallbackFactory(
+            button="1-3", tt_id=tt_id, user_type=user_type, day_counter=day_counter, week_counter=week_counter
+        ).pack(),
     )
     if day_counter > -7:
         timetable_keyboard.row(prev_day_button, today_button, next_day_button)
@@ -125,17 +131,23 @@ async def create_schedule_keyboard(
 
     this_week_button = InlineKeyboardButton(
         text=_("⏹ Эта неделя"),
-        callback_data=ScheduleCallbackFactory(button="2-1", tt_id=tt_id, user_type=user_type).pack(),
+        callback_data=ScheduleCallbackFactory(
+            button="2-1", tt_id=tt_id, user_type=user_type, day_counter=day_counter, week_counter=week_counter
+        ).pack(),
     )
     next_week_button = InlineKeyboardButton(
         text=_("След. неделя ⏩"),
-        callback_data=ScheduleCallbackFactory(button="2-2", tt_id=tt_id, user_type=user_type).pack(),
+        callback_data=ScheduleCallbackFactory(
+            button="2-2", tt_id=tt_id, user_type=user_type, day_counter=day_counter, week_counter=week_counter
+        ).pack(),
     )
     timetable_keyboard.row(this_week_button, next_week_button)
 
     schedule_view = InlineKeyboardButton(
         text=_("📝 Текстом 📝") if is_photo else _("🖼 Картинкой 🖼"),
-        callback_data=ScheduleCallbackFactory(button="3-1", tt_id=tt_id, user_type=user_type).pack(),
+        callback_data=ScheduleCallbackFactory(
+            button="3-1", tt_id=tt_id, user_type=user_type, day_counter=day_counter, week_counter=week_counter
+        ).pack(),
     )
     timetable_keyboard.row(schedule_view)
 

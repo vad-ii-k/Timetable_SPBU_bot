@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-06 13:01+0300\n"
+"POT-Creation-Date: 2022-10-07 20:01+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -30,7 +30,7 @@ msgstr "📆 Week: "
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
-#: handlers/commands.py:41
+#: handlers/commands.py:42
 msgid ""
 "👋🏻 <b>Добро пожаловать, {name}!</b>\n"
 "ℹ️ Следуйте указаниям для настройки\n"
@@ -44,11 +44,11 @@ msgstr ""
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
 "⬇️ Get the schedule by:"
 
-#: handlers/commands.py:52
+#: handlers/commands.py:53
 msgid "🔎 Введите фамилию преподавателя для поиска:"
 msgstr "🔎 Enter the last name of the teacher to search:"
 
-#: handlers/commands.py:58
+#: handlers/commands.py:59
 msgid ""
 "🔎 Введите название группы для поиска:\n"
 "*️⃣ <i>например, 20.Б08-мм</i>"
@@ -56,7 +56,7 @@ msgstr ""
 "🔎 Enter the name of the group to search for:\n"
 "*️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: handlers/commands.py:69
+#: handlers/commands.py:70
 msgid ""
 "📅 <b>Основное расписание:</b>\n"
 "ㅤㅤ"
@@ -64,11 +64,11 @@ msgstr ""
 "📅 <b>Main schedule:</b>\n"
 "ㅤㅤ"
 
-#: handlers/commands.py:73
+#: handlers/commands.py:74
 msgid "🚫 Не выбрано"
 msgstr "🚫 Not selected"
 
-#: handlers/commands.py:74
+#: handlers/commands.py:75
 msgid ""
 "\n"
 "\n"
@@ -78,15 +78,15 @@ msgstr ""
 "\n"
 "⚙️ <b>Current settings:</b>"
 
-#: handlers/commands.py:89
+#: handlers/commands.py:90
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
-#: handlers/helpers.py:36
+#: handlers/helpers.py:53
 msgid "🕒 <i>Загрузка...</i>"
 msgstr "🕒 <i>Loading...</i>"
 
-#: handlers/helpers.py:51
+#: handlers/helpers.py:68
 msgid "⚙️ Хотите сделать это расписание своим основным?"
 msgstr "⚙️ Do you want to make this schedule your main one?"
 
@@ -184,23 +184,23 @@ msgstr "⬇️ Choose a field of study: "
 msgid "🧑‍🏫 Введите фамилию преподавателя:"
 msgstr "🧑‍🏫 Enter the teacher's last name:"
 
-#: handlers/student_navigation.py:36
+#: handlers/student_navigation.py:33
 msgid "⬇️ Выберите уровень подготовки:"
 msgstr "⬇️ Choose the level of education:"
 
-#: handlers/student_navigation.py:52
+#: handlers/student_navigation.py:46
 msgid "⬇️ Выберите программу подготовки: "
 msgstr "⬇️ Choose an educational program: "
 
-#: handlers/student_navigation.py:67
+#: handlers/student_navigation.py:59
 msgid "⬇️ Выберите год поступления: "
 msgstr "⬇️ Choose the admission year: "
 
-#: handlers/student_navigation.py:80
+#: handlers/student_navigation.py:73
 msgid "⬇️ Выберите группу:"
 msgstr "⬇️ Choose a group:"
 
-#: handlers/student_navigation.py:85
+#: handlers/student_navigation.py:78
 msgid "❌ По данной программе группы не найдены!"
 msgstr "❌ No groups were found for this program!"
 
@@ -216,59 +216,59 @@ msgstr "Program navigation"
 msgid "ФИО преподавателя"
 msgstr "Teacher's full name"
 
-#: keyboards/inline.py:114
+#: keyboards/inline.py:116
 msgid "Сегодня"
 msgstr "Today"
 
-#: keyboards/inline.py:127
+#: keyboards/inline.py:133
 msgid "⏹ Эта неделя"
 msgstr "⏹ This week"
 
-#: keyboards/inline.py:131
+#: keyboards/inline.py:139
 msgid "След. неделя ⏩"
 msgstr "Next week ⏩"
 
-#: keyboards/inline.py:137
+#: keyboards/inline.py:147
 msgid "📝 Текстом 📝"
 msgstr "📝 as a Text 📝"
 
-#: keyboards/inline.py:137
+#: keyboards/inline.py:147
 msgid "🖼 Картинкой 🖼"
 msgstr "🖼 as a Picture 🖼"
 
-#: keyboards/inline.py:147
+#: keyboards/inline.py:159
 msgid "Присылать сводку "
 msgstr "Send a summary "
 
-#: keyboards/inline.py:149
+#: keyboards/inline.py:161
 msgid "на день: 🔇"
 msgstr "for a day: 🔇"
 
-#: keyboards/inline.py:152
+#: keyboards/inline.py:164
 msgid "за день до: в "
 msgstr "a day before: at "
 
-#: keyboards/inline.py:154
+#: keyboards/inline.py:166
 msgid "день в день: в "
 msgstr "day to day: at "
 
-#: keyboards/inline.py:159
+#: keyboards/inline.py:171
 msgid "Вид расписания по умолчанию: "
 msgstr "Default schedule view: "
 
-#: keyboards/inline.py:164
+#: keyboards/inline.py:176
 msgid "Язык: "
 msgstr "Language: "
 
-#: keyboards/inline.py:183
+#: keyboards/inline.py:195
 msgid " Не присылать 🔇"
 msgstr " Do not send 🔇"
 
-#: keyboards/inline.py:188
+#: keyboards/inline.py:200
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
-#: services/schedule/getting_shedule.py:27
+#: services/schedule/getting_shedule.py:40 services/schedule/getting_shedule.py:58
 msgid ""
 "\n"
 "\n"
@@ -278,11 +278,19 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: services/schedule/getting_shedule.py:30
+#: services/schedule/getting_shedule.py:43
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"
 msgstr ""
 "\n"
 "🏖 There are no classes this week"
+
+#: services/schedule/getting_shedule.py:61
+msgid ""
+"\n"
+"🏖 Занятий в этот день нет"
+msgstr ""
+"\n"
+"🏖 There are no classes on this day"
 
