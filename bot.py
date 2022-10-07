@@ -11,6 +11,7 @@ from tgbot.config import app_config, bot
 from tgbot.handlers.admin import admin_router
 from tgbot.handlers.commands import router as commands_router, set_commands
 from tgbot.handlers.errors import router as errors_router
+from tgbot.handlers.schedule import router as schedule_router
 from tgbot.handlers.searching import router as searching_router
 from tgbot.handlers.settings import router as settings_router
 from tgbot.handlers.start_menu import router as start_menu_router
@@ -64,6 +65,7 @@ async def main():
     for router in [
         errors_router,
         commands_router,
+        schedule_router,
         admin_router,
         start_menu_router,
         student_navigation_router,

@@ -33,7 +33,7 @@ class TTObjectChoiceCallbackFactory(CallbackData, prefix="timetable_object_choic
 class ScheduleCallbackFactory(CallbackData, prefix="schedule"):
     tt_id: int
     user_type: UserType
-    button: str
+    button: Literal["1-1", "1-2", "1-3", "2-1", "2-2", "3-1"]
     day_counter: int | None
     week_counter: int | None
 

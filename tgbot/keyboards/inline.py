@@ -11,14 +11,14 @@ from tgbot.cb_data import (
     AdmissionYearsCallbackFactory,
     StartMenuCallbackFactory,
     ScheduleCallbackFactory,
-    TTObjectChoiceCallbackFactory, SettingsCallbackFactory, SettingsDailySummaryCallbackFactory,
+    TTObjectChoiceCallbackFactory,
+    SettingsCallbackFactory,
+    SettingsDailySummaryCallbackFactory,
     ScheduleSubscriptionCallbackFactory,
 )
 from tgbot.data_classes import (
     StudyDivision,
     StudyLevel,
-    ProgramCombination,
-    AdmissionYear,
     GroupSearchInfo,
     EducatorSearchInfo,
 )
@@ -99,7 +99,7 @@ async def create_educators_keyboard(educators: list[EducatorSearchInfo]) -> Inli
 
 
 async def create_schedule_keyboard(
-        is_photo: bool, tt_id: int, user_type: str, day_counter: int = 0
+        is_photo: bool, tt_id: int, user_type: UserType, day_counter: int = 0
 ) -> InlineKeyboardMarkup:
     current_date = date.today() + timedelta(day_counter)
     prev_day_date = current_date - timedelta(days=1)
