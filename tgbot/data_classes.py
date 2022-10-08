@@ -3,12 +3,11 @@ from dataclasses import dataclass
 from datetime import time, date
 from typing import TypeVar, Generic
 
-from aiogram.utils.i18n import gettext as _, get_i18n
-from babel.dates import format_date
+from aiogram.utils.i18n import gettext as _
 from pydantic import BaseModel, Field, validator, root_validator
 from pydantic.generics import GenericModel
 
-from tgbot.services.schedule.helpers import get_schedule_weekday_header, get_time_sticker, get_subject_format_sticker
+from tgbot.services.schedule.helpers import get_time_sticker, get_subject_format_sticker, get_schedule_weekday_header
 
 
 @dataclass(slots=True, frozen=True)
@@ -112,8 +111,7 @@ class EventsDay(GenericModel, Generic[TSE]):
         return values
 
     async def events_day_converter_to_msg(self) -> str:
-        formatted_date = format_date(self.day, "EEEE, d MMMM", locale=get_i18n().current_locale)
-        day_timetable = get_schedule_weekday_header(formatted_date, self.general_location)
+        day_timetable = await get_schedule_weekday_header(self.day, self.general_location)
         for i, event in enumerate(self.events):
             if i == 0 or self.events[i - 1] != event:
                 day_timetable += (

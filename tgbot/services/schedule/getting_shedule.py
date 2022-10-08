@@ -4,7 +4,7 @@ from aiogram.utils.i18n import gettext as _
 
 from tgbot.data_classes import GroupEventsDay, EducatorEventsDay
 from tgbot.misc.states import UserType
-from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates
+from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
 
@@ -58,5 +58,6 @@ async def schedule_day_body(
                 schedule += _("\n\n📛 Сообщение слишком длинное...")
                 break
     if day_schedule == "":
-        schedule += _("\n🏖 Занятий в этот день нет")
+        schedule += await get_schedule_weekday_header(day)
+        schedule += _("🏖 Занятий в этот день нет")
     return schedule

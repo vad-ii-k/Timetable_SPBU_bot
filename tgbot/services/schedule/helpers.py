@@ -1,19 +1,23 @@
 from datetime import date, timedelta
 
+from aiogram.utils.i18n import get_i18n
+from babel.dates import format_date
+
+
+async def get_schedule_weekday_header(day: date, general_location: str = None) -> str:
+    formatted_date = format_date(day, "EEEE, d MMMM", locale=get_i18n().current_locale)
+    weekday_sticker = _get_weekday_sticker(formatted_date)
+    header = f"\n\n{weekday_sticker} <b>{formatted_date}</b>\n"
+    if general_location:
+        header += f"📍 {general_location}\n"
+    return header
+
 
 def _get_monday_and_sunday_dates(day_counter: int = None, week_counter: int = None) -> tuple[date, date]:
     current_date = date.today() + timedelta(week_counter * 7 if week_counter is not None else day_counter)
     monday = current_date - timedelta(days=current_date.weekday())
     sunday = monday + timedelta(days=6)
     return monday, sunday
-
-
-def get_schedule_weekday_header(day_string: str, general_location: str) -> str:
-    weekday_sticker = _get_weekday_sticker(day_string)
-    header = f"\n\n{weekday_sticker} <b>{day_string}</b>\n"
-    if general_location:
-        header += f"📍 {general_location}\n"
-    return header
 
 
 def get_time_sticker(hour: int) -> str:
