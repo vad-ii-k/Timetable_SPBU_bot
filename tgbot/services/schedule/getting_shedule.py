@@ -1,14 +1,16 @@
 from datetime import date, timedelta
 
 from aiogram.utils.i18n import gettext as _
+from aiogram.types import BufferedInputFile
 
 from tgbot.data_classes import GroupEventsDay, EducatorEventsDay
 from tgbot.misc.states import UserType
+from tgbot.services.image_converter import image_to_buffered_input_file
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
 
-async def get_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, str]:
+async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, str]:
     monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
     if user_type == UserType.STUDENT:
         schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
@@ -19,7 +21,7 @@ async def get_week_schedule(tt_id: int, user_type: UserType, week_counter: int) 
     return schedule, schedule_from_timetable.name
 
 
-async def get_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> str:
+async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> str:
     monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
     if user_type == UserType.STUDENT:
         schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
@@ -28,6 +30,12 @@ async def get_day_schedule(tt_id: int, user_type: UserType, day_counter: int) ->
     schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_day_body(schedule, schedule_from_timetable.events_days, day_counter)
     return schedule
+
+
+async def get_image_schedule() -> tuple[str, BufferedInputFile]:
+    text = "TEST"
+    photo = await image_to_buffered_input_file()
+    return text, photo
 
 
 async def schedule_week_body(schedule: str, events_days: list[GroupEventsDay | EducatorEventsDay]) -> str:

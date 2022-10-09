@@ -1,5 +1,4 @@
 import json
-from datetime import timedelta
 from typing import Final
 
 from tgbot.data_classes import (

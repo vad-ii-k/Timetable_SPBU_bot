@@ -3,14 +3,14 @@ from contextlib import suppress
 
 from aiogram.exceptions import TelegramAPIError
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, BufferedInputFile
 from aiogram.utils.i18n import gettext as _
 
 from tgbot.cb_data import ScheduleCallbackFactory
 from tgbot.config import bot
 from tgbot.keyboards.inline import create_schedule_keyboard, create_schedule_subscription_keyboard
 from tgbot.services.db_api.db_commands import database
-from tgbot.services.schedule.getting_shedule import get_week_schedule
+from tgbot.services.schedule.getting_shedule import get_text_week_schedule
 
 
 async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) -> None:
@@ -19,7 +19,7 @@ async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) 
     is_picture: bool = settings.schedule_view_is_picture
     data = await state.get_data()
     tt_id, user_type = int(data.get('tt_id')), data.get('user_type')
-    schedule_text, schedule_name = await get_week_schedule(tt_id, user_type, week_counter=0)
+    schedule_text, schedule_name = await get_text_week_schedule(tt_id, user_type, week_counter=0)
     await bot.send_message(
         chat_id=tg_user_id,
         text=schedule_text,
@@ -32,19 +32,18 @@ async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) 
         await send_subscription_question(tg_user_id)
 
 
-async def schedule_keyboard_helper(callback: CallbackQuery, text: str, callback_data: ScheduleCallbackFactory) -> None:
-    is_picture = callback.message.content_type == "photo"
-    # if is_picture:
-    #     answer_msg = await callback.message.edit_media(
-    #         media=InputMedia(media=InputFile("utils/image_converter/output.png"))
-    #     )
-    #     await answer_msg.edit_caption(caption=text)
-    # else:
-
-    await callback.message.answer(
-        text=text,
-        reply_markup=await create_schedule_keyboard(is_photo=is_picture, callback_data=callback_data)
-    )
+async def schedule_keyboard_helper(
+        callback: CallbackQuery,
+        callback_data: ScheduleCallbackFactory,
+        text: str,
+        photo: BufferedInputFile | None = None
+) -> None:
+    is_photo = callback.message.content_type == "photo"
+    reply_markup = await create_schedule_keyboard(is_photo=is_photo, callback_data=callback_data)
+    if is_photo:
+        await callback.message.answer_photo(photo=photo, caption=text, reply_markup=reply_markup)
+    else:
+        await callback.message.answer(text=text, reply_markup=reply_markup)
 
 
 async def change_message_to_loading(message: Message) -> bool:
