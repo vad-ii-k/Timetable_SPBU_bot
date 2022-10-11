@@ -1,5 +1,22 @@
 {% include 'header.html' %}
 <div>
-    TEST
+    <div>
+        {% for events_day in schedule.events_days %}
+        <div>
+            <p>{{ events_day.day.strftime('%a, %d %B') }}</p>
+            <p>{% if events_day.general_location %} {{ events_day.general_location }} {% endif %}</p>
+            <div>
+                {% for event in events_day.events %}
+                <div>
+                    <p>{{ event.start_time.strftime('%H:%M') }}-{{ event.end_time.strftime('%H:%M') }}</p>
+                    <p>{{ "<s>" * event.is_canceled }} {{ event.subject_name }} {{ "</s>" * event.is_canceled }}</p>
+                    <p>{{ event.subject_format }}</p>
+                    <p>{{ event.location }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% include 'footer.html' %}

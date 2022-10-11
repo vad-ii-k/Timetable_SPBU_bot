@@ -35,7 +35,7 @@ class ScheduleCallbackFactory(CallbackData, prefix="schedule"):
     user_type: UserType
     button: Literal["1-1", "1-2", "1-3", "2-1", "2-2", "3-1"] | None
     day_counter: int | None
-    week_counter: int | None
+    week_counter: int | None = 0
 
 
 class SettingsCallbackFactory(CallbackData, prefix="settings"):

@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Router
 from aiogram.types import CallbackQuery
 from magic_filter import F
@@ -47,7 +49,9 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
             callback_data.week_counter += 1
     is_photo = callback.message.content_type == "photo"
     if is_photo:
-        text, photo = await get_image_schedule()
+        text, photo = await get_image_schedule(
+            callback_data.tt_id, callback_data.user_type, week_counter=callback_data.week_counter
+        )
         await schedule_keyboard_helper(callback, callback_data, text, photo)
     else:
         text, _ = await get_text_week_schedule(
@@ -61,7 +65,10 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
 @router.callback_query(ScheduleCallbackFactory.filter(F.button == "3-1"), flags={'chat_action': 'typing'})
 async def schedule_photo_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     await change_message_to_loading(callback.message)
-    text, photo = await get_image_schedule()
+    logging.info(callback_data)
+    text, photo = await get_image_schedule(
+        callback_data.tt_id, callback_data.user_type, week_counter=callback_data.week_counter
+    )
     reply_markup = await create_schedule_keyboard(is_photo=True, callback_data=callback_data)
     await callback.message.answer_photo(photo=photo, caption=text, reply_markup=reply_markup)
     await callback.answer(cache_time=2)

@@ -32,10 +32,15 @@ async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: in
     return schedule
 
 
-async def get_image_schedule() -> tuple[str, BufferedInputFile]:
-    text = "TEST"
-    photo = await image_to_buffered_input_file()
-    return text, photo
+async def get_image_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, BufferedInputFile]:
+    monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
+    if user_type == UserType.STUDENT:
+        schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
+    else:
+        schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
+    schedule = await schedule_from_timetable.get_schedule_week_header()
+    photo = await image_to_buffered_input_file(schedule_from_timetable)
+    return schedule, photo
 
 
 async def schedule_week_body(schedule: str, events_days: list[GroupEventsDay | EducatorEventsDay]) -> str:
