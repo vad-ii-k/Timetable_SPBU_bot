@@ -38,7 +38,7 @@ async def schedule_keyboard_helper(
         text: str,
         photo: BufferedInputFile | None = None
 ) -> None:
-    is_photo = callback.message.content_type in ("photo", "document")
+    is_photo = photo is not None
     reply_markup = await create_schedule_keyboard(is_photo=is_photo, callback_data=callback_data)
     if is_photo:
         await callback.message.answer_document(document=photo, caption=text, reply_markup=reply_markup)

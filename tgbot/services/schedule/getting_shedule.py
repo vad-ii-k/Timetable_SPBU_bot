@@ -3,19 +3,26 @@ from datetime import date, timedelta
 from aiogram.utils.i18n import gettext as _
 from aiogram.types import BufferedInputFile
 
-from tgbot.data_classes import GroupEventsDay, EducatorEventsDay
+from tgbot.data_classes import GroupEventsDay, EducatorEventsDay, GroupSchedule, EducatorSchedule
 from tgbot.misc.states import UserType
 from tgbot.services.image_converter import image_to_buffered_input_file
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
 
-async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, str]:
-    monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
+async def get_schedule_from_tt_depending_on_user_type(
+        tt_id: int, user_type: UserType, monday: date, sunday: date
+) -> GroupSchedule | EducatorSchedule:
     if user_type == UserType.STUDENT:
         schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
     else:
         schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
+    return schedule_from_timetable
+
+
+async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, str]:
+    monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
+    schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_week_body(schedule, schedule_from_timetable.events_days)
     return schedule, schedule_from_timetable.name
@@ -23,21 +30,15 @@ async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: 
 
 async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> str:
     monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
-    if user_type == UserType.STUDENT:
-        schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
-    else:
-        schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
+    schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_day_body(schedule, schedule_from_timetable.events_days, day_counter)
     return schedule
 
 
-async def get_image_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, BufferedInputFile]:
+async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, BufferedInputFile]:
     monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
-    if user_type == UserType.STUDENT:
-        schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
-    else:
-        schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
+    schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     photo = await image_to_buffered_input_file(schedule_from_timetable)
     return schedule, photo
