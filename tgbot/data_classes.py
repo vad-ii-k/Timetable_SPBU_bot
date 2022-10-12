@@ -51,6 +51,11 @@ class StudyEvent(BaseModel, ABC):
     location: str = Field(alias="LocationsDisplayText")
     is_canceled: bool = Field(alias="IsCancelled")
 
+    @property
+    @abstractmethod
+    def contingent(self) -> str:
+        pass
+
     @validator('start_time', 'end_time', pre=True)
     def from_datetime_to_time(cls, value):
         return value.split('T')[1]
@@ -138,12 +143,16 @@ class Schedule(BaseModel, ABC):
 
     @property
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         pass
 
 
 class EducatorStudyEvent(StudyEvent):
     groups: str = Field(alias="ContingentUnitName")
+
+    @property
+    def contingent(self) -> str:
+        return self.groups
 
     def get_contingent(self, with_sticker: bool = False) -> str:
         return '🎓 ' * with_sticker + self.groups
@@ -170,6 +179,10 @@ class EducatorSchedule(Schedule):
 
 class GroupStudyEvent(StudyEvent):
     educators: str = Field(alias="EducatorsDisplayText")
+
+    @property
+    def contingent(self) -> str:
+        return self.educators
 
     @validator('educators', pre=True)
     def removing_academic_degrees(cls, educators):

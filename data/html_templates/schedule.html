@@ -1,18 +1,31 @@
 {% include 'header.html' %}
 <div>
     <div>
-        {% for events_day in schedule.events_days %}
+        {% for events_day in schedule.events_days[1:3] %}
         <div>
             <p>{{ events_day.day.strftime('%a, %d %B') }}</p>
             <p>{% if events_day.general_location %} {{ events_day.general_location }} {% endif %}</p>
-            <div>
+            <div style="margin-left: 20px">
                 {% for event in events_day.events %}
-                <div>
-                    <p>{{ event.start_time.strftime('%H:%M') }}-{{ event.end_time.strftime('%H:%M') }}</p>
-                    <p>{{ "<s>" * event.is_canceled }} {{ event.subject_name }} {{ "</s>" * event.is_canceled }}</p>
-                    <p>{{ event.subject_format }}</p>
-                    <p>{{ event.location }}</p>
-                </div>
+                    <div style="margin-left: 20px">
+                        {% if loop.first or loop.previtem.subject_name != event.subject_name %}
+                        <div>
+                            <p>
+                                {{ event.start_time.strftime('%H:%M') }}-{{ event.end_time.strftime('%H:%M') }}
+                                {{ event.subject_format }}
+                            </p>
+                            <p>
+                                {{ "<s>" * event.is_canceled }}
+                                    {{ event.subject_name }}
+                                {{ "</s>" * event.is_canceled }}
+                            </p>
+                        </div>
+                        {% endif %}
+                        <div style="margin-left: 20px">
+                            <p>{{ event.contingent }}</p>
+                            <p>{{ event.location }}</p>
+                        </div>
+                    </div>
                 {% endfor %}
             </div>
         </div>
