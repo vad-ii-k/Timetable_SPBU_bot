@@ -19,7 +19,7 @@ async def take_browser_screenshot(schedule: Schedule):
         results.write(results_template.render(schedule=schedule))
 
     browser = await launch(
-        defaultViewport={'width': 3000, 'height': 3000},
+        defaultViewport={'width': 2000, 'height': 3000},
         logLevel=logging.ERROR,
         headless=True,
         executablePath="/usr/bin/chromium-browser",
