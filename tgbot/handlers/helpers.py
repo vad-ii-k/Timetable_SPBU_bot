@@ -38,16 +38,16 @@ async def schedule_keyboard_helper(
         text: str,
         photo: BufferedInputFile | None = None
 ) -> None:
-    is_photo = callback.message.content_type == "photo"
+    is_photo = callback.message.content_type in ("photo", "document")
     reply_markup = await create_schedule_keyboard(is_photo=is_photo, callback_data=callback_data)
     if is_photo:
-        await callback.message.answer_photo(photo=photo, caption=text, reply_markup=reply_markup)
+        await callback.message.answer_document(document=photo, caption=text, reply_markup=reply_markup)
     else:
         await callback.message.answer(text=text, reply_markup=reply_markup)
 
 
 async def change_message_to_loading(message: Message) -> bool:
-    message_content_type_is_photo = message.content_type == "photo"
+    message_content_type_is_photo = message.content_type in ("photo", "document")
     if message_content_type_is_photo:
         await message.edit_caption(_("🕒 <i>Загрузка...</i>"))
     else:

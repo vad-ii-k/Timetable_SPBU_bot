@@ -1,7 +1,11 @@
 {% include 'header.html' %}
 <div>
     <div>
-        {% for events_day in schedule.events_days[1:3] %}
+        <p>{{ schedule.name }}</p>
+        <p>Неделя: {{ schedule.from_date.strftime('%d.%m') }} — {{ schedule.to_date.strftime('%d.%m') }}
+    </div>
+    <div>
+        {% for events_day in schedule.events_days[2:3] %}
         <div>
             <p>{{ events_day.day.strftime('%a, %d %B') }}</p>
             <p>{% if events_day.general_location %} {{ events_day.general_location }} {% endif %}</p>
@@ -23,7 +27,7 @@
                         {% endif %}
                         <div style="margin-left: 20px">
                             <p>{{ event.contingent }}</p>
-                            <p>{{ event.location }}</p>
+                            <p>{% if events_day.general_location %} Каб.{% endif %} {{ event.location }}</p>
                         </div>
                     </div>
                 {% endfor %}

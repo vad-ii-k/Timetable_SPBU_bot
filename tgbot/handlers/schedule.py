@@ -47,7 +47,7 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
             callback_data.week_counter = 0
         case "2-2":
             callback_data.week_counter += 1
-    is_photo = callback.message.content_type == "photo"
+    is_photo = callback.message.content_type in ("photo", "document")
     if is_photo:
         text, photo = await get_image_schedule(
             callback_data.tt_id, callback_data.user_type, week_counter=callback_data.week_counter
@@ -70,6 +70,6 @@ async def schedule_photo_callback(callback: CallbackQuery, callback_data: Schedu
         callback_data.tt_id, callback_data.user_type, week_counter=callback_data.week_counter
     )
     reply_markup = await create_schedule_keyboard(is_photo=True, callback_data=callback_data)
-    await callback.message.answer_photo(photo=photo, caption=text, reply_markup=reply_markup)
+    await callback.message.answer_document(document=photo, caption=text, reply_markup=reply_markup)
     await callback.answer(cache_time=2)
     await callback.message.delete()

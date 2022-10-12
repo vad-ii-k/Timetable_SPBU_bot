@@ -19,20 +19,15 @@ async def take_browser_screenshot(schedule: Schedule):
         results.write(results_template.render(schedule=schedule))
 
     browser = await launch(
-        defaultViewport={'width': 2000, 'height': 2000},
+        defaultViewport={'width': 3000, 'height': 3000},
         logLevel=logging.ERROR,
         headless=True,
         executablePath="/usr/bin/chromium-browser",
-        args=['--no-sandbox', '--disable-gpu']
+        args=['--no-sandbox']
     )
     page_for_psv = await browser.newPage()
     await page_for_psv.goto(f'file:///{os.path.abspath("data/compiled_html_pages/schedule.html")}')
-    await page_for_psv.screenshot(
-        path='data/output.png',
-        type='png',
-        fullPage=True,
-        quality=100
-    )
+    await page_for_psv.screenshot(path='data/output.png', type='jpeg', fullPage=True, quality=90)
     await browser.close()
 
 
