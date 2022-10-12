@@ -43,7 +43,7 @@ async def start_command(message: Message, state: FSMContext):
                "ℹ️ Следуйте указаниям для настройки\n"
                "❕ Для корректной работы взаимодействуйте только с последним сообщением бота\n"
                "➖➖➖➖➖➖➖➖➖➖➖➖\n"
-               "⬇️ Получить расписание по:").format(name=message.from_user.full_name),
+               "⬇️ Получить расписание по:".format(name=message.from_user.full_name)),
         reply_markup=await create_start_choice_keyboard(),
     )
 
@@ -80,9 +80,17 @@ async def settings_command(message: Message):
 async def my_schedule_command(message: Message, state: FSMContext):
     user = await database.get_user(tg_user_id=message.chat.id)
     main_schedule = await database.get_main_schedule(user_id=user.user_id)
-    user_type = UserType.STUDENT if main_schedule.user_type_is_student else UserType.EDUCATOR
-    await state.update_data({'tt_id': main_schedule.timetable_id, 'user_type': user_type})
-    await send_schedule(state, subscription=False, tg_user_id=message.from_user.id)
+    if main_schedule:
+        user_type = UserType.STUDENT if main_schedule.user_type_is_student else UserType.EDUCATOR
+        await state.update_data({'tt_id': main_schedule.timetable_id, 'user_type': user_type})
+        await send_schedule(state, subscription=False, tg_user_id=message.from_user.id)
+    else:
+        await message.answer(text=_("🚫 Основное расписание отсутствует\n"
+                                    "1. 🔎 Воспользуйтесь одной из команд:\n"
+                                    "      /start, /group или /educator\n"
+                                    "2. 🔖 Выберите нужное Вам расписание\n"
+                                    "3. ✅ Сделайте расписание основным"))
+        await message.delete()
 
 
 @router.message(Command("help"))

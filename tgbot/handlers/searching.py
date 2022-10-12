@@ -19,10 +19,10 @@ async def getting_choice_for_educator(message: Message, state: FSMContext):
     teachers_list = await educator_search(message.text)
     if len(teachers_list) == 0:
         await message.answer(_("❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
-                               "Пожалуйста, введите другую фамилию:").format(last_name=html.quote(message.text)))
+                               "Пожалуйста, введите другую фамилию:".format(last_name=html.quote(message.text))))
     elif len(teachers_list) > 50:
         await message.answer(_("❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
-                               "Попробуйте ввести фамилию и первую букву имени:").format(last_name=message.text))
+                               "Попробуйте ввести фамилию и первую букву имени:".format(last_name=message.text)))
     else:
         await message.answer(
             text=_("⬇️ Выберите преподавателя из списка:"),
@@ -36,11 +36,11 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
     groups_list = await database.get_groups_by_name(message.text)
     if len(groups_list) == 0:
         await message.answer(_("Группа \"<i>{group_name}</i>\" не найдена!\n"
-                               "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:").
-                             format(group_name=html.quote(message.text)))
+                               "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:".
+                             format(group_name=html.quote(message.text))))
     elif len(groups_list) > 50:
         await message.answer(_("Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
-                               "Попробуйте ввести подробнее:").format(group_name=message.text))
+                               "Попробуйте ввести подробнее:".format(group_name=message.text)))
     else:
         await message.answer(
             text=_("⬇️ Выберите группу из списка:"),
