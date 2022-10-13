@@ -40,7 +40,15 @@ async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter:
     monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
-    photo = await get_rendered_image(schedule_from_timetable)
+    photo = await get_rendered_image(schedule_from_timetable, schedule_type='week')
+    return schedule, photo
+
+
+async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> tuple[str, BufferedInputFile]:
+    monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
+    schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
+    schedule = await schedule_from_timetable.get_schedule_week_header()
+    photo = await get_rendered_image(schedule_from_timetable, schedule_type='day')
     return schedule, photo
 
 
