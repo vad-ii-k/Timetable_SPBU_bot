@@ -1,6 +1,5 @@
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from magic_filter import F
 
 from tgbot.cb_data import ScheduleCallbackFactory
 from tgbot.handlers.helpers import change_message_to_loading, schedule_keyboard_helper

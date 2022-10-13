@@ -1,10 +1,9 @@
 import datetime
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
-from magic_filter import F
 
 from tgbot.cb_data import (
     SettingsCallbackFactory,

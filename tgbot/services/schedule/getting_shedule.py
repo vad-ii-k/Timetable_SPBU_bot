@@ -5,7 +5,7 @@ from aiogram.types import BufferedInputFile
 
 from tgbot.data_classes import GroupEventsDay, EducatorEventsDay, GroupSchedule, EducatorSchedule
 from tgbot.misc.states import UserType
-from tgbot.services.image_converter import image_to_buffered_input_file
+from tgbot.services.image_converter import get_rendered_image
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
@@ -40,7 +40,7 @@ async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter:
     monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
-    photo = await image_to_buffered_input_file(schedule_from_timetable)
+    photo = await get_rendered_image(schedule_from_timetable)
     return schedule, photo
 
 

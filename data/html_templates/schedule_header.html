@@ -1,0 +1,6 @@
+{% macro shedule_header(shedule_name, schedule_from_date, schedule_to_date) -%}
+<div>
+    <p>{{ shedule_name }}</p>
+    <p>{{ schedule_from_date.strftime('%d.%m') }} — {{ schedule_to_date.strftime('%d.%m') }}</p>
+</div>
+{% endmacro %}

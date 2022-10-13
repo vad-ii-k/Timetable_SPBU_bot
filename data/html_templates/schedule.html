@@ -1,39 +1,11 @@
+{% import 'schedule_header.html' as sh %}
+{% import 'events_day.html' as ed %}
 {% include 'header.html' %}
 <div>
-    <div>
-        <p>{{ schedule.name }}</p>
-        <p>{{ schedule.from_date.strftime('%d.%m') }} — {{ schedule.to_date.strftime('%d.%m') }}</p>
-    </div>
+    {{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
     <div>
         {%- for events_day in schedule.events_days[2:3] %}
-        <div>
-            <p>{{ events_day.day.strftime('%A, %d %B') }}</p>
-            <p>{% if events_day.general_location %} {{ events_day.general_location }} {% endif %}</p>
-            <div style="margin-left: 20px">
-                {%- for event in events_day.events %}
-                    <div style="margin-left: 20px">
-                        {%- if loop.first
-                            or loop.previtem.start_time != event.start_time
-                            or loop.previtem.end_time != event.end_time
-                        %}
-                            <p> {{ event.start_time.strftime('%H:%M') }}-{{ event.end_time.strftime('%H:%M') }} </p>
-                        {%- endif %}
-                        {%- if loop.first or loop.previtem.subject_name != event.subject_name %}
-                        <div>
-                            <p> {{ event.subject_format }} </p>
-                            <p>
-                                {{ "<s>" * event.is_canceled }}{{ event.subject_name }}{{ "</s>" * event.is_canceled }}
-                            </p>
-                        </div>
-                        {%- endif %}
-                        <div style="margin-left: 20px">
-                            <p>{{ event.contingent }}</p>
-                            <p>{% if events_day.general_location %} Каб.{% endif %} {{ event.location }}</p>
-                        </div>
-                    </div>
-                {%- endfor %}
-            </div>
-        </div>
+            {{ ed.events_day(events_day) }}
         {%- endfor %}
     </div>
 </div>

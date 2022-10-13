@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-12 15:30+0300\n"
+"POT-Creation-Date: 2022-10-13 09:24+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: data_classes.py:166
+#: data_classes.py:175
 msgid "🧑‍🏫 Преподаватель: "
 msgstr "🧑‍🏫 Educator: "
 
-#: data_classes.py:167 data_classes.py:200
+#: data_classes.py:176 data_classes.py:213
 msgid "📆 Неделя: "
 msgstr "📆 Week: "
 
-#: data_classes.py:199
+#: data_classes.py:212
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
@@ -78,7 +78,7 @@ msgstr ""
 "\n"
 "⚙️ <b>Current settings:</b>"
 
-#: handlers/commands.py:87
+#: handlers/commands.py:88
 msgid ""
 "🚫 Основное расписание отсутствует\n"
 "1. 🔎 Воспользуйтесь одной из команд:\n"
@@ -92,7 +92,7 @@ msgstr ""
 "2. 🔖 Select the schedule you need\n"
 "3. ✅ Make the schedule the main one"
 
-#: handlers/commands.py:96
+#: handlers/commands.py:98
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
@@ -104,7 +104,7 @@ msgstr "🕒 <i>Loading...</i>"
 msgid "⚙️ Хотите сделать это расписание своим основным?"
 msgstr "⚙️ Do you want to make this schedule your main one?"
 
-#: handlers/searching.py:21
+#: handlers/searching.py:22
 msgid ""
 "❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
 "Пожалуйста, введите другую фамилию:"
@@ -112,7 +112,7 @@ msgstr ""
 "❌ Teacher \"<i>{last_name}</i>\" was not found!\n"
 "Please enter another surname:"
 
-#: handlers/searching.py:24
+#: handlers/searching.py:25
 msgid ""
 "❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
 "Попробуйте ввести фамилию и первую букву имени:"
@@ -124,7 +124,7 @@ msgstr ""
 msgid "⬇️ Выберите преподавателя из списка:"
 msgstr "⬇️ Select a teacher from the list:"
 
-#: handlers/searching.py:38
+#: handlers/searching.py:40
 msgid ""
 "Группа \"<i>{group_name}</i>\" не найдена!\n"
 "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:"
@@ -132,7 +132,7 @@ msgstr ""
 "The group \"<i>{group_name}</i>\" was not found!\n"
 "Try again or use the navigation with the /start command:"
 
-#: handlers/searching.py:42
+#: handlers/searching.py:43
 msgid ""
 "Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
 "Попробуйте ввести подробнее:"
@@ -144,7 +144,7 @@ msgstr ""
 msgid "⬇️ Выберите группу из списка:"
 msgstr "⬇️ Select a group from the list:"
 
-#: handlers/settings.py:27
+#: handlers/settings.py:26
 msgid ""
 "⚙️<b> Выберите время для получения\n"
 "ㅤㅤ сводки расписания на день</b>\n"
@@ -154,11 +154,11 @@ msgstr ""
 "  schedule summary for the day</b>\n"
 " Day before at ┃ On day of classes at"
 
-#: handlers/settings.py:42 handlers/settings.py:53
+#: handlers/settings.py:41 handlers/settings.py:52
 msgid "Настройки обновлены ✅"
 msgstr "Settings updated ✅"
 
-#: handlers/settings.py:62
+#: handlers/settings.py:61
 msgid ""
 "The language has been successfully changed to 🇬🇧\n"
 "Messages will now be sent in English"
@@ -166,7 +166,7 @@ msgstr ""
 "Язык успешно изменён на 🇷🇺\n"
 "Теперь сообщения будут присылаться на русском"
 
-#: handlers/settings.py:82
+#: handlers/settings.py:81
 msgid ""
 "Вы подписались на расписание! ✅\n"
 "Воспользуйтесь командой:\n"
@@ -178,11 +178,11 @@ msgstr ""
 "— /my_schedule to view your main schedule\n"
 "— /settings to configure notifications"
 
-#: handlers/settings.py:92
+#: handlers/settings.py:91
 msgid "Вы отказались от подписки! ❌"
 msgstr "You have unsubscribed! ❌ "
 
-#: handlers/start_menu.py:18
+#: handlers/start_menu.py:17
 msgid ""
 "👨‍👩‍👧‍👦 Введите название группы:\n"
 " *️⃣ <i>например, 20.Б08-мм</i>"
@@ -190,11 +190,11 @@ msgstr ""
 "👨‍👩‍👧‍👦 Enter the name of the group:\n"
 " *️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: handlers/start_menu.py:28
+#: handlers/start_menu.py:27
 msgid "⬇️ Выберите направление: "
 msgstr "⬇️ Choose a field of study: "
 
-#: handlers/start_menu.py:36
+#: handlers/start_menu.py:35
 msgid "🧑‍🏫 Введите фамилию преподавателя:"
 msgstr "🧑‍🏫 Enter the teacher's last name:"
 
@@ -282,7 +282,7 @@ msgstr " Do not send 🔇"
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
-#: services/schedule/getting_shedule.py:53 services/schedule/getting_shedule.py:71
+#: services/schedule/getting_shedule.py:54 services/schedule/getting_shedule.py:72
 msgid ""
 "\n"
 "\n"
@@ -292,7 +292,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: services/schedule/getting_shedule.py:56
+#: services/schedule/getting_shedule.py:57
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"
@@ -300,7 +300,7 @@ msgstr ""
 "\n"
 "🏖 There are no classes this week"
 
-#: services/schedule/getting_shedule.py:75
+#: services/schedule/getting_shedule.py:76
 msgid "🏖 Занятий в этот день нет"
 msgstr "🏖 There are no classes on this day"
 

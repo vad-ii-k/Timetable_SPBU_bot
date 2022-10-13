@@ -1,0 +1,10 @@
+{% macro long_break(prev_event_end_time, cur_event_start_time) -%}
+{% set difference_between_events_in_min = (cur_event_start_time.hour - prev_event_end_time.hour) * 60
+                                        + (cur_event_start_time.minute - prev_event_end_time.minute) %}
+{%- if difference_between_events_in_min > 90 %}
+<div style="margin-left: 20px">
+  <p> {{ prev_event_end_time.strftime('%H:%M') }}-{{ cur_event_start_time.strftime('%H:%M') }} </p>
+  <p> Длинный перерыв </p>
+</div>
+{%- endif %}
+{%- endmacro %}
