@@ -16,6 +16,7 @@ from tgbot.handlers.searching import router as searching_router
 from tgbot.handlers.settings import router as settings_router
 from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
+from tgbot.handlers.unexpected_message import router as unexpected_message_router
 from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware, LanguageI18nMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import create_db
@@ -73,6 +74,7 @@ async def main():
         student_navigation_router,
         searching_router,
         settings_router,
+        unexpected_message_router,
     ]:
         dispatcher.include_router(router)
 
