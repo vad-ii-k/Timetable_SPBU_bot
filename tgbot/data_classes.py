@@ -103,15 +103,14 @@ class EventsDay(GenericModel, Generic[TSE]):
     @root_validator
     def combining_locations_of_events(cls, values):
         events: list[TSE] = values['events']
-        if len(events) > 0:
-            locations_without_office = list(map(lambda e: e.location.rsplit(",", maxsplit=1)[0], events))
-            if locations_without_office.count(locations_without_office[0]) == len(locations_without_office):
-                values['general_location'] = locations_without_office[0]
-                for value in events:
-                    try:
-                        value.location = value.location.rsplit(",", maxsplit=1)[1].strip(' ')
-                    except IndexError:
-                        value.location = '—'
+        locations_without_office = list(map(lambda e: e.location.rsplit(",", maxsplit=1)[0], events))
+        if locations_without_office.count(locations_without_office[0]) == len(locations_without_office):
+            values['general_location'] = locations_without_office[0]
+            for value in events:
+                if value.location.rfind(",") != -1:
+                    value.location = value.location.rsplit(",", maxsplit=1)[1].strip(' ')
+                else:
+                    value.location = '—'
             values['events'] = events
         return values
 
