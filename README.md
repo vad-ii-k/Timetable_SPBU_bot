@@ -3,6 +3,9 @@
         <img alt="Telegram badge" src="https://img.shields.io/badge/Telegram-%40Timetable__SPBU__bot-2FA8DF?logo=Telegram">
     </a>
     <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/Timetable_SPBU_bot/dev?logo=github">
+    <a href="https://codeclimate.com/github/vad-ii-k/Timetable_SPBU_bot/maintainability">
+        <img src="https://api.codeclimate.com/v1/badges/022748d512cfa936f3b5/maintainability" />
+    </a>
     <a href="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml" target="_blank">
         <img alt="Pylint"  src="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml/badge.svg?branch=dev">
     </a>
@@ -37,10 +40,7 @@
 + Getting a teacher's schedule by last name
 + Subscribe to the group/teacher schedule
 + Getting a schedule with an image
-+ Updating the schedule in the database
 + English language support
-! Notifying the user about the upcoming lesson
-- Notifying the user about changes in the schedule
 ```
 
 ## Author
@@ -55,7 +55,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
         <img alt="Python logo" align="left" src="https://www.python.org/static/img/python-logo@2x.png" height="35px">
     </a>
     <a href="https://github.com/aiogram/aiogram" target="_blank">
-        <img alt="Telegram logo" align="left" src="https://avatars.githubusercontent.com/u/33784865?s=200&v=4" height="35px">
+        <img alt="Aiogram logo" align="left" src="https://avatars.githubusercontent.com/u/33784865?s=200&v=4" height="35px">
     </a>
     <a href="https://github.com/aio-libs/aioredis-py" target="_blank">
         <img alt="Redis logo" align="left" src="https://avatars.githubusercontent.com/u/1529926?s=200&v=4" height="35px">
@@ -81,8 +81,11 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
     <a href="https://github.com/pydantic/pydantic" target="_blank">
         <img alt="Pydantic logo" align="left" src="https://pydantic-docs.helpmanual.io/logo-white.svg" height="35px">
     </a>
-    <a href="https://github.com/python-pillow/Pillow" target="_blank">
-        <img alt="Pillow logo" align="left" src="https://avatars.githubusercontent.com/u/2036701?s=200&v=4" height="35px">
+    <a href="https://github.com/pallets/jinja" target="_blank">
+        <img alt="Jinja logo" align="left" src="https://jinja.palletsprojects.com/en/3.1.x/_images/jinja-logo.png" height="35px">
+    </a>
+    <a href="https://github.com/pyppeteer/pyppeteer" target="_blank">
+        <img alt="Pyppeteer logo" align="left" src="https://avatars.githubusercontent.com/u/60474196?s=200&v=4" height="35px">
     </a>
     <a href="https://github.com/PyCQA/pylint" target="_blank">
         <img alt="Pylint logo" align="left" src="https://avatars.githubusercontent.com/u/8749848?s=200&v=4" height="35px">
