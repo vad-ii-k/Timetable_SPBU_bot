@@ -1,12 +1,10 @@
 {% import 'schedule_header.html' as sh %}
 {% import 'events_day.html' as ed %}
 {% include 'header.html' %}
-<div>
-    {{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
-    <div>
-        {%- for events_day in schedule.events_days[2:3] %}
-            {{ ed.events_day(events_day) }}
-        {%- endfor %}
-    </div>
-</div>
+{{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
+<main class="content">
+    {%- for events_day in schedule.events_days %}
+        {{ ed.events_day(events_day) }}
+    {%- endfor %}
+</main>
 {% include 'footer.html' %}

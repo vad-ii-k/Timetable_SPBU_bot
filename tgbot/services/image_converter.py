@@ -20,7 +20,7 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
 
 async def take_browser_screenshot(schedule_type: Literal['day', 'week']):
     browser = await launch(
-        defaultViewport={'width': 2048, 'height': 2048},
+        defaultViewport={'width': 2048, 'height': 512},
         logLevel=logging.ERROR,
         headless=True,
         executablePath="/usr/bin/chromium-browser",
