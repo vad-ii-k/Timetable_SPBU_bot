@@ -1,0 +1,9 @@
+@import "../utils.scss";
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 96px;
+  padding: 64px;
+}

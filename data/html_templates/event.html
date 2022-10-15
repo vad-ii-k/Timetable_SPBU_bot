@@ -1,17 +1,35 @@
-{% macro event(loop, event, general_location) -%}
-<div style="margin-left: 20px">
-    {%- if loop.first or loop.previtem.start_time != event.start_time or loop.previtem.end_time != event.end_time %}
-        <p> {{ event.start_time.strftime('%H:%M') }}-{{ event.end_time.strftime('%H:%M') }} </p>
-    {%- endif %}
-    {%- if loop.first or loop.previtem.subject_name != event.subject_name %}
-        <div>
-            <p> {{ event.subject_format }} </p>
-            <p> {{ "<s>" * event.is_canceled }}{{ event.subject_name }}{{ "</s>" * event.is_canceled }} </p>
-        </div>
-    {%- endif %}
-    <div style="margin-left: 20px">
-        <p>{{ event.contingent }}</p>
-        <p>{% if general_location %} Каб.{% endif %} {{ event.location }}</p>
-    </div>
-</div>
-{%- endmacro %}
+{% macro event(loop, event, general_location) -%} {%- if loop.first or
+loop.previtem.start_time != event.start_time or loop.previtem.end_time !=
+event.end_time %}
+<section class="event">
+  <time class="event__time">
+    {{ event.start_time.strftime('%H:%M') }} &ndash; {{
+    event.end_time.strftime('%H:%M') }}
+  </time>
+  <ul class="event__subjects-container">
+    {%- endif %} {%- if loop.first or loop.previtem != event %}
+    <li class="subject">
+      <header class="subject__header">
+        <h2 class="subject__header__name">
+          {{ "<s>" * event.is_canceled }}{{ event.subject_name }}{{ "</s>" *
+          event.is_canceled }}
+        </h2>
+        <p class="subject__header__type">{{ event.subject_format }}</p>
+      </header>
+      <ul class="subject__annotations-container">
+        {%- endif %}
+
+        <li class="annotation">
+          <p class="annotation__location">
+            {% if general_location %} Каб.{% endif %} {{ event.location }}
+          </p>
+          <p class="annotation__teacher">{{ event.contingent }}</p>
+        </li>
+        {%- if loop.last or loop.nextitem != event %}
+      </ul>
+      {%- endif %} {%- if loop.last or loop.nextitem.start_time !=
+      event.start_time or loop.nextitem.end_time != event.end_time %}
+    </li>
+  </ul>
+</section>
+{%- endif %} {%- endmacro %}

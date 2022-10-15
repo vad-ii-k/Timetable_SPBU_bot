@@ -1,0 +1,28 @@
+@import "../utils.scss";
+
+.subject {
+  &__header {
+    margin: 0 0 24px;
+
+    &__name {
+      @include heading-2;
+      margin: 0 0 8px;
+      color: $black;
+
+      &--inactive {
+        color: $black-50;
+      }
+    }
+
+    &__type {
+      @include paragraph;
+      color: $black;
+    }
+  }
+
+  &__annotations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+}
