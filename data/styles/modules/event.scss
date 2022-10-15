@@ -1,0 +1,29 @@
+@import "../utils.scss";
+
+.event {
+  display: flex;
+  gap: 16px;
+  background: $white;
+
+  &__time {
+    @include heading-2;
+    color: $primary;
+    white-space: nowrap;
+
+    &--inactive {
+      color: $primary-50;
+    }
+  }
+
+  &__subjects-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 0 0 0 16px;
+    border-left: 3px solid $black;
+
+    &--inactive {
+      border-left: 3px dashed $black-50;
+    }
+  }
+}

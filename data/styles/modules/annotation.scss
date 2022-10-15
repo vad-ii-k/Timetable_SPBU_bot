@@ -1,0 +1,14 @@
+@import "../utils.scss";
+
+.annotation {
+  &__location {
+    @include paragraph;
+    margin: 0 0 8px;
+    color: $black-75;
+  }
+
+  &__teacher {
+    @include paragraph;
+    color: $black-75;
+  }
+}

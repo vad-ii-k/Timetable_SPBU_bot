@@ -1,17 +1,14 @@
-{% import 'long_break.html' as lb %}
-{% import 'event.html' as e %}
-
-{% macro events_day(events_day) -%}
-<div>
-    <p>{{ events_day.day.strftime('%A, %d %b') }}</p>
-    <p>{% if events_day.general_location %} {{ events_day.general_location }} {% endif %}</p>
-    <div style="margin-left: 20px">
-        {%- for event in events_day.events %}
-            {%- if not loop.first %}
-            {{ lb.long_break(loop.previtem.end_time, event.start_time) }}
-            {%- endif %}
-            {{ e.event(loop, event, events_day.general_location) }}
-        {%- endfor %}
-    </div>
-</div>
+{% import 'long_break.html' as lb %} {% import 'event.html' as e %} {% macro
+events_day(events_day) -%}
+<article class="day">
+  <h1 class="day__header">{{ events_day.day.strftime('%A, %d %b') }}</h1>
+  {% if events_day.general_location %}
+  <address class="day__address">{{ events_day.general_location }}</address>
+  {% endif %}
+  <div class="day__events">
+    {%- for event in events_day.events %} {%- if not loop.first %} {{
+    lb.long_break(loop.previtem.end_time, event.start_time) }} {%- endif %} {{
+    e.event(loop, event, events_day.general_location) }} {%- endfor %}
+  </div>
+</article>
 {%- endmacro %}

@@ -1,0 +1,47 @@
+// colors
+$primary: #9f2d20;
+$primary-50: rgba($primary, 0.5);
+$black: #211a19;
+$black-75: rgba($black, 0.75);
+$black-50: rgba($black, 0.5);
+$black-25: rgba($black, 0.25);
+$black-10: rgba($black, 0.1);
+$black-10: rgba($black, 0.05);
+$white: #ffffff;
+
+// fonts
+$paragraph-font: "Montserrat", sans-serif;
+$heading-font: "Source Sans Pro", sans-serif;
+
+// weights
+@mixin paragraph {
+  font-family: $paragraph-font;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+@mixin paragraph-small {
+  font-family: $paragraph-font;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+}
+
+@mixin heading-1 {
+  font-family: $heading-font;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 45px;
+}
+
+@mixin heading-2 {
+  font-family: $heading-font;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 34px;
+}
