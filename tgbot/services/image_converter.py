@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import timedelta, date
 from typing import Literal
 
 from pyppeteer import launch
@@ -9,18 +10,29 @@ from aiogram.types import BufferedInputFile
 from tgbot.data_classes import Schedule
 
 
+async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
+    from_date, to_date = schedule.from_date, schedule.to_date
+    dates_of_days_of_week = [from_date + timedelta(days=index) for index in range((to_date - from_date).days)]
+    return dates_of_days_of_week
+
+
 async def render_template(schedule: Schedule, schedule_type: Literal['day', 'week']):
     result_path = f"data/compiled_html_pages/{schedule_type}_schedule.html"
     environment = Environment(loader=FileSystemLoader("data/html_templates"))
     results_template = environment.get_template(f"{schedule_type}_schedule.html")
 
     with open(file=result_path, mode="w", encoding="utf-8") as result:
-        result.write(results_template.render(schedule=schedule))
+        result.write(results_template.render(
+            schedule=schedule,
+            dates_of_days_of_week=await get_dates_of_days_of_week(schedule),
+            dates_of_event_days=list(map(lambda e: e.day, schedule.events_days))
+        ))
 
 
 async def take_browser_screenshot(schedule_type: Literal['day', 'week']):
+    browser_width = 2048 if schedule_type == 'week' else 1536
     browser = await launch(
-        defaultViewport={'width': 2048, 'height': 512},
+        defaultViewport={'width': browser_width, 'height': 256},
         logLevel=logging.ERROR,
         headless=True,
         executablePath="/usr/bin/chromium-browser",

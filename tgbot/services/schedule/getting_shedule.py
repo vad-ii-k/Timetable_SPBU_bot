@@ -55,6 +55,7 @@ async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: i
             schedule_from_timetable.events_days = schedule_from_timetable.events_days[index:index+1]
     if len(schedule_from_timetable.events_days) > 1:
         schedule_from_timetable.events_days.clear()
+        schedule_from_timetable.day = day
     photo = await get_rendered_image(schedule_from_timetable, schedule_type='day')
     return schedule, photo
 

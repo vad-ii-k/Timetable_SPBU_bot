@@ -12,6 +12,10 @@
     color: $white;
     background: $primary;
     box-shadow: 16px 16px 0px $black-10;
+
+    &--inactive {
+      background: $black-50;
+    }
   }
 
   &__address {

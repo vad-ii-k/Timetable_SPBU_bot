@@ -1,0 +1,6 @@
+{% macro empty_day(date) -%}
+<article class="day">
+    <h1 class="day__header day__header--inactive">{{ date.strftime('%A, %d %b') }}</h1>
+    Нет занятий
+</article>
+{%- endmacro %}

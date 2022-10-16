@@ -1,10 +1,15 @@
 {% import 'schedule_header.html' as sh %}
 {% import 'events_day.html' as ed %}
+{% import 'empty_day.html' as em_d %}
 {% include 'header.html' %}
 {{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
 <main class="content">
-    {%- for events_day in schedule.events_days %}
+    {%- if schedule.day %}
+        {{ em_d.empty_day(schedule.day) }}
+    {%- else %}
+        {%- for events_day in schedule.events_days %}
         {{ ed.events_day(events_day) }}
-    {%- endfor %}
+        {%- endfor %}
+    {%- endif %}
 </main>
 {% include 'footer.html' %}

@@ -1,10 +1,15 @@
 {% import 'schedule_header.html' as sh %}
-{% import 'events_day.html' as ed %}
+{% import 'events_day.html' as ev_d %}
+{% import 'empty_day.html' as em_d %}
 {% include 'header.html' %}
 {{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
 <main class="content">
-  {%- for events_day in schedule.events_days %}
-      {{ ed.events_day(events_day) }}
-  {%- endfor %}
+    {%- for date in dates_of_days_of_week %}
+        {%- if date in dates_of_event_days %}
+            {{ ev_d.events_day(schedule.events_days[dates_of_event_days.index(date)]) }}
+        {%- else %}
+            {{ em_d.empty_day(date) }}
+        {%- endif %}
+    {%- endfor %}
 </main>
 {% include 'footer.html' %}

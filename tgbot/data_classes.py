@@ -135,6 +135,7 @@ class Schedule(BaseModel, ABC):
     tt_url: str
     from_date: date
     to_date: date
+    day: date = None
 
     @property
     @abstractmethod
