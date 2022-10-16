@@ -4,12 +4,10 @@
 {% include 'header.html' %}
 {{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
 <main class="content">
-    {%- if schedule.day %}
-        {{ em_d.empty_day(schedule.day) }}
-    {%- else %}
-        {%- for events_day in schedule.events_days %}
+    {%- for events_day in schedule.events_days %}
         {{ ed.events_day(events_day) }}
-        {%- endfor %}
-    {%- endif %}
+    {%- else %}
+        {{ em_d.empty_day(schedule.day) }}
+    {%- endfor %}
 </main>
 {% include 'footer.html' %}

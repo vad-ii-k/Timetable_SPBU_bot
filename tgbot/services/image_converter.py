@@ -3,6 +3,7 @@ import os
 from datetime import timedelta, date
 from typing import Literal
 
+from babel.dates import format_date
 from pyppeteer import launch
 from jinja2 import Environment, FileSystemLoader
 from aiogram.types import BufferedInputFile
@@ -19,6 +20,11 @@ async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
 async def render_template(schedule: Schedule, schedule_type: Literal['day', 'week']):
     result_path = f"data/compiled_html_pages/{schedule_type}_schedule.html"
     environment = Environment(loader=FileSystemLoader("data/html_templates"))
+
+    def date_format_ru(value):
+        return format_date(value, "EEEE, d MMM", locale='ru')
+    environment.filters["date_format_ru"] = date_format_ru
+
     results_template = environment.get_template(f"{schedule_type}_schedule.html")
 
     with open(file=result_path, mode="w", encoding="utf-8") as result:

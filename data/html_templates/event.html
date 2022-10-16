@@ -10,8 +10,7 @@
     <li class="subject">
       <header class="subject__header">
         <h2 class="subject__header__name">
-          {{ "<s>" * event.is_canceled }}{{ event.subject_name }}{{ "</s>" *
-          event.is_canceled }}
+          {{ "<s>" * event.is_canceled }}{{ event.subject_name }}{{ "</s>" * event.is_canceled }}
         </h2>
         <p class="subject__header__type">{{ event.subject_format }}</p>
       </header>
