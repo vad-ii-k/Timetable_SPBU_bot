@@ -49,6 +49,7 @@ async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: i
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     day = date.today() + timedelta(day_counter)
+    schedule += await get_schedule_weekday_header(day)
     for index, event_day in enumerate(schedule_from_timetable.events_days):
         if event_day.day == day:
             schedule_from_timetable.events_days = schedule_from_timetable.events_days[index:index+1]

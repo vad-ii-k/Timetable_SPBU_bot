@@ -1,4 +1,5 @@
 import asyncio
+import re
 from contextlib import suppress
 
 from aiogram.exceptions import TelegramAPIError
@@ -10,7 +11,7 @@ from tgbot.cb_data import ScheduleCallbackFactory
 from tgbot.config import bot
 from tgbot.keyboards.inline import create_schedule_keyboard, create_schedule_subscription_keyboard
 from tgbot.services.db_api.db_commands import database
-from tgbot.services.schedule.getting_shedule import get_text_week_schedule
+from tgbot.services.schedule.getting_shedule import get_text_week_schedule, get_image_week_schedule
 
 
 async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) -> None:
@@ -19,14 +20,26 @@ async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) 
     is_picture: bool = settings.schedule_view_is_picture
     data = await state.get_data()
     tt_id, user_type = int(data.get('tt_id')), data.get('user_type')
-    schedule_text, schedule_name = await get_text_week_schedule(tt_id, user_type, week_counter=0)
-    await bot.send_message(
-        chat_id=tg_user_id,
-        text=schedule_text,
-        reply_markup=await create_schedule_keyboard(
-            is_photo=is_picture, callback_data=ScheduleCallbackFactory(tt_id=tt_id, user_type=user_type)
+    if is_picture:
+        schedule_text, photo = await get_image_week_schedule(tt_id, user_type, week_counter=0)
+        await bot.send_document(
+            chat_id=tg_user_id,
+            document=photo,
+            caption=schedule_text,
+            reply_markup=await create_schedule_keyboard(
+                is_photo=is_picture, callback_data=ScheduleCallbackFactory(tt_id=tt_id, user_type=user_type)
+            )
         )
-    )
+        schedule_name = re.findall(r'>(.*)<', schedule_text)[0]
+    else:
+        schedule_text, schedule_name = await get_text_week_schedule(tt_id, user_type, week_counter=0)
+        await bot.send_message(
+            chat_id=tg_user_id,
+            text=schedule_text,
+            reply_markup=await create_schedule_keyboard(
+                is_photo=is_picture, callback_data=ScheduleCallbackFactory(tt_id=tt_id, user_type=user_type)
+            )
+        )
     await state.update_data({'schedule_name': schedule_name})
     if subscription:
         await send_subscription_question(tg_user_id)
@@ -41,7 +54,10 @@ async def schedule_keyboard_helper(
     is_photo = photo is not None
     reply_markup = await create_schedule_keyboard(is_photo=is_photo, callback_data=callback_data)
     if is_photo:
-        await callback.message.answer_document(document=photo, caption=text, reply_markup=reply_markup)
+        if callback_data.day_counter is not None:
+            await callback.message.answer_photo(photo=photo, caption=text, reply_markup=reply_markup)
+        else:
+            await callback.message.answer_document(document=photo, caption=text, reply_markup=reply_markup)
     else:
         await callback.message.answer(text=text, reply_markup=reply_markup)
 
