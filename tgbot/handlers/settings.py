@@ -20,8 +20,7 @@ router = Router()
 
 @router.callback_query(SettingsCallbackFactory.filter(F.type == "daily_summary"))
 async def daily_summary_callback(callback: CallbackQuery):
-    user = await database.get_user(tg_user_id=callback.from_user.id)
-    settings = await database.get_settings(user)
+    settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     await callback.message.edit_text(
         text=_("⚙️<b> Выберите время для получения\n"
                "ㅤㅤ сводки расписания на день</b>\n"
@@ -33,8 +32,7 @@ async def daily_summary_callback(callback: CallbackQuery):
 
 @router.callback_query(SettingsDailySummaryCallbackFactory.filter())
 async def settings_daily_summary_callback(callback: CallbackQuery, callback_data: SettingsDailySummaryCallbackFactory):
-    user = await database.get_user(tg_user_id=callback.from_user.id)
-    settings = await database.get_settings(user)
+    settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     if callback_data.choice != "back":
         value = datetime.time(int(callback_data.choice)) if callback_data.choice != "disabling" else None
         await settings.update(daily_summary=value).apply()
@@ -45,8 +43,7 @@ async def settings_daily_summary_callback(callback: CallbackQuery, callback_data
 
 @router.callback_query(SettingsCallbackFactory.filter(F.type == "schedule_view"))
 async def settings_view_callback(callback: CallbackQuery):
-    user = await database.get_user(tg_user_id=callback.from_user.id)
-    settings = await database.get_settings(user)
+    settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
     await callback.message.edit_reply_markup(reply_markup=await create_settings_keyboard(settings))
     await callback.answer(text=_("Настройки обновлены ✅"), show_alert=False)
@@ -54,8 +51,7 @@ async def settings_view_callback(callback: CallbackQuery):
 
 @router.callback_query(SettingsCallbackFactory.filter(F.type == "language"))
 async def settings_language_callback(callback: CallbackQuery):
-    user = await database.get_user(tg_user_id=callback.from_user.id)
-    settings = await database.get_settings(user)
+    settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     await settings.update(language='en' if settings.language == 'ru' else 'ru').apply()
     await callback.answer(
         text=_("The language has been successfully changed to 🇬🇧\n"
@@ -77,11 +73,10 @@ async def schedule_subscription_callback(
             user_type=data.get("user_type"),
             schedule_name=data.get("schedule_name")
         )
-        instruction = await callback.message.answer(
-            text=_("Вы подписались на расписание! ✅\n"
-                   "Воспользуйтесь командой:\n"
-                   "— /my_schedule для просмотра своего основного расписания\n"
-                   "— /settings для настройки уведомлений")
+        instruction = await callback.message.answer(_("Вы подписались на расписание! ✅\n"
+                                                      "Воспользуйтесь командой:\n"
+                                                      "— /my_schedule для просмотра своего основного расписания\n"
+                                                      "— /settings для настройки уведомлений")
         )
         await callback.message.delete()
         await _delete_message(instruction, 20)

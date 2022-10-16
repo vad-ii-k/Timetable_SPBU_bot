@@ -38,6 +38,11 @@ class DBCommands:
         settings = await Settings.query.where(Settings.user_id == user.user_id).gino.first()
         return settings
 
+    async def get_settings_by_tg_id(self, tg_user_id: int) -> Settings:
+        user = await self.get_user(tg_user_id)
+        settings = await Settings.query.where(Settings.user_id == user.user_id).gino.first()
+        return settings
+
     async def add_new_group(self, group_tt_id: int, group_name: str) -> None:
         old_group = await self.get_group(group_tt_id)
         if old_group:

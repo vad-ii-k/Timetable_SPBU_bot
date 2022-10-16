@@ -136,13 +136,13 @@ class Schedule(BaseModel, ABC):
     from_date: date
     to_date: date
 
-    @abstractmethod
-    async def get_schedule_week_header(self) -> str:
-        pass
-
     @property
     @abstractmethod
     def name(self) -> str:
+        pass
+
+    @abstractmethod
+    async def get_schedule_week_header(self) -> str:
         pass
 
 
@@ -185,10 +185,9 @@ class GroupStudyEvent(StudyEvent):
 
     @validator('educators', pre=True)
     def removing_academic_degrees(cls, educators):
-        educators = "".join(_educator.rsplit(", ", maxsplit=1)[0] + "; " for _educator in educators.split(sep=";"))[:-2]
         if educators == '':
-            educators = '—'
-        return educators
+            return '—'
+        return "".join(_educator.rsplit(", ", maxsplit=1)[0] + "; " for _educator in educators.split(sep=";"))[:-2]
 
     def get_contingent(self, with_sticker: bool = False) -> str:
         return '👨🏻‍🏫 ' * with_sticker + self.educators
