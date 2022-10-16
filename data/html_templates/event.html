@@ -1,13 +1,12 @@
-{% macro event(loop, event, general_location) -%} {%- if loop.first or
-loop.previtem.start_time != event.start_time or loop.previtem.end_time !=
-event.end_time %}
+{% macro event(loop, event, general_location) -%}
+{%- if loop.first or loop.previtem.start_time != event.start_time or loop.previtem.end_time != event.end_time %}
 <section class="event">
   <time class="event__time">
-    {{ event.start_time.strftime('%H:%M') }} &ndash; {{
-    event.end_time.strftime('%H:%M') }}
+    {{ event.start_time.strftime('%H:%M') }} &ndash; {{ event.end_time.strftime('%H:%M') }}
   </time>
   <ul class="event__subjects-container">
-    {%- endif %} {%- if loop.first or loop.previtem != event %}
+{%- endif %}
+    {%- if loop.first or loop.previtem != event %}
     <li class="subject">
       <header class="subject__header">
         <h2 class="subject__header__name">
@@ -17,19 +16,19 @@ event.end_time %}
         <p class="subject__header__type">{{ event.subject_format }}</p>
       </header>
       <ul class="subject__annotations-container">
-        {%- endif %}
-
+    {%- endif %}
         <li class="annotation">
           <p class="annotation__location">
-            {% if general_location %} Каб.{% endif %} {{ event.location }}
+            {% if general_location %} каб.{% endif %} {{ event.location }}
           </p>
           <p class="annotation__teacher">{{ event.contingent }}</p>
         </li>
-        {%- if loop.last or loop.nextitem != event %}
+    {%- if loop.last or loop.nextitem != event %}
       </ul>
-      {%- endif %} {%- if loop.last or loop.nextitem.start_time !=
-      event.start_time or loop.nextitem.end_time != event.end_time %}
+    {%- endif %}
+{%- if loop.last or loop.nextitem.start_time != event.start_time or loop.nextitem.end_time != event.end_time %}
     </li>
   </ul>
 </section>
-{%- endif %} {%- endmacro %}
+{%- endif %}
+{%- endmacro %}
