@@ -5,7 +5,11 @@ from babel.dates import format_date
 
 
 async def get_schedule_weekday_header(day: date, general_location: str = None) -> str:
-    formatted_date = format_date(day, "EEEE, d MMMM", locale=get_i18n().current_locale)
+    try:
+        locale = get_i18n().current_locale
+    except LookupError:
+        locale = 'ru'
+    formatted_date = format_date(day, "EEEE, d MMMM", locale=locale)
     weekday_sticker = _get_weekday_sticker(formatted_date)
     header = f"\n\n{weekday_sticker} <b>{formatted_date}</b>\n"
     if general_location:

@@ -172,8 +172,13 @@ class EducatorSchedule(Schedule):
         return self.full_name
 
     async def get_schedule_week_header(self) -> str:
-        header = _("🧑‍🏫 Преподаватель: ") + f"<b>{self.name}</b>\n" \
-                 + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+        try:
+            header = _("🧑‍🏫 Преподаватель: ") + f"<b>{self.name}</b>\n" \
+                     + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+        except LookupError:
+            header = f'🧑‍🏫 Преподаватель: <b>{self.name}</b>\n' \
+                     f'📆 Неделя: <a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+
         return header
 
 
@@ -208,6 +213,10 @@ class GroupSchedule(Schedule):
         return self.group_name
 
     async def get_schedule_week_header(self) -> str:
-        header = _("👨‍👩‍👧‍👦 Группа: ") + f"<b>{self.name}</b>\n"\
-                 + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+        try:
+            header = _("👨‍👩‍👧‍👦 Группа: ") + f"<b>{self.name}</b>\n"\
+                     + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+        except LookupError:
+            header = f'👨‍👩‍👧‍👦 Группа: <b>{self.name}</b>\n' \
+                     f'📆 Неделя: <a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
         return header

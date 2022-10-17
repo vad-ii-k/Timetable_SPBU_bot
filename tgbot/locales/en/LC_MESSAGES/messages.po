@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-16 12:40+0300\n"
+"POT-Creation-Date: 2022-10-17 16:07+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: data_classes.py:174
+#: data_classes.py:176
 msgid "🧑‍🏫 Преподаватель: "
 msgstr "🧑‍🏫 Educator: "
 
-#: data_classes.py:175 data_classes.py:212
+#: data_classes.py:177 data_classes.py:218
 msgid "📆 Неделя: "
 msgstr "📆 Week: "
 
-#: data_classes.py:211
+#: data_classes.py:217
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
@@ -144,7 +144,7 @@ msgstr ""
 msgid "⬇️ Выберите группу из списка:"
 msgstr "⬇️ Select a group from the list:"
 
-#: handlers/settings.py:26
+#: handlers/settings.py:25
 msgid ""
 "⚙️<b> Выберите время для получения\n"
 "ㅤㅤ сводки расписания на день</b>\n"
@@ -154,11 +154,11 @@ msgstr ""
 "  schedule summary for the day</b>\n"
 " Day before at ┃ On day of classes at"
 
-#: handlers/settings.py:41 handlers/settings.py:52
+#: handlers/settings.py:39 handlers/settings.py:49
 msgid "Настройки обновлены ✅"
 msgstr "Settings updated ✅"
 
-#: handlers/settings.py:61
+#: handlers/settings.py:57
 msgid ""
 "The language has been successfully changed to 🇬🇧\n"
 "Messages will now be sent in English"
@@ -166,7 +166,7 @@ msgstr ""
 "Язык успешно изменён на 🇷🇺\n"
 "Теперь сообщения будут присылаться на русском"
 
-#: handlers/settings.py:81
+#: handlers/settings.py:76
 msgid ""
 "Вы подписались на расписание! ✅\n"
 "Воспользуйтесь командой:\n"
@@ -178,7 +178,7 @@ msgstr ""
 "— /my_schedule to view your main schedule\n"
 "— /settings to configure notifications"
 
-#: handlers/settings.py:91
+#: handlers/settings.py:86
 msgid "Вы отказались от подписки! ❌"
 msgstr "You have unsubscribed! ❌ "
 
@@ -282,7 +282,7 @@ msgstr " Do not send 🔇"
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
-#: services/schedule/getting_shedule.py:69 services/schedule/getting_shedule.py:87
+#: services/schedule/getting_shedule.py:70 services/schedule/getting_shedule.py:88
 msgid ""
 "\n"
 "\n"
@@ -292,7 +292,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: services/schedule/getting_shedule.py:72
+#: services/schedule/getting_shedule.py:73
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"
@@ -300,7 +300,7 @@ msgstr ""
 "\n"
 "🏖 There are no classes this week"
 
-#: services/schedule/getting_shedule.py:91
+#: services/schedule/getting_shedule.py:92
 msgid "🏖 Занятий в этот день нет"
 msgstr "🏖 There are no classes on this day"
 

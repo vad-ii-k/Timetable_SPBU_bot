@@ -1,3 +1,5 @@
+from datetime import time
+
 from aiogram import types
 from sqlalchemy import asc
 
@@ -78,6 +80,17 @@ class DBCommands:
     async def get_main_schedule(user_id: int) -> MainScheduleInfo:
         main_schedule = await MainScheduleInfo.query.where(MainScheduleInfo.user_id == user_id).gino.first()
         return main_schedule
+
+    @staticmethod
+    async def get_users_with_sign_to_summary(current_time: time) -> list[tuple[int, UserType, int]]:
+        users = await Settings.select("user_id").where(Settings.daily_summary == current_time).gino.all()
+        users_ids = list(map(lambda user: user[0], users))
+        main_schedule_of_users = await User.join(MainScheduleInfo, User.user_id == MainScheduleInfo.user_id).select().\
+            where(MainScheduleInfo.user_id.in_(users_ids)).gino.all()
+        user_with_main_schedule = list(map(
+            lambda user: (user[1], UserType.STUDENT if user[6] else UserType.EDUCATOR, user[5]), main_schedule_of_users
+        ))
+        return user_with_main_schedule
 
 
 database = DBCommands()

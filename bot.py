@@ -6,6 +6,7 @@ from aiogram import Dispatcher, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.i18n import I18n
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from tgbot.config import app_config, bot
 from tgbot.handlers.admin import admin_router
@@ -22,6 +23,7 @@ from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import create_db
 from tgbot.services.db_api.db_statistics import database_statistics
 from tgbot.services.db_api.initial_filling_of_groups import adding_groups_to_db
+from tgbot.services.notifications import start_scheduler
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +33,7 @@ async def on_startup(_bot: Bot, admin_ids: list[int]):
     await broadcaster.broadcast(bot, admin_ids, f"🆙 Бот запущен!\nКоличество пользователей: {number_of_users}")
 
 
-def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
+async def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
     dispatcher.message.middleware(ConfigMessageMiddleware(app_config))
     dispatcher.callback_query.middleware(ConfigCallbackMiddleware(app_config))
     dispatcher.update.outer_middleware(LanguageI18nMiddleware(i18n))
@@ -79,7 +81,10 @@ async def main():
         dispatcher.include_router(router)
 
     i18n = I18n(path="tgbot/locales", default_locale="ru", domain="messages")
-    register_global_middlewares(dispatcher, i18n)
+    await register_global_middlewares(dispatcher, i18n)
+
+    scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
+    await start_scheduler(scheduler)
 
     await on_startup(bot, app_config.tg_bot.admin_ids)
     await dispatcher.start_polling(bot)

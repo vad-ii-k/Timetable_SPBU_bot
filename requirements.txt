@@ -4,6 +4,7 @@ aiohttp_client_cache~=0.7.3
 aiohttp_socks==0.7.1
 aioredis~=2.0
 alembic~=1.8.1
+apscheduler~=3.9.1
 Babel~=2.10.3
 environs~=9.0
 gino~=1.0.1
