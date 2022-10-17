@@ -8,7 +8,7 @@ from aiohttp_socks import ProxyConnector
 from python_socks import ProxyConnectionError
 
 from tgbot.config import app_config
-from tgbot.data_classes import GroupSearchInfo, StudyLevel
+from tgbot.services.schedule.data_classes import GroupSearchInfo, StudyLevel
 from tgbot.services.db_api.db_commands import database
 from tgbot.services.timetable_api.timetable_api import TT_API_URL, get_study_divisions
 

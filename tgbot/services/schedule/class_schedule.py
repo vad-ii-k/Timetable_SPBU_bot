@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from datetime import time, date
 from typing import TypeVar, Generic
 
@@ -7,40 +6,7 @@ from aiogram.utils.i18n import gettext as _
 from pydantic import BaseModel, Field, validator, root_validator
 from pydantic.generics import GenericModel
 
-from tgbot.services.schedule.helpers import get_time_sticker, get_subject_format_sticker, get_schedule_weekday_header
-
-
-@dataclass(slots=True, frozen=True)
-class StudyDivision:
-    alias: str
-    name: str
-
-
-@dataclass(slots=True, frozen=True)
-class EducatorSearchInfo:
-    tt_id: int
-    full_name: str
-
-
-class AdmissionYear(BaseModel):
-    year: str = Field(alias="YearName")
-    study_program_id: str = Field(alias="StudyProgramId")
-
-
-class ProgramCombination(BaseModel):
-    name: str = Field(alias="Name")
-    admission_years: list[AdmissionYear] = Field(alias="AdmissionYears")
-
-
-class StudyLevel(BaseModel):
-    name: str = Field(alias="StudyLevelName")
-    program_combinations: list[ProgramCombination] = Field(alias="StudyProgramCombinations")
-
-
-@dataclass(slots=True, frozen=True)
-class GroupSearchInfo:
-    tt_id: int
-    name: str
+from tgbot.services.schedule.helpers import get_schedule_weekday_header, get_time_sticker, get_subject_format_sticker
 
 
 class StudyEvent(BaseModel, ABC):

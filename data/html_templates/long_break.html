@@ -4,7 +4,7 @@
 {%- if difference_between_events_in_min > 90 %}
 <section class="event">
   <time class="event__time event__time--inactive">
-    {{ prev_event_end_time.strftime('%H:%M') }} &ndash; {{ cur_event_start_time.strftime('%H:%M') }}
+    {{ prev_event_end_time.strftime('%H:%M') }} <br> {{ cur_event_start_time.strftime('%H:%M') }}
   </time>
   <div class="event__subjects-container event__subjects-container--inactive">
     <h2 class="subject__header__name subject__header__name--inactive">

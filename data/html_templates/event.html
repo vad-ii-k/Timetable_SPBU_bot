@@ -2,7 +2,7 @@
 {%- if loop.first or loop.previtem.start_time != event.start_time or loop.previtem.end_time != event.end_time %}
 <section class="event">
   <time class="event__time">
-    {{ event.start_time.strftime('%H:%M') }} &ndash; {{ event.end_time.strftime('%H:%M') }}
+    {{ event.start_time.strftime('%H:%M') }} <br> {{ event.end_time.strftime('%H:%M') }}
   </time>
   <ul class="event__subjects-container">
 {%- endif %}
@@ -18,7 +18,7 @@
     {%- endif %}
         <li class="annotation">
           <p class="annotation__location">
-            {% if general_location %} каб.{% endif %} {{ event.location }}
+            {% if general_location %} каб.{% endif %} {{ event.location | replace(';', '<br>') }}
           </p>
           <p class="annotation__teacher">{{ event.contingent }}</p>
         </li>

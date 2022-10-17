@@ -16,7 +16,7 @@ from tgbot.cb_data import (
     SettingsDailySummaryCallbackFactory,
     ScheduleSubscriptionCallbackFactory,
 )
-from tgbot.data_classes import (
+from tgbot.services.schedule.data_classes import (
     StudyDivision,
     StudyLevel,
     GroupSearchInfo,

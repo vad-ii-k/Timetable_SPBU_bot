@@ -8,7 +8,7 @@ from pyppeteer import launch
 from jinja2 import Environment, FileSystemLoader
 from aiogram.types import BufferedInputFile
 
-from tgbot.data_classes import Schedule
+from tgbot.services.schedule.class_schedule import Schedule
 
 
 async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
@@ -19,7 +19,7 @@ async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
 
 async def render_template(schedule: Schedule, schedule_type: Literal['day', 'week']):
     result_path = f"data/compiled_html_pages/{schedule_type}_schedule.html"
-    environment = Environment(loader=FileSystemLoader("data/html_templates"))
+    environment = Environment(loader=FileSystemLoader("data/html_templates"), enable_async=True)
 
     def date_format_ru(value):
         return format_date(value, "EEEE, d MMM", locale='ru')
@@ -28,7 +28,7 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
     results_template = environment.get_template(f"{schedule_type}_schedule.html")
 
     with open(file=result_path, mode="w", encoding="utf-8") as result:
-        result.write(results_template.render(
+        result.write(await results_template.render_async(
             schedule=schedule,
             dates_of_days_of_week=await get_dates_of_days_of_week(schedule),
             dates_of_event_days=list(map(lambda e: e.day, schedule.events_days))
@@ -46,7 +46,7 @@ async def take_browser_screenshot(schedule_type: Literal['day', 'week']):
     )
     browser_page = await browser.newPage()
     await browser_page.goto(f'file:///{os.path.abspath(f"data/compiled_html_pages/{schedule_type}_schedule.html")}')
-    await browser_page.screenshot(path='data/output.jpeg', type='jpeg', fullPage=True, quality=90)
+    await browser_page.screenshot(path='data/output.jpeg', type='jpeg', fullPage=True, quality=100)
     await browser.close()
 
 
