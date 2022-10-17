@@ -8,7 +8,7 @@ from pyppeteer import launch
 from jinja2 import Environment, FileSystemLoader
 from aiogram.types import BufferedInputFile
 
-from tgbot.data_classes import Schedule
+from tgbot.services.schedule.class_schedule import Schedule
 
 
 async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:

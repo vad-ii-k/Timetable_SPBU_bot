@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-17 16:07+0300\n"
+"POT-Creation-Date: 2022-10-17 23:24+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: data_classes.py:176
+#: class_schedule.py:142
 msgid "🧑‍🏫 Преподаватель: "
 msgstr "🧑‍🏫 Educator: "
 
-#: data_classes.py:177 data_classes.py:218
+#: class_schedule.py:143 class_schedule.py:184
 msgid "📆 Неделя: "
 msgstr "📆 Week: "
 
-#: data_classes.py:217
+#: class_schedule.py:183
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
@@ -282,7 +282,7 @@ msgstr " Do not send 🔇"
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
-#: services/schedule/getting_shedule.py:70 services/schedule/getting_shedule.py:88
+#: services/schedule/getting_shedule.py:63 services/schedule/getting_shedule.py:81
 msgid ""
 "\n"
 "\n"
@@ -292,7 +292,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: services/schedule/getting_shedule.py:73
+#: services/schedule/getting_shedule.py:66
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"
@@ -300,7 +300,7 @@ msgstr ""
 "\n"
 "🏖 There are no classes this week"
 
-#: services/schedule/getting_shedule.py:92
+#: services/schedule/getting_shedule.py:85
 msgid "🏖 Занятий в этот день нет"
 msgstr "🏖 There are no classes on this day"
 

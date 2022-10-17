@@ -1,9 +1,9 @@
 from datetime import date, timedelta
 
-from aiogram.utils.i18n import gettext as _
 from aiogram.types import BufferedInputFile
+from aiogram.utils.i18n import gettext as _
 
-from tgbot.data_classes import GroupEventsDay, EducatorEventsDay, GroupSchedule, EducatorSchedule
+from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, GroupEventsDay, EducatorEventsDay, Schedule
 from tgbot.misc.states import UserType
 from tgbot.services.image_converter import get_rendered_image
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
@@ -48,14 +48,7 @@ async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: i
     monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
-    day = date.today() + timedelta(day_counter)
-    schedule += await get_schedule_weekday_header(day)
-    for index, event_day in enumerate(schedule_from_timetable.events_days):
-        if event_day.day == day:
-            schedule_from_timetable.events_days = schedule_from_timetable.events_days[index:index+1]
-    if len(schedule_from_timetable.events_days) > 1:
-        schedule_from_timetable.events_days.clear()
-        schedule_from_timetable.day = day
+    await _transforming_schedule_for_image_for_day(schedule, schedule_from_timetable, day_counter)
     photo = await get_rendered_image(schedule_from_timetable, schedule_type='day')
     return schedule, photo
 
@@ -91,3 +84,14 @@ async def schedule_day_body(
         schedule += await get_schedule_weekday_header(day)
         schedule += _("🏖 Занятий в этот день нет")
     return schedule
+
+
+async def _transforming_schedule_for_image_for_day(schedule: str, schedule_from_timetable: Schedule, day_counter: int):
+    day = date.today() + timedelta(day_counter)
+    schedule += await get_schedule_weekday_header(day)
+    for index, event_day in enumerate(schedule_from_timetable.events_days):
+        if event_day.day == day:
+            schedule_from_timetable.events_days = schedule_from_timetable.events_days[index:index + 1]
+    if len(schedule_from_timetable.events_days) > 1:
+        schedule_from_timetable.events_days.clear()
+        schedule_from_timetable.day = day
