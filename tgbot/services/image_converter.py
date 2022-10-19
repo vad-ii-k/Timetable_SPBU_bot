@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import timedelta, date
+from itertools import groupby
 from typing import Literal
 
 from babel.dates import format_date
@@ -8,7 +9,7 @@ from pyppeteer import launch
 from jinja2 import Environment, FileSystemLoader
 from aiogram.types import BufferedInputFile
 
-from tgbot.services.schedule.class_schedule import Schedule
+from tgbot.services.schedule.class_schedule import Schedule, StudyEvent
 
 
 async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
@@ -24,6 +25,13 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
     def date_format_ru(value):
         return format_date(value, "EEEE, d MMM", locale='ru')
     environment.filters["date_format_ru"] = date_format_ru
+
+    def events_group_by(events: list[StudyEvent]):
+        def key_func(event: StudyEvent):
+            return event.name, event.event_format, event.start_time, event.end_time, event.is_canceled
+
+        return groupby(events, key=key_func)
+    environment.filters["events_group_by"] = events_group_by
 
     results_template = environment.get_template(f"{schedule_type}_schedule.html")
 
@@ -46,7 +54,7 @@ async def take_browser_screenshot(schedule_type: Literal['day', 'week']):
     )
     browser_page = await browser.newPage()
     await browser_page.goto(f'file:///{os.path.abspath(f"data/compiled_html_pages/{schedule_type}_schedule.html")}')
-    await browser_page.screenshot(path='data/output.jpeg', type='jpeg', fullPage=True, quality=100)
+    await browser_page.screenshot(path='data/output.jpeg', type='jpeg', fullPage=True, quality=99)
     await browser.close()
 
 

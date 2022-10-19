@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from aiogram.types import BufferedInputFile
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, GroupEventsDay, EducatorEventsDay, Schedule
+from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, Schedule, EventsDay
 from tgbot.misc.states import UserType
 from tgbot.services.image_converter import get_rendered_image
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
@@ -53,7 +53,7 @@ async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: i
     return schedule, photo
 
 
-async def schedule_week_body(schedule: str, events_days: list[GroupEventsDay | EducatorEventsDay]) -> str:
+async def schedule_week_body(schedule: str, events_days: list[EventsDay]) -> str:
     if len(events_days) > 0:
         for event_day in events_days:
             day_schedule = await event_day.events_day_converter_to_msg()
@@ -67,9 +67,7 @@ async def schedule_week_body(schedule: str, events_days: list[GroupEventsDay | E
     return schedule
 
 
-async def schedule_day_body(
-        schedule: str, events_days: list[GroupEventsDay | EducatorEventsDay], day_counter: int
-) -> str:
+async def schedule_day_body(schedule: str, events_days: list[EventsDay], day_counter: int) -> str:
     day = date.today() + timedelta(day_counter)
     day_schedule = ""
     for event_day in events_days:

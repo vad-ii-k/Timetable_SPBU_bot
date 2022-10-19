@@ -4,12 +4,13 @@
 <article class="day">
   <h1 class="day__header">{{ events_day.day | date_format_ru | title }}</h1>
   <address class="day__address">{{ events_day.general_location if events_day.general_location }}</address>
+        <p>{{ event | e }}
   <div class="day__events">
-    {%- for event in events_day.events %}
+    {%- for (name, event_format, start_time, end_time, is_canceled), subjects in events_day.events | events_group_by %}
         {%- if not loop.first %}
-            {{ lb.long_break(loop.previtem.end_time, event.start_time) }}
+            {{ lb.long_break(loop.previtem[0][3], start_time) }}
         {%- endif %}
-        {{ e.event(loop, event, events_day.general_location) }}
+        {{ e.event(name, event_format, start_time, end_time, is_canceled, subjects, events_day.general_location) }}
     {%- endfor %}
   </div>
 </article>

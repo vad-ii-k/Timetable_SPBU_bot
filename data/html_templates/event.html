@@ -1,33 +1,27 @@
-{% macro event(loop, event, general_location) -%}
-{%- if loop.first or loop.previtem.start_time != event.start_time or loop.previtem.end_time != event.end_time %}
+{% macro event(name, event_format, start_time, end_time, is_canceled, subjects, general_location) -%}
 <section class="event">
   <time class="event__time">
-    {{ event.start_time.strftime('%H:%M') }} <br> {{ event.end_time.strftime('%H:%M') }}
+    {{ start_time.strftime('%H:%M') }} <br> {{ end_time.strftime('%H:%M') }}
   </time>
   <ul class="event__subjects-container">
-{%- endif %}
-    {%- if loop.first or loop.previtem != event %}
     <li class="subject">
       <header class="subject__header">
         <h2 class="subject__header__name">
-          {{ "<s>" * event.is_canceled }}{{ event.subject_name }}{{ "</s>" * event.is_canceled }}
+          {{ "<s>" * is_canceled }}{{ name }}{{ "</s>" * is_canceled }}
         </h2>
-        <p class="subject__header__type">{{ event.subject_format }}</p>
+        <p class="subject__header__type">{{ event_format }}</p>
       </header>
+    {%- for subject in subjects %}
       <ul class="subject__annotations-container">
-    {%- endif %}
         <li class="annotation">
           <p class="annotation__location">
-            {% if general_location %} каб.{% endif %} {{ event.location | replace(';', '<br>') }}
+            {% if general_location %} каб.{% endif %} {{ subject.location | replace(';', '<br>') }}
           </p>
-          <p class="annotation__teacher">{{ event.contingent }}</p>
+          <p class="annotation__teacher">{{ subject.contingent }}</p>
         </li>
-    {%- if loop.last or loop.nextitem != event %}
       </ul>
-    {%- endif %}
-{%- if loop.last or loop.nextitem.start_time != event.start_time or loop.nextitem.end_time != event.end_time %}
+    {%- endfor %}
     </li>
   </ul>
 </section>
-{%- endif %}
 {%- endmacro %}

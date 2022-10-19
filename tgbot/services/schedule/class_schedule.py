@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import time, date
+from itertools import groupby
 from typing import TypeVar, Generic
 
 from aiogram.utils.i18n import gettext as _
@@ -12,8 +13,8 @@ from tgbot.services.schedule.helpers import get_schedule_weekday_header, get_tim
 class StudyEvent(BaseModel, ABC):
     start_time: time = Field(alias="Start")
     end_time: time = Field(alias="End")
-    subject_name: str = Field(alias="Subject")
-    subject_format: str | None
+    name: str = Field(alias="Subject")
+    event_format: str | None
     location: str = Field(alias="LocationsDisplayText")
     is_canceled: bool = Field(alias="IsCancelled")
 
@@ -22,19 +23,20 @@ class StudyEvent(BaseModel, ABC):
     def contingent(self) -> str:
         pass
 
+    @property
+    @abstractmethod
+    def contingent_sticker(self) -> str:
+        pass
+
     @validator('start_time', 'end_time', pre=True)
     def from_datetime_to_time(cls, value):
         return value.split('T')[1]
 
     @root_validator
     def separation_of_subject(cls, values):
-        values['subject_name'], values['subject_format'] = values['subject_name'].rsplit(sep=", ", maxsplit=1)\
-            if values['subject_name'].rfind(", ") != -1 else (values['subject_name'], "—")
+        values['name'], values['event_format'] = values['name'].rsplit(sep=", ", maxsplit=1) \
+            if values['name'].rfind(", ") != -1 else (values['name'], "—")
         return values
-
-    @abstractmethod
-    def get_contingent(self, with_sticker: bool = False) -> str:
-        pass
 
     @classmethod
     def __verify_data(cls, other):
@@ -45,8 +47,8 @@ class StudyEvent(BaseModel, ABC):
     def __ne__(self, other) -> bool:
         event = self.__verify_data(other)
         return (
-                self.subject_name != event.subject_name
-                or self.subject_format != event.subject_format
+                self.name != event.name
+                or self.event_format != event.event_format
                 or self.start_time != event.start_time
                 or self.end_time != event.end_time
                 or self.is_canceled != event.is_canceled
@@ -82,18 +84,22 @@ class EventsDay(GenericModel, Generic[TSE]):
 
     async def events_day_converter_to_msg(self) -> str:
         day_timetable = await get_schedule_weekday_header(self.day, self.general_location)
-        for i, event in enumerate(self.events):
-            if i == 0 or self.events[i - 1] != event:
-                day_timetable += (
-                    f'     ┈┈┈┈┈┈┈┈┈┈┈┈\n'
-                    f'    {"<s>" * event.is_canceled}<b>{event.subject_name}</b>{"</s>" * event.is_canceled}\n'
-                    f'    {get_time_sticker(event.start_time.hour)} {event.start_time:%H:%M}-{event.end_time:%H:%M}\n'
-                    f'    <i>{get_subject_format_sticker(event.subject_format)} {event.subject_format}</i>\n'
-                )
+
+        def key_func(event: StudyEvent):
+            return event.name, event.event_format, event.start_time, event.end_time, event.is_canceled
+
+        for (name, event_format, start_time, end_time, is_canceled), subjects in groupby(self.events, key=key_func):
             day_timetable += (
-                f"    <i>{event.get_contingent(with_sticker=True)}\n"
-                f"    {'🚪 каб.' if self.general_location else '📍'} {event.location}</i>\n"
+                f'     ┈┈┈┈┈┈┈┈┈┈┈┈\n'
+                f'    {"<s>" * is_canceled}<b>{name}</b>{"</s>" * is_canceled}\n'
+                f'    {get_time_sticker(start_time.hour)} {start_time:%H:%M}-{end_time:%H:%M}\n'
+                f'    <i>{get_subject_format_sticker(event_format)} {event_format}</i>\n'
             )
+            for subject in subjects:
+                day_timetable += (
+                    f"    <i>{subject.contingent_sticker}{subject.contingent}\n"
+                    f"    {'🚪 каб.' if self.general_location else '📍'} {subject.location}</i>\n"
+                )
         return day_timetable
 
 
@@ -104,13 +110,25 @@ class Schedule(BaseModel, ABC):
     day: date = None
 
     @property
+    def header_week(self):
+        try:
+            week = _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+        except LookupError:
+            week = f'📆 Неделя: <a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+        return week
+
+    @property
     @abstractmethod
     def name(self) -> str:
         pass
 
+    @property
     @abstractmethod
-    async def get_schedule_week_header(self) -> str:
+    def header_name(self) -> str:
         pass
+
+    async def get_schedule_week_header(self) -> str:
+        return self.header_name + self.header_week
 
 
 class EducatorStudyEvent(StudyEvent):
@@ -120,32 +138,27 @@ class EducatorStudyEvent(StudyEvent):
     def contingent(self) -> str:
         return self.groups
 
-    def get_contingent(self, with_sticker: bool = False) -> str:
-        return '🎓 ' * with_sticker + self.groups
-
-
-class EducatorEventsDay(EventsDay[TSE], Generic[TSE]):
-    pass
+    @property
+    def contingent_sticker(self) -> str:
+        return '🎓 '
 
 
 class EducatorSchedule(Schedule):
     educator_tt_id: int = Field(alias="EducatorMasterId")
     full_name: str = Field(alias="EducatorLongDisplayText")
-    events_days: list[EducatorEventsDay[EducatorStudyEvent]] = Field(alias="EducatorEventsDays")
+    events_days: list[EventsDay[EducatorStudyEvent]] = Field(alias="EducatorEventsDays")
 
     @property
     def name(self):
         return self.full_name
 
-    async def get_schedule_week_header(self) -> str:
+    @property
+    def header_name(self) -> str:
         try:
-            header = _("🧑‍🏫 Преподаватель: ") + f"<b>{self.name}</b>\n" \
-                     + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+            header_name = _("🧑‍🏫 Преподаватель: ") + f"<b>{self.name}</b>\n"
         except LookupError:
-            header = f'🧑‍🏫 Преподаватель: <b>{self.name}</b>\n' \
-                     f'📆 Неделя: <a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
-
-        return header
+            header_name = f'🧑‍🏫 Преподаватель: <b>{self.name}</b>\n'
+        return header_name
 
 
 class GroupStudyEvent(StudyEvent):
@@ -155,34 +168,30 @@ class GroupStudyEvent(StudyEvent):
     def contingent(self) -> str:
         return self.educators
 
+    @property
+    def contingent_sticker(self) -> str:
+        return '👨🏻‍🏫 '
+
     @validator('educators', pre=True)
     def removing_academic_degrees(cls, educators):
         if educators == '':
             return '—'
         return "".join(_educator.rsplit(", ", maxsplit=1)[0] + "; " for _educator in educators.split(sep=";"))[:-2]
 
-    def get_contingent(self, with_sticker: bool = False) -> str:
-        return '👨🏻‍🏫 ' * with_sticker + self.educators
-
-
-class GroupEventsDay(EventsDay[TSE], Generic[TSE]):
-    pass
-
 
 class GroupSchedule(Schedule):
     group_tt_id: int = Field(alias="StudentGroupId")
     group_name: str = Field(alias="StudentGroupDisplayName")
-    events_days: list[GroupEventsDay[GroupStudyEvent]] = Field(alias="Days")
+    events_days: list[EventsDay[GroupStudyEvent]] = Field(alias="Days")
 
     @property
     def name(self):
         return self.group_name
 
-    async def get_schedule_week_header(self) -> str:
+    @property
+    def header_name(self) -> str:
         try:
-            header = _("👨‍👩‍👧‍👦 Группа: ") + f"<b>{self.name}</b>\n"\
-                     + _("📆 Неделя: ") + f'<a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
+            header_name = _("👨‍👩‍👧‍👦 Группа: ") + f"<b>{self.name}</b>\n"
         except LookupError:
-            header = f'👨‍👩‍👧‍👦 Группа: <b>{self.name}</b>\n' \
-                     f'📆 Неделя: <a href="{self.tt_url}">{self.from_date:%d.%m} — {self.to_date:%d.%m}</a>\n'
-        return header
+            header_name = f'👨‍👩‍👧‍👦 Группа: <b>{self.name}</b>\n'
+        return header_name
