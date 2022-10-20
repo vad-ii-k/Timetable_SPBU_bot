@@ -79,7 +79,7 @@ async def schedule_day_body(schedule: str, events_days: list[EventsDay], day_cou
                 schedule += _("\n\n📛 Сообщение слишком длинное...")
                 break
     if day_schedule == "":
-        schedule += await get_schedule_weekday_header(day)
+        schedule += "\n\n" + await get_schedule_weekday_header(day)
         schedule += _("🏖 Занятий в этот день нет")
     return schedule
 

@@ -11,7 +11,7 @@ async def get_schedule_weekday_header(day: date, general_location: str = None) -
         locale = 'ru'
     formatted_date = format_date(day, "EEEE, d MMMM", locale=locale)
     weekday_sticker = _get_weekday_sticker(formatted_date)
-    header = f"\n\n{weekday_sticker} <b>{formatted_date}</b>\n"
+    header = f"{weekday_sticker} <b>{formatted_date}</b>\n"
     if general_location:
         header += f"📍 {general_location}\n"
     return header

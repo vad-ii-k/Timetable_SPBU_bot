@@ -3,7 +3,6 @@
 .event {
   display: flex;
   gap: 16px;
-  background: $white;
 
   &__time {
     @include heading-2;

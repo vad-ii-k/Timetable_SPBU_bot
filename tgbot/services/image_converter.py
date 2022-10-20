@@ -26,11 +26,13 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
         return format_date(value, "EEEE, d MMM", locale='ru')
     environment.filters["date_format_ru"] = date_format_ru
 
-    def events_group_by(events: list[StudyEvent]):
-        def key_func(event: StudyEvent):
-            return event.name, event.event_format, event.start_time, event.end_time, event.is_canceled
+    def events_group_by(events: list[StudyEvent], key_type: Literal['time', 'event_info']):
+        def key_func_event_info(event: StudyEvent):
+            return event.name, event.event_format, event.is_canceled
 
-        return groupby(events, key=key_func)
+        def key_func_time(event: StudyEvent):
+            return event.start_time, event.end_time
+        return groupby(events, key=key_func_time if key_type == 'time' else key_func_event_info)
     environment.filters["events_group_by"] = events_group_by
 
     results_template = environment.get_template(f"{schedule_type}_schedule.html")

@@ -83,7 +83,7 @@ class EventsDay(GenericModel, Generic[TSE]):
         return values
 
     async def events_day_converter_to_msg(self) -> str:
-        day_timetable = await get_schedule_weekday_header(self.day, self.general_location)
+        day_timetable = "\n\n" + await get_schedule_weekday_header(self.day, self.general_location)
 
         def key_func(event: StudyEvent):
             return event.name, event.event_format, event.start_time, event.end_time, event.is_canceled

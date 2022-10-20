@@ -1,9 +1,10 @@
-{% macro event(name, event_format, start_time, end_time, is_canceled, subjects, general_location) -%}
+{% macro event(start_time, end_time, events, general_location) -%}
 <section class="event">
   <time class="event__time">
     {{ start_time.strftime('%H:%M') }} <br> {{ end_time.strftime('%H:%M') }}
   </time>
   <ul class="event__subjects-container">
+  {%- for (name, event_format, is_canceled), subjects in events | events_group_by('main_info') %}
     <li class="subject">
       <header class="subject__header">
         <h2 class="subject__header__name">
@@ -11,17 +12,18 @@
         </h2>
         <p class="subject__header__type">{{ event_format }}</p>
       </header>
-    {%- for subject in subjects %}
       <ul class="subject__annotations-container">
+      {%- for subject in subjects %}
         <li class="annotation">
           <p class="annotation__location">
             {% if general_location %} каб.{% endif %} {{ subject.location | replace(';', '<br>') }}
           </p>
           <p class="annotation__teacher">{{ subject.contingent }}</p>
         </li>
+      {%- endfor %}
       </ul>
-    {%- endfor %}
     </li>
+  {%- endfor %}
   </ul>
 </section>
 {%- endmacro %}

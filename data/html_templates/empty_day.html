@@ -1,6 +1,8 @@
 {% macro empty_day(date) -%}
 <article class="day">
     <h1 class="day__header day__header--inactive">{{ date | date_format_ru | title }}</h1>
-    Нет занятий
+    <p class="day--inactive">
+        Нет занятий
+    </p>
 </article>
 {%- endmacro %}

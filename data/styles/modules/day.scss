@@ -3,7 +3,7 @@
 .day {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 
   &__header {
     @include heading-1;
@@ -11,7 +11,7 @@
     padding: 16px 32px;
     color: $white;
     background: $primary;
-    box-shadow: 16px 16px 0px $black-10;
+    box-shadow: 16px 16px 0 $black-10;
 
     &--inactive {
       background: $black-50;
@@ -19,7 +19,9 @@
   }
 
   &__address {
-    // TODO: Address for entire day
+    @include heading-2;
+    margin: 0 0 0 32px;
+    color: $black-75;
   }
 
   &__events {
@@ -27,5 +29,11 @@
     flex-direction: column;
     gap: 32px;
     padding: 0 0 0 32px;
+  }
+
+  &--inactive {
+    @include heading-2;
+    margin: 0 0 0 32px;
+    color: $black-50;
   }
 }
