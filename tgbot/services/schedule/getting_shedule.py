@@ -48,7 +48,7 @@ async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: i
     monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
-    await _transforming_schedule_for_image_for_day(schedule, schedule_from_timetable, day_counter)
+    schedule += await _transforming_schedule_for_image_for_day(schedule_from_timetable, day_counter)
     photo = await get_rendered_image(schedule_from_timetable, schedule_type='day')
     return schedule, photo
 
@@ -84,12 +84,13 @@ async def schedule_day_body(schedule: str, events_days: list[EventsDay], day_cou
     return schedule
 
 
-async def _transforming_schedule_for_image_for_day(schedule: str, schedule_from_timetable: Schedule, day_counter: int):
+async def _transforming_schedule_for_image_for_day(schedule_from_timetable: Schedule, day_counter: int) -> str:
     day = date.today() + timedelta(day_counter)
-    schedule += await get_schedule_weekday_header(day)
+    schedule = await get_schedule_weekday_header(day)
     for index, event_day in enumerate(schedule_from_timetable.events_days):
         if event_day.day == day:
             schedule_from_timetable.events_days = schedule_from_timetable.events_days[index:index + 1]
     if len(schedule_from_timetable.events_days) > 1:
         schedule_from_timetable.events_days.clear()
         schedule_from_timetable.day = day
+    return schedule
