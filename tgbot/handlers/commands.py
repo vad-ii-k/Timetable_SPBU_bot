@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Router, Bot
+from aiogram import Router, Bot, flags
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, BotCommand, BotCommandScopeAllPrivateChats
 from aiogram.utils.i18n import gettext as _
@@ -76,7 +76,8 @@ async def settings_command(message: Message):
     await message.answer(text=text, reply_markup=await create_settings_keyboard(settings))
 
 
-@router.message(Command("my_schedule"), flags={'chat_action': 'typing'})
+@router.message(Command("my_schedule"))
+@flags.chat_action('typing')
 async def my_schedule_command(message: Message, state: FSMContext):
     user = await database.get_user(tg_user_id=message.chat.id)
     main_schedule = await database.get_main_schedule(user_id=user.user_id)

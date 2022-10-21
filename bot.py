@@ -18,7 +18,7 @@ from tgbot.handlers.settings import router as settings_router
 from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
 from tgbot.handlers.unexpected_message import router as unexpected_message_router
-from tgbot.middlewares.config import ConfigMessageMiddleware, ConfigCallbackMiddleware, LanguageI18nMiddleware
+from tgbot.middlewares.config import ActionMiddleware, LanguageI18nMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import create_db
 from tgbot.services.db_api.db_statistics import database_statistics
@@ -34,8 +34,8 @@ async def on_startup(_bot: Bot, admin_ids: list[int]):
 
 
 async def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
-    dispatcher.message.middleware(ConfigMessageMiddleware(app_config))
-    dispatcher.callback_query.middleware(ConfigCallbackMiddleware(app_config))
+    dispatcher.message.middleware(ActionMiddleware(app_config))
+    dispatcher.callback_query.middleware(ActionMiddleware(app_config))
     dispatcher.update.outer_middleware(LanguageI18nMiddleware(i18n))
 
 

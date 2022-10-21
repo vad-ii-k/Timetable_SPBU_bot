@@ -1,4 +1,4 @@
-from aiogram import Router
+from aiogram import Router, flags
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
@@ -22,7 +22,8 @@ from tgbot.services.timetable_api.timetable_api import get_study_levels, get_gro
 router = Router()
 
 
-@router.callback_query(StudyDivisionCallbackFactory.filter(), flags={'chat_action': 'typing'})
+@router.callback_query(StudyDivisionCallbackFactory.filter())
+@flags.chat_action('typing')
 async def study_divisions_navigation_callback(
         callback: CallbackQuery, callback_data: StudyDivisionCallbackFactory, state: FSMContext
 ):
@@ -62,7 +63,8 @@ async def admission_years_navigation_callback(
     await state.set_data({})
 
 
-@router.callback_query(AdmissionYearsCallbackFactory.filter(), flags={'chat_action': 'typing'})
+@router.callback_query(AdmissionYearsCallbackFactory.filter())
+@flags.chat_action('typing')
 async def group_choice_navigation_callback(
         callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext
 ):

@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router, F, flags
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
@@ -18,7 +18,8 @@ async def group_search_callback(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Searching.getting_group_choice)
 
 
-@router.callback_query(StartMenuCallbackFactory.filter(F.type == "student_navigation"), flags={'chat_action': 'typing'})
+@router.callback_query(StartMenuCallbackFactory.filter(F.type == "student_navigation"))
+@flags.chat_action('typing')
 async def student_navigation_callback(callback: CallbackQuery):
     await change_message_to_loading(callback.message)
     study_divisions = await get_study_divisions()

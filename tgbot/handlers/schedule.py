@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router, F, flags
 from aiogram.types import CallbackQuery
 
 from tgbot.cb_data import ScheduleCallbackFactory
@@ -13,9 +13,8 @@ from tgbot.services.schedule.getting_shedule import (
 router = Router()
 
 
-@router.callback_query(
-    ScheduleCallbackFactory.filter(F.button.in_({"1-1", "1-2", "1-3"})), flags={'chat_action': 'typing'}
-)
+@router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"1-1", "1-2", "1-3"})))
+@flags.chat_action('typing')
 async def schedule_days_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     await change_message_to_loading(callback.message)
     callback_data.week_counter = None
@@ -40,7 +39,8 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
     await callback.message.delete()
 
 
-@router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"2-1", "2-2"})), flags={'chat_action': 'typing'})
+@router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"2-1", "2-2"})))
+@flags.chat_action('typing')
 async def schedule_weeks_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     await change_message_to_loading(callback.message)
     callback_data.day_counter = None
@@ -63,7 +63,8 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
     await callback.message.delete()
 
 
-@router.callback_query(ScheduleCallbackFactory.filter(F.button == "3-1"), flags={'chat_action': 'typing'})
+@router.callback_query(ScheduleCallbackFactory.filter(F.button == "3-1"))
+@flags.chat_action('typing')
 async def schedule_photo_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     await change_message_to_loading(callback.message)
     tt_id, user_type = callback_data.tt_id, callback_data.user_type

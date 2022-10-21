@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-19 20:18+0300\n"
+"POT-Creation-Date: 2022-10-21 17:58+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -66,7 +66,7 @@ msgstr ""
 "\n"
 "⚙️ <b>Current settings:</b>"
 
-#: handlers/commands.py:88
+#: handlers/commands.py:89
 msgid ""
 "🚫 Основное расписание отсутствует\n"
 "1. 🔎 Воспользуйтесь одной из команд:\n"
@@ -80,19 +80,19 @@ msgstr ""
 "2. 🔖 Select the schedule you need\n"
 "3. ✅ Make the schedule the main one"
 
-#: handlers/commands.py:98
+#: handlers/commands.py:99
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
-#: handlers/helpers.py:68
+#: handlers/helpers.py:65
 msgid "🕒 <i>Загрузка...</i>"
 msgstr "🕒 <i>Loading...</i>"
 
-#: handlers/helpers.py:83
+#: handlers/helpers.py:80
 msgid "⚙️ Хотите сделать это расписание своим основным?"
 msgstr "⚙️ Do you want to make this schedule your main one?"
 
-#: handlers/searching.py:22
+#: handlers/searching.py:23
 msgid ""
 "❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
 "Пожалуйста, введите другую фамилию:"
@@ -100,7 +100,7 @@ msgstr ""
 "❌ Teacher \"<i>{last_name}</i>\" was not found!\n"
 "Please enter another surname:"
 
-#: handlers/searching.py:25
+#: handlers/searching.py:26
 msgid ""
 "❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
 "Попробуйте ввести фамилию и первую букву имени:"
@@ -108,11 +108,11 @@ msgstr ""
 "❌ The surname \"<i>{last_name}</i>\" is very common\n"
 "Try to enter the last name and the first letter of the name:"
 
-#: handlers/searching.py:28
+#: handlers/searching.py:29
 msgid "⬇️ Выберите преподавателя из списка:"
 msgstr "⬇️ Select a teacher from the list:"
 
-#: handlers/searching.py:40
+#: handlers/searching.py:41
 msgid ""
 "Группа \"<i>{group_name}</i>\" не найдена!\n"
 "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:"
@@ -120,7 +120,7 @@ msgstr ""
 "The group \"<i>{group_name}</i>\" was not found!\n"
 "Try again or use the navigation with the /start command:"
 
-#: handlers/searching.py:43
+#: handlers/searching.py:44
 msgid ""
 "Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
 "Попробуйте ввести подробнее:"
@@ -128,7 +128,7 @@ msgstr ""
 "There are too many groups containing \"<i>{group_name}</i>\" in the name!\n"
 "Try to enter more details:"
 
-#: handlers/searching.py:46
+#: handlers/searching.py:47
 msgid "⬇️ Выберите группу из списка:"
 msgstr "⬇️ Select a group from the list:"
 
@@ -178,31 +178,31 @@ msgstr ""
 "👨‍👩‍👧‍👦 Enter the name of the group:\n"
 " *️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: handlers/start_menu.py:27
+#: handlers/start_menu.py:28
 msgid "⬇️ Выберите направление: "
 msgstr "⬇️ Choose a field of study: "
 
-#: handlers/start_menu.py:35
+#: handlers/start_menu.py:36
 msgid "🧑‍🏫 Введите фамилию преподавателя:"
 msgstr "🧑‍🏫 Enter the teacher's last name:"
 
-#: handlers/student_navigation.py:33
+#: handlers/student_navigation.py:34
 msgid "⬇️ Выберите уровень подготовки:"
 msgstr "⬇️ Choose the level of education:"
 
-#: handlers/student_navigation.py:46
+#: handlers/student_navigation.py:47
 msgid "⬇️ Выберите программу подготовки: "
 msgstr "⬇️ Choose an educational program: "
 
-#: handlers/student_navigation.py:59
+#: handlers/student_navigation.py:60
 msgid "⬇️ Выберите год поступления: "
 msgstr "⬇️ Choose the admission year: "
 
-#: handlers/student_navigation.py:73
+#: handlers/student_navigation.py:75
 msgid "⬇️ Выберите группу:"
 msgstr "⬇️ Choose a group:"
 
-#: handlers/student_navigation.py:78
+#: handlers/student_navigation.py:80
 msgid "❌ По данной программе группы не найдены!"
 msgstr "❌ No groups were found for this program!"
 

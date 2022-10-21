@@ -1,4 +1,4 @@
-from aiogram import Router
+from aiogram import Router, flags
 from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
@@ -14,7 +14,8 @@ from tgbot.services.timetable_api.timetable_api import educator_search
 router = Router()
 
 
-@router.message(Searching.getting_educator_choice, flags={'chat_action': 'typing'})
+@router.message(Searching.getting_educator_choice)
+@flags.chat_action('typing')
 async def getting_choice_for_educator(message: Message, state: FSMContext):
     teachers_list = await educator_search(message.text)
     if len(teachers_list) == 0:
@@ -49,7 +50,8 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
         await state.set_state(Searching.choosing)
 
 
-@router.callback_query(TTObjectChoiceCallbackFactory.filter(), Searching.choosing, flags={'chat_action': 'typing'})
+@router.callback_query(TTObjectChoiceCallbackFactory.filter(), Searching.choosing)
+@flags.chat_action('typing')
 async def sending_schedule_after_search(
         callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ):

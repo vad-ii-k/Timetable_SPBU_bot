@@ -9,39 +9,25 @@ from aiogram.utils.i18n import I18nMiddleware
 from tgbot.services.db_api.db_commands import database
 
 
-class ConfigMessageMiddleware(BaseMiddleware):
+class ActionMiddleware(BaseMiddleware):
     def __init__(self, config) -> None:
         self.config = config
 
     async def __call__(
             self,
-            handler: Callable[[Message, dict[str, Any]], Awaitable[Any]],
-            event: Message,
+            handler: Callable[[Message | CallbackQuery, dict[str, Any]], Awaitable[Any]],
+            event: Message | CallbackQuery,
             data: dict[str, Any]
     ) -> Any:
         data['config'] = self.config
         action = get_flag(data, "chat_action")
         if not action:
             return await handler(event, data)
-        async with ChatActionSender(action=action, chat_id=event.chat.id):
-            return await handler(event, data)
-
-
-class ConfigCallbackMiddleware(BaseMiddleware):
-    def __init__(self, config) -> None:
-        self.config = config
-
-    async def __call__(
-            self,
-            handler: Callable[[CallbackQuery, dict[str, Any]], Awaitable[Any]],
-            event: CallbackQuery,
-            data: dict[str, Any]
-    ) -> Any:
-        data['config'] = self.config
-        action = get_flag(data, "chat_action")
-        if not action:
-            return await handler(event, data)
-        async with ChatActionSender(action=action, chat_id=event.message.chat.id):
+        if isinstance(event, CallbackQuery):
+            chat_id = event.message.chat.id
+        else:
+            chat_id = event.chat.id
+        async with ChatActionSender(action=action, chat_id=chat_id):
             return await handler(event, data)
 
 
