@@ -54,10 +54,7 @@ async def schedule_keyboard_helper(
     is_photo = photo is not None
     reply_markup = await create_schedule_keyboard(is_photo=is_photo, callback_data=callback_data)
     if is_photo:
-        if callback_data.day_counter is not None:
-            await callback.message.answer_photo(photo=photo, caption=text, reply_markup=reply_markup)
-        else:
-            await callback.message.answer_document(document=photo, caption=text, reply_markup=reply_markup)
+        await callback.message.answer_document(document=photo, caption=text, reply_markup=reply_markup)
     else:
         await callback.message.answer(text=text, reply_markup=reply_markup)
 

@@ -3,7 +3,7 @@
 {% import 'empty_day.html' as em_d %}
 {% include 'header.html' %}
 {{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
-<main class="content">
+<main class="content" style="grid-template-columns: repeat(1, 1fr);">
     {%- for events_day in schedule.events_days %}
         {{ ed.events_day(events_day) }}
     {%- else %}

@@ -46,7 +46,7 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
 
 
 async def take_browser_screenshot(schedule_type: Literal['day', 'week']):
-    browser_width = 2048 if schedule_type == 'week' else 1536
+    browser_width = 2048 if schedule_type == 'week' else 1408
     browser = await launch(
         defaultViewport={'width': browser_width, 'height': 256},
         logLevel=logging.ERROR,

@@ -3,7 +3,7 @@
 {% import 'empty_day.html' as em_d %}
 {% include 'header.html' %}
 {{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
-<main class="content">
+<main class="content" style="grid-template-columns: repeat(2, 1fr);">
     {%- for date in dates_of_days_of_week %}
         {%- if date in dates_of_event_days %}
             {{ ev_d.events_day(schedule.events_days[dates_of_event_days.index(date)]) }}
