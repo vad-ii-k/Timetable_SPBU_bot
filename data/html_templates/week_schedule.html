@@ -2,7 +2,7 @@
 {% import 'events_day.html' as ev_d %}
 {% import 'empty_day.html' as em_d %}
 {% include 'header.html' %}
-{{ sh.shedule_header(schedule.name, schedule.from_date, schedule.to_date) }}
+{{ sh.shedule_header(True if schedule.group_name else False, schedule.name, schedule.from_date, schedule.to_date) }}
 <main class="content" style="grid-template-columns: repeat(2, 1fr);">
     {%- for date in dates_of_days_of_week %}
         {%- if date in dates_of_event_days %}
