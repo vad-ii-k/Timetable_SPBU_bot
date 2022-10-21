@@ -6,13 +6,5 @@
   grid-template-rows: repeat(3, auto);
   gap: 96px;
   padding: 64px;
-  background: linear-gradient(
-                157deg,
-                #9F2D2004 calc(0%  + 1px), #9F2D2004 23.5%,
-                #9F2D2014 calc(25% + 1px), #9F2D2014 38.5%,
-                #9F2D2024 calc(40% + 1px), #9F2D2024 53.5%,
-                #9F2D2034 calc(55% + 1px), #9F2D2034 68.5%,
-                #9F2D2044 calc(70% + 1px), #9F2D2044 83.5%,
-                #9F2D2054 calc(85% + 1px), #9F2D2054 98.5%
-              );
+  background: url("../../images/bg.svg") no-repeat center/cover;
 }

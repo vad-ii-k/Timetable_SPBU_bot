@@ -42,6 +42,14 @@ $heading-font: "Source Sans Pro", sans-serif;
   font-family: $heading-font;
   font-style: normal;
   font-weight: 700;
-  font-size: 27px;
-  line-height: 34px;
+  font-size: 31px;
+  line-height: 37px;
+}
+
+@mixin heading-3 {
+  font-family: $heading-font;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 32px;
 }

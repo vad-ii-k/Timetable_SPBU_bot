@@ -1,14 +1,16 @@
 {% macro event(start_time, end_time, events, general_location) -%}
 <section class="event">
   <time class="event__time">
-    {{ start_time.strftime('%H:%M') }} <br> {{ end_time.strftime('%H:%M') }}
+      {{ start_time.strftime('%H:%M') }}
+      <br>
+      {{ end_time.strftime('%H:%M') }}
   </time>
   <ul class="event__subjects-container">
   {%- for (name, event_format, is_canceled), subjects in events | events_group_by('main_info') %}
     <li class="subject">
       <header class="subject__header">
-        <h2 class="subject__header__name">
-          {{ "<s>" * is_canceled }}{{ name }}{{ "</s>" * is_canceled }}
+        <h2 class="subject__header__name {{ "subject__header__name--inactive" * is_canceled }}">
+          {{ name }}
         </h2>
         <p class="subject__header__type">{{ event_format }}</p>
       </header>

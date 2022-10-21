@@ -1,8 +1,10 @@
+import asyncio
+
 from aiogram import Router, F, flags
 from aiogram.types import CallbackQuery
 
 from tgbot.cb_data import ScheduleCallbackFactory
-from tgbot.handlers.helpers import change_message_to_loading, schedule_keyboard_helper
+from tgbot.handlers.helpers import change_message_to_loading, schedule_keyboard_helper, _delete_message
 from tgbot.services.schedule.getting_shedule import (
     get_text_week_schedule,
     get_text_day_schedule,
@@ -85,4 +87,4 @@ async def schedule_photo_callback(callback: CallbackQuery, callback_data: Schedu
             text, photo = await get_image_day_schedule(tt_id, user_type, day_counter=day_counter)
             await schedule_keyboard_helper(callback, callback_data, text, photo)
     await callback.answer(cache_time=2)
-    await callback.message.delete()
+    asyncio.create_task(_delete_message(callback.message, 0))
