@@ -38,7 +38,7 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
     if len(groups_list) == 0:
         await message.answer(_("Группа \"<i>{group_name}</i>\" не найдена!\n"
                                "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:".
-                             format(group_name=html.quote(message.text))))
+                               format(group_name=html.quote(message.text))))
     elif len(groups_list) > 50:
         await message.answer(_("Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
                                "Попробуйте ввести подробнее:".format(group_name=message.text)))

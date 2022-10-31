@@ -16,14 +16,14 @@ from tgbot.cb_data import (
     SettingsDailySummaryCallbackFactory,
     ScheduleSubscriptionCallbackFactory,
 )
+from tgbot.misc.states import UserType
+from tgbot.services.db_api.db_models import Settings
 from tgbot.services.schedule.data_classes import (
     StudyDivision,
     StudyLevel,
     GroupSearchInfo,
     EducatorSearchInfo,
 )
-from tgbot.misc.states import UserType
-from tgbot.services.db_api.db_models import Settings
 
 
 async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
@@ -105,8 +105,8 @@ async def create_schedule_keyboard(is_photo: bool, callback_data: ScheduleCallba
     next_day_date = current_date + timedelta(days=1)
 
     text_of_buttons = [
-        f"⬅ {prev_day_date:%d.%m}",   _("Сегодня"),   f"{next_day_date:%d.%m} ➡️",
-        _("⏹ Эта неделя"),   _("След. неделя ⏩"),
+        f"⬅ {prev_day_date:%d.%m}", _("Сегодня"), f"{next_day_date:%d.%m} ➡️",
+        _("⏹ Эта неделя"), _("След. неделя ⏩"),
         _("📝 Текстом 📝") if is_photo else _("🖼 Картинкой 🖼")
     ]
     button_ids = ["1-1", "1-2", "1-3", "2-1", "2-2", "3-1"]

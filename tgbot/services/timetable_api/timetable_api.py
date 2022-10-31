@@ -1,13 +1,13 @@
 import json
 from typing import Final
 
+from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule
 from tgbot.services.schedule.data_classes import (
     StudyDivision,
     EducatorSearchInfo,
     StudyLevel,
     GroupSearchInfo,
 )
-from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule
 from tgbot.services.timetable_api.api_request import request
 
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"

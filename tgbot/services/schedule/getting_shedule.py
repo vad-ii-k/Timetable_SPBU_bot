@@ -1,12 +1,12 @@
 from datetime import date, timedelta
-from aiocache import cached
 
+from aiocache import cached
 from aiogram.types import BufferedInputFile
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, Schedule, EventsDay
 from tgbot.misc.states import UserType
 from tgbot.services.image_converter import get_rendered_image
+from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, Schedule, EventsDay
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 

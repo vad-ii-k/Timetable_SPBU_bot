@@ -4,10 +4,10 @@ from datetime import timedelta, date
 from itertools import groupby
 from typing import Literal
 
-from babel.dates import format_date
-from pyppeteer import launch
-from jinja2 import Environment, FileSystemLoader
 from aiogram.types import BufferedInputFile
+from babel.dates import format_date
+from jinja2 import Environment, FileSystemLoader
+from pyppeteer import launch
 
 from tgbot.services.schedule.class_schedule import Schedule, StudyEvent
 
@@ -24,6 +24,7 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
 
     def date_format_ru(value):
         return format_date(value, "EEEE, d MMM", locale='ru')
+
     environment.filters["date_format_ru"] = date_format_ru
 
     def events_group_by(events: list[StudyEvent], key_type: Literal['time', 'event_info']):
@@ -32,7 +33,9 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
 
         def key_func_time(event: StudyEvent):
             return event.start_time, event.end_time
+
         return groupby(events, key=key_func_time if key_type == 'time' else key_func_event_info)
+
     environment.filters["events_group_by"] = events_group_by
 
     results_template = environment.get_template(f"{schedule_type}_schedule.html")

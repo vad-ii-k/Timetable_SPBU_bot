@@ -77,7 +77,7 @@ async def schedule_subscription_callback(
                                                       "Воспользуйтесь командой:\n"
                                                       "— /my_schedule для просмотра своего основного расписания\n"
                                                       "— /settings для настройки уведомлений")
-        )
+                                                    )
         await callback.message.delete()
         await delete_message(instruction, 20)
         await state.set_data({})

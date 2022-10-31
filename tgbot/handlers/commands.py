@@ -1,10 +1,10 @@
 import logging
 
 from aiogram import Router, Bot, flags
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, BotCommand, BotCommandScopeAllPrivateChats
 from aiogram.utils.i18n import gettext as _
-from aiogram.filters import Command
 
 from tgbot.config import bot
 from tgbot.handlers.helpers import send_schedule
