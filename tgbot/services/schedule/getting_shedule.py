@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from aiocache import cached
 
 from aiogram.types import BufferedInputFile
 from aiogram.utils.i18n import gettext as _
@@ -36,6 +37,7 @@ async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: in
     return schedule
 
 
+@cached(ttl=timedelta(hours=12).seconds)
 async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, BufferedInputFile]:
     monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
@@ -44,6 +46,7 @@ async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter:
     return schedule, photo
 
 
+@cached(ttl=timedelta(hours=12).seconds)
 async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> tuple[str, BufferedInputFile]:
     monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
