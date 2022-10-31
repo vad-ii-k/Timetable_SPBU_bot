@@ -1,11 +1,13 @@
+import asyncio
 from typing import Callable, Any, Awaitable
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
 from aiogram.types import Message, CallbackQuery, TelegramObject, User
 from aiogram.utils.chat_action import ChatActionSender
-from aiogram.utils.i18n import I18nMiddleware
+from aiogram.utils.i18n import I18nMiddleware, gettext as _
 
+from tgbot.handlers.helpers import delete_message
 from tgbot.services.db_api.db_commands import database
 
 
@@ -24,11 +26,17 @@ class ActionMiddleware(BaseMiddleware):
         if not action:
             return await handler(event, data)
         if isinstance(event, CallbackQuery):
-            chat_id = event.message.chat.id
+            event_message = event.message
         else:
-            chat_id = event.chat.id
-        async with ChatActionSender(action=action, chat_id=chat_id):
-            return await handler(event, data)
+            event_message = event
+        async with ChatActionSender(action=action, chat_id=event_message.chat.id):
+            handler_cor = handler(event, data)
+            try:
+                return await asyncio.wait_for(handler_cor, timeout=15)
+            except asyncio.TimeoutError:
+                await delete_message(event_message)
+                return await event_message.answer(_("⚠ Превышено время ожидания ответа :(\n"
+                                                    "🔄 Попробуйте снова❕"))
 
 
 class LanguageI18nMiddleware(I18nMiddleware):

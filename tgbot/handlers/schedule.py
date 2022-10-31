@@ -87,4 +87,4 @@ async def schedule_photo_callback(callback: CallbackQuery, callback_data: Schedu
             text, photo = await get_image_day_schedule(tt_id, user_type, day_counter=day_counter)
             await schedule_keyboard_helper(callback, callback_data, text, photo)
     await callback.answer(cache_time=2)
-    asyncio.create_task(_delete_message(callback.message, 0))
+    asyncio.create_task(delete_message(callback.message, 0))

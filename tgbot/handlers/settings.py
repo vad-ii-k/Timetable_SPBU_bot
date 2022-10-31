@@ -11,7 +11,7 @@ from tgbot.cb_data import (
     ScheduleSubscriptionCallbackFactory,
 )
 from tgbot.handlers.commands import settings_command
-from tgbot.handlers.helpers import _delete_message
+from tgbot.handlers.helpers import delete_message
 from tgbot.keyboards.inline import create_settings_daily_summary_keyboard, create_settings_keyboard
 from tgbot.services.db_api.db_commands import database
 
@@ -79,7 +79,7 @@ async def schedule_subscription_callback(
                                                       "— /settings для настройки уведомлений")
         )
         await callback.message.delete()
-        await _delete_message(instruction, 20)
+        await delete_message(instruction, 20)
         await state.set_data({})
     else:
         await callback.message.delete()

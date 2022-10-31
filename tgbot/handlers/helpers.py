@@ -68,7 +68,7 @@ async def change_message_to_loading(message: Message) -> bool:
     return message_content_type_is_photo
 
 
-async def _delete_message(message: Message, sleep_time: int = 0) -> None:
+async def delete_message(message: Message, sleep_time: int = 0) -> None:
     await asyncio.sleep(sleep_time)
     with suppress(TelegramAPIError):
         await message.delete()
@@ -80,4 +80,4 @@ async def send_subscription_question(tg_user_id: int) -> None:
         text=_("⚙️ Хотите сделать это расписание своим основным?"),
         reply_markup=await create_schedule_subscription_keyboard()
     )
-    asyncio.create_task(_delete_message(answer_sub, 30))
+    asyncio.create_task(delete_message(answer_sub, 30))
