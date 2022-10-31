@@ -92,5 +92,11 @@ class DBCommands:
         ))
         return user_with_main_schedule
 
+    @staticmethod
+    async def get_tg_ids_of_users() -> list[int]:
+        users = await User.select("tg_id").gino.all()
+        users_tg_ids = list(map(lambda user: user[0], users))
+        return users_tg_ids
+
 
 database = DBCommands()

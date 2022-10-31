@@ -17,21 +17,17 @@ async def send_message(bot: Bot, user_id, text: str, disable_notification: bool 
     except exceptions.TelegramAPIError:
         logging.exception("Target [ID:%s]: failed", user_id)
     else:
-        logging.info("Target [ID:%s]: success", user_id)
+        # logging.info("Target [ID:%s]: success", user_id)
         return True
     return False
 
 
-async def broadcast(bot, users, text, disable_notification: bool = False):
-    """
-    Simple broadcaster
-    :return: Count of messages
-    """
+async def broadcast(bot: Bot, users_ids: list[int], text: str, disable_notification: bool = False):
     count = 0
     try:
-        for user_id in users:
+        for user_id in users_ids:
             if await send_message(bot, user_id, text, disable_notification):
                 count += 1
             await asyncio.sleep(0.1)  # 10 messages per second (Limit: 30 messages per second)
     finally:
-        logging.info("%s/%s messages successful sent.", count, len(users))
+        logging.info("%s/%s messages successful sent.", count, len(users_ids))
