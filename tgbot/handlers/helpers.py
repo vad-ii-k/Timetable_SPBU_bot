@@ -17,10 +17,9 @@ from tgbot.services.schedule.getting_shedule import get_text_week_schedule, get_
 async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) -> None:
     user = await database.get_user(tg_user_id=tg_user_id)
     settings = await database.get_settings(user)
-    is_picture: bool = settings.schedule_view_is_picture
     data = await state.get_data()
     tt_id, user_type = int(data.get('tt_id')), data.get('user_type')
-    if is_picture:
+    if is_picture := settings.schedule_view_is_picture:
         schedule_text, photo = await get_image_week_schedule(tt_id, user_type, week_counter=0)
         await bot.send_document(
             chat_id=tg_user_id,
@@ -59,13 +58,11 @@ async def schedule_keyboard_helper(
         await callback.message.answer(text=text, reply_markup=reply_markup)
 
 
-async def change_message_to_loading(message: Message) -> bool:
-    message_content_type_is_photo = message.content_type in ("photo", "document")
-    if message_content_type_is_photo:
+async def change_message_to_loading(message: Message) -> None:
+    if message.content_type == "document":
         await message.edit_caption(_("🕒 <i>Загрузка...</i>"))
     else:
         await message.edit_text("⏳")
-    return message_content_type_is_photo
 
 
 async def delete_message(message: Message, sleep_time: int = 0) -> None:

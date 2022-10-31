@@ -4,7 +4,7 @@ from aiogram import Router, F, flags
 from aiogram.types import CallbackQuery
 
 from tgbot.cb_data import ScheduleCallbackFactory
-from tgbot.handlers.helpers import change_message_to_loading, schedule_keyboard_helper, _delete_message
+from tgbot.handlers.helpers import change_message_to_loading, schedule_keyboard_helper, delete_message
 from tgbot.services.schedule.getting_shedule import (
     get_text_week_schedule,
     get_text_day_schedule,
@@ -30,8 +30,7 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
         case "1-3":
             callback_data.day_counter += 1
     tt_id, user_type, day_counter = callback_data.tt_id, callback_data.user_type, callback_data.day_counter
-    is_photo = callback.message.content_type in ("photo", "document")
-    if is_photo:
+    if callback.message.content_type == "document":
         text, photo = await get_image_day_schedule(tt_id, user_type, day_counter=day_counter)
         await schedule_keyboard_helper(callback, callback_data, text, photo)
     else:
@@ -53,9 +52,8 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
             callback_data.week_counter = 0
         case "2-2":
             callback_data.week_counter += 1
-    is_photo = callback.message.content_type in ("photo", "document")
     tt_id, user_type, week_counter = callback_data.tt_id, callback_data.user_type, callback_data.week_counter
-    if is_photo:
+    if callback.message.content_type == "document":
         text, photo = await get_image_week_schedule(tt_id, user_type, week_counter=week_counter)
         await schedule_keyboard_helper(callback, callback_data, text, photo)
     else:
@@ -71,8 +69,7 @@ async def schedule_photo_callback(callback: CallbackQuery, callback_data: Schedu
     await change_message_to_loading(callback.message)
     tt_id, user_type = callback_data.tt_id, callback_data.user_type
     day_counter, week_counter = callback_data.day_counter, callback_data.week_counter
-    is_photo = callback.message.content_type in ("photo", "document")
-    if is_photo:
+    if callback.message.content_type == "document":
         if week_counter is not None:
             text, _ = await get_text_week_schedule(tt_id, user_type, week_counter=week_counter)
             await schedule_keyboard_helper(callback, callback_data, text)
