@@ -13,7 +13,8 @@ class DbConfig:
     database: str
     are_groups_collected: bool
 
-    def get_connection_url(self):
+    @property
+    def connection_url(self):
         pg_uri = f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
         return pg_uri
 
@@ -85,5 +86,5 @@ def load_config(path: str = None) -> Config:
     )
 
 
-app_config: Config = load_config(".env")
+app_config = load_config(".env")
 bot = Bot(token=app_config.tg_bot.token, parse_mode='HTML')

@@ -48,6 +48,5 @@ class MainScheduleInfo(db_gino.Model):
 
 
 async def create_db() -> None:
-    pg_url = app_config.database.get_connection_url()
-    await db_gino.set_bind(pg_url)
+    await db_gino.set_bind(app_config.database.connection_url)
     await db_gino.gino.create_all()

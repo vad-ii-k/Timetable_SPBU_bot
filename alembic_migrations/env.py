@@ -22,7 +22,7 @@ if config.config_file_name is not None:
 target_metadata = db_gino
 config.set_main_option(
     'sqlalchemy.url',
-    app_config.database.get_connection_url()
+    app_config.database.connection_url
 )
 
 # other values from the config, defined by the needs of env.py,
