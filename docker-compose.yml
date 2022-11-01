@@ -34,9 +34,14 @@ services:
     depends_on:
       - postgres
       - redis
-    command: python3 -m bot
-    network_mode: host
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        pybabel compile -d tgbot/locales -D messages
+        sass --update data/styles:data/compiled_html_pages/styles
+        python3 -m bot
     restart: unless-stopped
+    network_mode: host
 
   redis:
     image: redis:alpine

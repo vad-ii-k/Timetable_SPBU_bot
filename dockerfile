@@ -8,10 +8,9 @@ RUN pip install --upgrade pip -r /usr/src/app/"${BOT_NAME:-tg_bot}"/requirements
 COPY . /usr/src/app/"${BOT_NAME:-tg_bot}"
 
 #Installing chromium for pyppeteer
-RUN apk -U add chromium udev ttf-freefont
+RUN apk -U add chromium udev npm
+RUN npm install -g sass
 
-# Compiling locales
-# cd tgbot/
-# pybabel extract --input-dirs=. -o locales/messages.pot -w 100
-# pybabel update -d locales -D messages -i locales/messages.pot -w 100
-# pybabel compile -d locales -D messages
+# Updating locales
+# pybabel extract --input-dirs=tgbot -o tgbot/locales/messages.pot -w 100
+# pybabel update -d tgbot/locales -D messages -i tgbot/locales/messages.pot -w 100
