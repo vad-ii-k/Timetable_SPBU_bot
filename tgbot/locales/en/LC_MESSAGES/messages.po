@@ -7,36 +7,36 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-01 11:58+0300\n"
+"POT-Creation-Date: 2022-11-02 14:07+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: tgbot/handlers/commands.py:46
+#: tgbot/handlers/commands.py:42
+msgid "👋🏻 <b>Добро пожаловать, "
+msgstr "👋🏻 <b>Welcome, "
+
+#: tgbot/handlers/commands.py:44
 msgid ""
-"👋🏻 <b>Добро пожаловать, {name}!</b>\n"
 "ℹ️ Следуйте указаниям для настройки\n"
-"❕ Для корректной работы взаимодействуйте только с последним сообщением бота\n"
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
 "⬇️ Получить расписание по:"
 msgstr ""
-"👋🏻 <b>Welcome, {name}!</b>\n"
 "ℹ️ Follow the instructions to configure\n"
-"❕ For correct operation, interact only with the last message of the bot\n"
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
 "⬇️ Get the schedule by:"
 
-#: tgbot/handlers/commands.py:53
+#: tgbot/handlers/commands.py:54
 msgid "🔎 Введите фамилию преподавателя для поиска:"
 msgstr "🔎 Enter the last name of the teacher to search:"
 
-#: tgbot/handlers/commands.py:59
+#: tgbot/handlers/commands.py:60
 msgid ""
 "🔎 Введите название группы для поиска:\n"
 "*️⃣ <i>например, 20.Б08-мм</i>"
@@ -44,7 +44,7 @@ msgstr ""
 "🔎 Enter the name of the group to search for:\n"
 "*️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: tgbot/handlers/commands.py:70
+#: tgbot/handlers/commands.py:71
 msgid ""
 "📅 <b>Основное расписание:</b>\n"
 "ㅤㅤ"
@@ -52,11 +52,11 @@ msgstr ""
 "📅 <b>Main schedule:</b>\n"
 "ㅤㅤ"
 
-#: tgbot/handlers/commands.py:74
+#: tgbot/handlers/commands.py:75
 msgid "🚫 Не выбрано"
 msgstr "🚫 Not selected"
 
-#: tgbot/handlers/commands.py:75
+#: tgbot/handlers/commands.py:76
 msgid ""
 "\n"
 "\n"
@@ -66,7 +66,7 @@ msgstr ""
 "\n"
 "⚙️ <b>Current settings:</b>"
 
-#: tgbot/handlers/commands.py:89
+#: tgbot/handlers/commands.py:90
 msgid ""
 "🚫 Основное расписание отсутствует\n"
 "1. 🔎 Воспользуйтесь одной из команд:\n"
@@ -80,7 +80,7 @@ msgstr ""
 "2. 🔖 Select the schedule you need\n"
 "3. ✅ Make the schedule the main one"
 
-#: tgbot/handlers/commands.py:99
+#: tgbot/handlers/commands.py:100
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
@@ -168,7 +168,7 @@ msgstr ""
 
 #: tgbot/handlers/settings.py:86
 msgid "Вы отказались от подписки! ❌"
-msgstr "You have unsubscribed! ❌ "
+msgstr "You didn't subscribe! ❌"
 
 #: tgbot/handlers/start_menu.py:17
 msgid ""
@@ -270,6 +270,14 @@ msgstr " Do not send 🔇"
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
+#: tgbot/keyboards/inline.py:182
+msgid "Да, сделать основным ✅"
+msgstr "Yes, make it the main ✅ "
+
+#: tgbot/keyboards/inline.py:184
+msgid "Нет, только посмотреть ❌"
+msgstr "No, just to see ❌"
+
 #: tgbot/middlewares/config.py:38
 msgid ""
 "⚠ Превышено время ожидания ответа :(\n"
@@ -311,4 +319,3 @@ msgstr ""
 #: tgbot/services/schedule/getting_shedule.py:86
 msgid "🏖 Занятий в этот день нет"
 msgstr "🏖 There are no classes on this day"
-

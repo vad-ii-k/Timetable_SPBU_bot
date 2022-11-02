@@ -40,8 +40,8 @@ services:
         pybabel compile -d tgbot/locales -D messages
         sass --update data/styles:data/compiled_html_pages/styles
         python3 -m bot
-    restart: unless-stopped
     network_mode: host
+    restart: unless-stopped
 
   timetable-redis:
     image: redis:alpine
@@ -52,11 +52,11 @@ services:
     volumes:
         - /usr/src/app/${BOT_NAME:-tg_bot}/redis/config:/usr/local/etc/redis
         - /usr/src/app/${BOT_NAME:-tg_bot}/redis/data:/data
+    network_mode: host    
     restart: unless-stopped
-    network_mode: host
 
   timetable-postgres:
-    image: postgres:alpine
+    image: postgres:14-alpine
     environment:
       TZ: Europe/Moscow
       POSTGRES_DB: ${DB_NAME}
@@ -64,7 +64,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - /usr/src/app/${BOT_NAME:-tg_bot}/pg/init:/docker-entrypoint-initdb.d
-      - /usr/src/app/${BOT_NAME:-tg_bot}/pg/data:/var/lib/postgresql/data
-    restart: unless-stopped
+      - /usr/src/app/${BOT_NAME:-tg_bot}/postgresg/init:/docker-entrypoint-initdb.d
+      - /usr/src/app/${BOT_NAME:-tg_bot}/postgres/data:/var/lib/postgresql/data
     network_mode: host
+    restart: unless-stopped

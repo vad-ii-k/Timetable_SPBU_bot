@@ -4,8 +4,7 @@ from itertools import cycle
 from typing import Iterable, Callable, Coroutine
 
 import aiohttp
-from aiohttp_socks import ProxyConnector
-from python_socks import ProxyConnectionError
+from aiohttp_socks import ProxyConnector, ProxyError, ProxyConnectionError
 
 from tgbot.config import app_config
 from tgbot.services.db_api.db_commands import database
@@ -22,6 +21,8 @@ async def request(session: aiohttp.ClientSession, url: str) -> dict:
         async with session.get(url) as response:
             if response.status == 200:
                 return await response.json()
+    except ProxyError as err:
+        print("Error: %s", err)
     except ProxyConnectionError as err:
         print("Error: %s", err)
     return {}

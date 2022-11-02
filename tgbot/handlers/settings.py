@@ -82,5 +82,5 @@ async def schedule_subscription_callback(
         await delete_message(instruction, 20)
         await state.set_data({})
     else:
-        await callback.message.delete()
         await callback.answer(text=_("Вы отказались от подписки! ❌"), show_alert=False)
+        await callback.message.delete()

@@ -1,5 +1,5 @@
 from gino import Gino
-from sqlalchemy import Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Index
+from sqlalchemy import Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Index, Date, func
 
 from tgbot.config import app_config
 
@@ -13,6 +13,7 @@ class User(db_gino.Model):
     tg_id = Column(BigInteger)
     full_name = Column(String(100))
     username = Column(String(50))
+    start_date = Column(Date, default=func.current_date())
 
 
 class Settings(db_gino.Model):

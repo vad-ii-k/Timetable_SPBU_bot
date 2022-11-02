@@ -179,9 +179,9 @@ async def create_settings_daily_summary_keyboard(selected_option: datetime):
 
 async def create_schedule_subscription_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(text="Да, сделать основным ✅",
+    keyboard.button(text=_("Да, сделать основным ✅"),
                     callback_data=ScheduleSubscriptionCallbackFactory(answer=True))
-    keyboard.button(text="Нет, только посмотреть ❌",
+    keyboard.button(text=_("Нет, только посмотреть ❌"),
                     callback_data=ScheduleSubscriptionCallbackFactory(answer=False))
     keyboard.adjust(1)
     return keyboard.as_markup()
