@@ -88,7 +88,7 @@ class DBCommands:
         main_schedule_of_users = await User.join(MainScheduleInfo, User.user_id == MainScheduleInfo.user_id).select(). \
             where(MainScheduleInfo.user_id.in_(users_ids)).gino.all()
         user_with_main_schedule = list(map(
-            lambda user: (user[1], UserType.STUDENT if user[6] else UserType.EDUCATOR, user[5]), main_schedule_of_users
+            lambda user: (user[1], UserType.STUDENT if user[7] else UserType.EDUCATOR, user[6]), main_schedule_of_users
         ))
         return user_with_main_schedule
 

@@ -1,6 +1,8 @@
+import logging
 from datetime import datetime, time
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from pydantic import ValidationError
 
 from tgbot.config import bot
 from tgbot.misc.states import UserType
@@ -25,7 +27,10 @@ async def job_send_daily_summary():
     user_with_main_schedule = await database.get_users_with_sign_to_summary(time(current_hour))
     day_counter = 1 * (current_hour > 12)
     for tg_id, user_type, tt_id in user_with_main_schedule:
-        await send_daily_summary(tg_id, user_type, tt_id, day_counter)
+        try:
+            await send_daily_summary(tg_id, user_type, tt_id, day_counter)
+        except ValidationError as err:
+            logging.error(err)
 
 
 async def start_scheduler(scheduler: AsyncIOScheduler):
