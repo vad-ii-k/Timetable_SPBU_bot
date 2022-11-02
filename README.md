@@ -2,12 +2,12 @@
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
         <img alt="Telegram badge" src="https://img.shields.io/badge/Telegram-%40Timetable__SPBU__bot-2FA8DF?logo=Telegram">
     </a>
-    <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/Timetable_SPBU_bot/dev?logo=github">
+    <img alt="GitHub last commit"  src="https://img.shields.io/github/last-commit/vad-ii-k/Timetable_SPBU_bot/master?logo=github">
     <a href="https://codeclimate.com/github/vad-ii-k/Timetable_SPBU_bot/maintainability">
         <img src="https://api.codeclimate.com/v1/badges/022748d512cfa936f3b5/maintainability" />
     </a>
     <a href="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml" target="_blank">
-        <img alt="Pylint"  src="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml/badge.svg?branch=dev">
+        <img alt="Pylint"  src="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml/badge.svg?branch=master">
     </a>
 </p>
 <img alt="Bot logo" align="right" width="150" src="data/github/bot_logo.png"/>
