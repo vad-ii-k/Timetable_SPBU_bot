@@ -20,7 +20,7 @@ async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
 
 async def render_template(schedule: Schedule, schedule_type: Literal['day', 'week']):
     result_path = f"data/compiled_html_pages/{schedule_type}_schedule.html"
-    environment = Environment(loader=FileSystemLoader("data/html_templates"), enable_async=True)
+    environment = Environment(loader=FileSystemLoader("data/html_templates"))
 
     def date_format_ru(value):
         return format_date(value, "EEEE, d MMM", locale='ru')
@@ -41,7 +41,7 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
     results_template = environment.get_template(f"{schedule_type}_schedule.html")
 
     with open(file=result_path, mode="w", encoding="utf-8") as result:
-        result.write(await results_template.render_async(
+        result.write(results_template.render(
             schedule=schedule,
             dates_of_days_of_week=await get_dates_of_days_of_week(schedule),
             dates_of_event_days=list(map(lambda e: e.day, schedule.events_days))

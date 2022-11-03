@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from aiocache import cached
 from aiogram.types import BufferedInputFile
@@ -9,6 +9,13 @@ from tgbot.services.image_converter import get_rendered_image
 from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, Schedule, EventsDay
 from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
+
+
+def _get_number_of_seconds_until_tomorrow() -> int:
+    current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    tomorrow_date = current_date + timedelta(days=1)
+    time_until_tomorrow = tomorrow_date - datetime.now()
+    return time_until_tomorrow.seconds
 
 
 async def get_schedule_from_tt_depending_on_user_type(
@@ -37,7 +44,7 @@ async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: in
     return schedule
 
 
-@cached(ttl=timedelta(hours=12).seconds)
+@cached(ttl=_get_number_of_seconds_until_tomorrow())
 async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, BufferedInputFile]:
     monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
@@ -46,7 +53,7 @@ async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter:
     return schedule, photo
 
 
-@cached(ttl=timedelta(hours=12).seconds)
+@cached(ttl=_get_number_of_seconds_until_tomorrow())
 async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> tuple[str, BufferedInputFile]:
     monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
