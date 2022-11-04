@@ -86,11 +86,17 @@ async def schedule_day_body(schedule: str, events_days: list[EventsDay], day_cou
             if len(schedule) + len(day_schedule) <= 4060:
                 schedule += day_schedule
             else:
-                schedule += _("\n\n📛 Сообщение слишком длинное...")
+                try:
+                    schedule += _("\n\n📛 Сообщение слишком длинное...")
+                except LookupError:
+                    schedule += "\n\n📛 Сообщение слишком длинное..."
                 break
     if day_schedule == "":
         schedule += "\n\n" + await get_schedule_weekday_header(day)
-        schedule += _("🏖 Занятий в этот день нет")
+        try:
+            schedule += _("🏖 Занятий в этот день нет")
+        except LookupError:
+            schedule += "🏖 Занятий в этот день нет"
     return schedule
 
 

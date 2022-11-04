@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-02 14:07+0300\n"
+"POT-Creation-Date: 2022-11-04 11:41+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -166,7 +166,7 @@ msgstr ""
 "— /my_schedule to view your main schedule\n"
 "— /settings to configure notifications"
 
-#: tgbot/handlers/settings.py:86
+#: tgbot/handlers/settings.py:85
 msgid "Вы отказались от подписки! ❌"
 msgstr "You didn't subscribe! ❌"
 
@@ -298,7 +298,7 @@ msgstr "🧑‍🏫 Educator: "
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
-#: tgbot/services/schedule/getting_shedule.py:66 tgbot/services/schedule/getting_shedule.py:82
+#: tgbot/services/schedule/getting_shedule.py:73 tgbot/services/schedule/getting_shedule.py:90
 msgid ""
 "\n"
 "\n"
@@ -308,7 +308,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: tgbot/services/schedule/getting_shedule.py:69
+#: tgbot/services/schedule/getting_shedule.py:76
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"
@@ -316,6 +316,7 @@ msgstr ""
 "\n"
 "🏖 There are no classes this week"
 
-#: tgbot/services/schedule/getting_shedule.py:86
+#: tgbot/services/schedule/getting_shedule.py:97
 msgid "🏖 Занятий в этот день нет"
 msgstr "🏖 There are no classes on this day"
+
