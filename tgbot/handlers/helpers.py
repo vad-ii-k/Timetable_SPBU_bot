@@ -2,7 +2,7 @@ import asyncio
 import re
 from contextlib import suppress
 
-from aiogram.exceptions import TelegramAPIError
+from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, BufferedInputFile
 from aiogram.utils.i18n import gettext as _
@@ -67,7 +67,7 @@ async def change_message_to_loading(message: Message) -> None:
 
 async def delete_message(message: Message, sleep_time: int = 0) -> None:
     await asyncio.sleep(sleep_time)
-    with suppress(TelegramAPIError):
+    with suppress(TelegramAPIError, TelegramBadRequest):
         await message.delete()
 
 

@@ -37,7 +37,7 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
         text = await get_text_day_schedule(tt_id, user_type, day_counter=day_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
     await callback.answer(cache_time=2)
-    await callback.message.delete()
+    asyncio.create_task(delete_message(callback.message, 0))
 
 
 @router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"2-1", "2-2"})))
@@ -60,7 +60,7 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
         text, _ = await get_text_week_schedule(tt_id, user_type, week_counter=week_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
     await callback.answer(cache_time=2)
-    await callback.message.delete()
+    asyncio.create_task(delete_message(callback.message, 0))
 
 
 @router.callback_query(ScheduleCallbackFactory.filter(F.button == "3-1"))
