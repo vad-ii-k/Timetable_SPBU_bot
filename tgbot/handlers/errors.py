@@ -17,7 +17,7 @@ async def errors_handler(exception: ErrorEvent):
         await update.message.answer("⚠ Произошла ошибка :(")
     else:
         await update.callback_query.message.answer("⚠ Произошла ошибка :(")
-    await broadcaster.broadcast(bot, app_config.tg_bot.admin_ids, f"<code>{str(update)[:4080]}</code>", True)
+    await broadcaster.broadcast(bot, app_config.tg_bot.admin_ids, f"<code>{str(exception.exception)[:4080]}</code>")
 
     if isinstance(exception, AiogramError):
         logging.exception("⚠ AiogramError")

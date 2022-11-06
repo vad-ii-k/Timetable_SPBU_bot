@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-04 11:41+0300\n"
+"POT-Creation-Date: 2022-11-06 14:06+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -205,6 +205,16 @@ msgstr "⬇️ Choose a group:"
 #: tgbot/handlers/student_navigation.py:80
 msgid "❌ По данной программе группы не найдены!"
 msgstr "❌ No groups were found for this program!"
+
+#: tgbot/handlers/unexpected_updates.py:15
+msgid ""
+"⛔️️ Запрос не обработан!\n"
+"⚠️ Пожалуйста, не используйте старые сообщения для взаимодействия с ботом\n"
+"✳️ Вы можете получить своё расписание командой /my_schedule"
+msgstr ""
+"⛔️ ️ The request was not processed!d!\n"
+"⚠️ Please do not use old messages to interact with the bot\n"
+"✳️ You can get your schedule using the /my_schedule command"
 
 #: tgbot/keyboards/inline.py:32
 msgid "Названию группы"

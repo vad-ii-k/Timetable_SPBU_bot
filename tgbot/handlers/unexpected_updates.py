@@ -1,5 +1,6 @@
 from aiogram import Router
 from aiogram.types import Message, CallbackQuery
+from aiogram.utils.i18n import gettext as _
 
 router = Router()
 
@@ -11,4 +12,6 @@ async def unexpected_message_handler(message: Message):
 
 @router.callback_query()
 async def unexpected_callback_handler(callback: CallbackQuery):
-    await callback.message.delete()
+    await callback.message.answer(_("⛔️️ Запрос не обработан!\n"
+                                    "⚠️ Пожалуйста, не используйте старые сообщения для взаимодействия с ботом\n"
+                                    "✳️ Вы можете получить своё расписание командой /my_schedule"))
