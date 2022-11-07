@@ -32,6 +32,10 @@ class StudyEvent(BaseModel, ABC):
     def from_datetime_to_time(cls, value):
         return value.split('T')[1]
 
+    @validator('location', pre=True, allow_reuse=True)
+    def clearing_location(cls, value: str):
+        return value.replace('<по месту проведения>, <по месту проведения>', 'по месту проведения')
+
     @root_validator(allow_reuse=True)
     def separation_of_subject(cls, values):
         values['name'], values['event_format'] = values['name'].rsplit(sep=", ", maxsplit=1) \
