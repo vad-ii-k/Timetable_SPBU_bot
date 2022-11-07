@@ -26,7 +26,7 @@ from tgbot.services.notifications import start_scheduler
 logger = logging.getLogger(__name__)
 
 
-async def on_startup(_bot: Bot, admin_ids: list[int]):
+async def on_startup(admin_ids: list[int]):
     await broadcaster.broadcast(bot, admin_ids, "🆙 Бот запущен!\n")
 
 
@@ -81,7 +81,7 @@ async def main():
     scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
     await start_scheduler(scheduler)
 
-    await on_startup(bot, app_config.tg_bot.admin_ids)
+    await on_startup(app_config.tg_bot.admin_ids)
     await dispatcher.start_polling(bot)
 
 

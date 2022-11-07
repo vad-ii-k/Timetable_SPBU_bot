@@ -79,7 +79,7 @@ async def schedule_subscription_callback(
                                                       "— /settings для настройки уведомлений")
                                                     )
         await callback.message.delete()
-        await delete_message(instruction, 20)
+        await delete_message(instruction, 60)
         await state.set_data({})
     else:
         await callback.answer(text=_("Вы отказались от подписки! ❌"), show_alert=False)

@@ -28,31 +28,15 @@ class StudyEvent(BaseModel, ABC):
     def contingent_sticker(self) -> str:
         pass
 
-    @validator('start_time', 'end_time', pre=True)
+    @validator('start_time', 'end_time', pre=True, allow_reuse=True)
     def from_datetime_to_time(cls, value):
         return value.split('T')[1]
 
-    @root_validator
+    @root_validator(allow_reuse=True)
     def separation_of_subject(cls, values):
         values['name'], values['event_format'] = values['name'].rsplit(sep=", ", maxsplit=1) \
             if values['name'].rfind(", ") != -1 else (values['name'], "—")
         return values
-
-    @classmethod
-    def __verify_data(cls, other):
-        if not isinstance(other, StudyEvent):
-            raise TypeError
-        return other
-
-    def __ne__(self, other) -> bool:
-        event = self.__verify_data(other)
-        return (
-                self.name != event.name
-                or self.event_format != event.event_format
-                or self.start_time != event.start_time
-                or self.end_time != event.end_time
-                or self.is_canceled != event.is_canceled
-        )
 
 
 TSE = TypeVar('TSE')
@@ -64,11 +48,11 @@ class EventsDay(GenericModel, Generic[TSE]):
 
     general_location: str | None = None
 
-    @validator('day', pre=True)
+    @validator('day', pre=True, allow_reuse=True)
     def from_datetime_to_date(cls, value):
         return value.split('T')[0]
 
-    @root_validator
+    @root_validator(allow_reuse=True)
     def combining_locations_of_events(cls, values):
         events: list[TSE] = values['events']
         locations_without_office = list(map(lambda e: e.location.rsplit(",", maxsplit=1)[0], events))
@@ -172,7 +156,7 @@ class GroupStudyEvent(StudyEvent):
     def contingent_sticker(self) -> str:
         return '👨🏻‍🏫 '
 
-    @validator('educators', pre=True)
+    @validator('educators', pre=True, allow_reuse=True)
     def removing_academic_degrees(cls, educators):
         if educators == '':
             return '—'
