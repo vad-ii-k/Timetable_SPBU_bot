@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-06 14:06+0300\n"
+"POT-Creation-Date: 2022-11-08 19:24+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -296,15 +296,15 @@ msgstr ""
 "⚠ Response waiting time exceeded :(\n"
 "🔄 Try again❕"
 
-#: tgbot/services/schedule/class_schedule.py:115
+#: tgbot/services/schedule/class_schedule.py:103
 msgid "📆 Неделя: "
 msgstr "📆 Week: "
 
-#: tgbot/services/schedule/class_schedule.py:158
+#: tgbot/services/schedule/class_schedule.py:146
 msgid "🧑‍🏫 Преподаватель: "
 msgstr "🧑‍🏫 Educator: "
 
-#: tgbot/services/schedule/class_schedule.py:194
+#: tgbot/services/schedule/class_schedule.py:182
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 

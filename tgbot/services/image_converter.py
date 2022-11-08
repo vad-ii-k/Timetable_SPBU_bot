@@ -7,9 +7,12 @@ from typing import Literal
 from aiogram.types import BufferedInputFile
 from babel.dates import format_date
 from jinja2 import Environment, FileSystemLoader
-from pyppeteer import launch
+from pyppeteer import launch, connect
 
 from tgbot.services.schedule.class_schedule import Schedule, StudyEvent
+
+
+_WS_ENDPOINT: str | None = None
 
 
 async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
@@ -49,18 +52,23 @@ async def render_template(schedule: Schedule, schedule_type: Literal['day', 'wee
 
 
 async def take_browser_screenshot(schedule_type: Literal['day', 'week']):
-    browser_width = 2048 if schedule_type == 'week' else 1408
-    browser = await launch(
-        defaultViewport={'width': browser_width, 'height': 256},
-        logLevel=logging.ERROR,
-        headless=True,
-        executablePath="/usr/bin/chromium-browser",
-        args=['--no-sandbox']
-    )
+    default_viewport = {'width': 2048 if schedule_type == 'week' else 1408, 'height': 256}
+    global _WS_ENDPOINT
+    if _WS_ENDPOINT:
+        browser = await connect(browserWSEndpoint=_WS_ENDPOINT, defaultViewport=default_viewport)
+    else:
+        browser = await launch(
+            defaultViewport=default_viewport,
+            logLevel=logging.ERROR,
+            headless=True,
+            executablePath="/usr/bin/chromium-browser",
+            args=['--no-sandbox']
+        )
+        _WS_ENDPOINT = browser.wsEndpoint
     browser_page = await browser.newPage()
     await browser_page.goto(f'file:///{os.path.abspath(f"data/compiled_html_pages/{schedule_type}_schedule.html")}')
     await browser_page.screenshot(path='data/output.jpeg', type='jpeg', fullPage=True, quality=99)
-    await browser.close()
+    await browser_page.close()
 
 
 async def get_rendered_image(schedule: Schedule, schedule_type: Literal['day', 'week']) -> BufferedInputFile:
