@@ -1,9 +1,10 @@
+""" Initial filling of groups for searching by name """
 import asyncio
 import logging
 from itertools import cycle
 from typing import Iterable, Callable, Coroutine
 
-import aiohttp
+from aiohttp import ClientSession
 from aiohttp_socks import ProxyConnector, ProxyError, ProxyConnectionError
 
 from tgbot.config import app_config
@@ -16,7 +17,13 @@ groups: list[GroupSearchInfo] = []
 remaining_program_ids: list[str] = []
 
 
-async def request(session: aiohttp.ClientSession, url: str) -> dict:
+async def request(session: ClientSession, url: str) -> dict:
+    """
+    Request to API with [ClientSession](https://docs.aiohttp.org/en/stable/client_reference.html)
+    :param session:
+    :param url:
+    :return:
+    """
     try:
         async with session.get(url) as response:
             if response.status == 200:
@@ -28,18 +35,28 @@ async def request(session: aiohttp.ClientSession, url: str) -> dict:
     return {}
 
 
-def chunks_generator(lst: list[str], chuck_size: int) -> Iterable[list[str]]:
-    for i in range(0, len(lst), chuck_size):
-        yield lst[i: i + chuck_size]
+def chunks_generator(arr: list[str], chuck_size: int) -> Iterable[list[str]]:
+    """
+    Splitting a list into multiple lists
+    :param arr:
+    :param chuck_size:
+    """
+    for i in range(0, len(arr), chuck_size):
+        yield arr[i: i + chuck_size]
 
 
-async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[aiohttp.ClientSession, str], Coroutine]):
+async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[ClientSession, str], Coroutine]):
+    """
+    Creating and running tasks for asynchronous API requests
+    :param chunks:
+    :param function:
+    """
     proxies_pool = cycle(app_config.proxy.ips)
     for chunk in chunks:
         connector = ProxyConnector.from_url(
             f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{next(proxies_pool)}"
         )
-        async with aiohttp.ClientSession(connector=connector) as session:
+        async with ClientSession(connector=connector) as session:
             tasks = []
             for item in chunk:
                 task = asyncio.create_task(function(session, item))
@@ -48,7 +65,12 @@ async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[aioh
             await asyncio.gather(*tasks)
 
 
-async def get_study_levels(session: aiohttp.ClientSession, alias: str) -> None:
+async def get_study_levels(session: ClientSession, alias: str) -> None:
+    """
+    Getting study levels
+    :param session:
+    :param alias:
+    """
     url = f"{TT_API_URL}/study/divisions/{alias}/programs/levels"
     response = await request(session, url)
     for level in response:
@@ -59,13 +81,19 @@ async def get_study_levels(session: aiohttp.ClientSession, alias: str) -> None:
 
 
 async def collecting_program_ids() -> None:
+    """ Getting IDs of all programs """
     study_divisions = await get_study_divisions()
     aliases = [division.alias for division in study_divisions]
     aliases_by_parts = list(chunks_generator(aliases, 4))
     await create_and_run_tasks(aliases_by_parts, get_study_levels)
 
 
-async def get_groups(session: aiohttp.ClientSession, program_id: str) -> None:
+async def get_groups(session: ClientSession, program_id: str) -> None:
+    """
+    Getting IDs and names of all groups of the study program
+    :param session:
+    :param program_id:
+    """
     url = f"{TT_API_URL}/progams/{program_id}/groups"
     response = await request(session, url)
     if "Groups" in response:
@@ -77,6 +105,7 @@ async def get_groups(session: aiohttp.ClientSession, program_id: str) -> None:
 
 
 async def adding_groups_to_db() -> None:
+    """ Adding all groups to the database """
     logging.info("Collecting programs...")
     await collecting_program_ids()
     logging.info("Collecting groups...")

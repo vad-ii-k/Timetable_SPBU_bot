@@ -1,3 +1,4 @@
+""" Classes for working with a schedule """
 from abc import ABC, abstractmethod
 from datetime import time, date
 from itertools import groupby

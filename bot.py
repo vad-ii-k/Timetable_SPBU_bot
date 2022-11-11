@@ -1,8 +1,9 @@
+""" Module for launching the bot """
 import asyncio
 import logging
 
 import aioredis
-from aiogram import Dispatcher, Bot
+from aiogram import Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.i18n import I18n
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -27,10 +28,20 @@ logger = logging.getLogger(__name__)
 
 
 async def on_startup(admin_ids: list[int]):
+    """
+    The function called when the bot is started
+    :param admin_ids: admin ids from configs
+    """
     await broadcaster.broadcast(bot, admin_ids, "🆙 Бот запущен!\n")
 
 
 async def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
+    """
+    Setting the necessary [middlewares](https://docs.aiogram.dev/en/dev-3.x/dispatcher/middlewares.html)
+    for the [dispatcher](https://docs.aiogram.dev/en/dev-3.x/dispatcher/dispatcher.html)
+    :param dispatcher:
+    :param i18n:
+    """
     action_middleware = ActionMiddleware(app_config)
     dispatcher.message.middleware()
     dispatcher.callback_query.middleware(action_middleware)
@@ -38,6 +49,7 @@ async def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
 
 
 async def main():
+    """ Configuring and launching the bot """
     logging.basicConfig(
         level=logging.INFO,
         format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',

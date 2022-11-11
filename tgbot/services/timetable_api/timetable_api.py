@@ -1,3 +1,4 @@
+""" Wrappers over the timetable API """
 import json
 from typing import Final
 
@@ -15,6 +16,10 @@ TT_URL: Final[str] = "https://timetable.spbu.ru/"
 
 
 async def get_study_divisions() -> list[StudyDivision]:
+    """
+
+    :return:
+    """
     url = f"{TT_API_URL}/study/divisions"
     response = await request(url, expire_after_days=10)
 
@@ -25,6 +30,11 @@ async def get_study_divisions() -> list[StudyDivision]:
 
 
 async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
+    """
+
+    :param last_name:
+    :return:
+    """
     url = f"{TT_API_URL}/educators/search/{last_name}"
     response = await request(url, expire_after_days=1)
 
@@ -36,6 +46,11 @@ async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
 
 
 async def get_study_levels(alias: str) -> list[StudyLevel]:
+    """
+
+    :param alias:
+    :return:
+    """
     url = f"{TT_API_URL}/study/divisions/{alias}/programs/levels"
     response = await request(url, expire_after_days=1)
 
@@ -46,6 +61,11 @@ async def get_study_levels(alias: str) -> list[StudyLevel]:
 
 
 async def get_groups(program_id: str) -> list[GroupSearchInfo]:
+    """
+
+    :param program_id:
+    :return:
+    """
     url = f"{TT_API_URL}/progams/{program_id}/groups"  # Typo in api
     response = await request(url, expire_after_days=1)
 
@@ -56,6 +76,13 @@ async def get_groups(program_id: str) -> list[GroupSearchInfo]:
 
 
 async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> EducatorSchedule:
+    """
+
+    :param tt_id:
+    :param from_date:
+    :param to_date:
+    :return:
+    """
     url = f"{TT_API_URL}/educators/{tt_id}/events/{from_date}/{to_date}"
     response = await request(url, expire_after_days=0.5)
     support_info = {
@@ -68,6 +95,13 @@ async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str
 
 
 async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> GroupSchedule:
+    """
+
+    :param tt_id:
+    :param from_date:
+    :param to_date:
+    :return:
+    """
     url = f"{TT_API_URL}/groups/{tt_id}/events/{from_date}/{to_date}"
     response = await request(url, expire_after_days=0.5)
     support_info = {

@@ -1,3 +1,4 @@
+""" Auxiliary functions for getting a schedule """
 from datetime import date, timedelta
 
 from aiogram.utils.i18n import get_i18n
@@ -5,6 +6,12 @@ from babel.dates import format_date
 
 
 async def get_schedule_weekday_header(day: date, general_location: str = None) -> str:
+    """
+
+    :param day:
+    :param general_location:
+    :return:
+    """
     try:
         locale = get_i18n().current_locale
     except LookupError:
@@ -18,6 +25,12 @@ async def get_schedule_weekday_header(day: date, general_location: str = None) -
 
 
 def _get_monday_and_sunday_dates(day_counter: int = None, week_counter: int = None) -> tuple[date, date]:
+    """
+
+    :param day_counter:
+    :param week_counter:
+    :return:
+    """
     current_date = date.today() + timedelta(week_counter * 7 if week_counter is not None else day_counter)
     monday = current_date - timedelta(days=current_date.weekday())
     sunday = monday + timedelta(days=6)
@@ -25,6 +38,11 @@ def _get_monday_and_sunday_dates(day_counter: int = None, week_counter: int = No
 
 
 def get_time_sticker(hour: int) -> str:
+    """
+
+    :param hour:
+    :return:
+    """
     time_sticker = ""
     match hour:
         case 0 | 12:
@@ -55,6 +73,11 @@ def get_time_sticker(hour: int) -> str:
 
 
 def get_subject_format_sticker(subject_format: str) -> str:
+    """
+
+    :param subject_format:
+    :return:
+    """
     format_sticker = "✍🏼"
     match subject_format.split(" ")[0]:
         case "лекция":
@@ -75,6 +98,11 @@ def get_subject_format_sticker(subject_format: str) -> str:
 
 
 def _get_weekday_sticker(day: str) -> str:
+    """
+
+    :param day:
+    :return:
+    """
     weekday_sticker = ""
     match day.split(",")[0]:
         case "понедельник" | "Monday":

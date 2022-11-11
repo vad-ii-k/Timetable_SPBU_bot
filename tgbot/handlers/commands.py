@@ -1,3 +1,7 @@
+"""
+Setting and processing commands of a regular user
+with the [Command](https://docs.aiogram.dev/en/dev-3.x/dispatcher/filters/command.html) filter
+"""
 import logging
 
 from aiogram import Router, Bot, flags
@@ -8,14 +12,19 @@ from aiogram.utils.i18n import gettext as _
 
 from tgbot.config import bot
 from tgbot.handlers.helpers import send_schedule
-from tgbot.keyboards.inline import create_start_choice_keyboard, create_settings_keyboard
-from tgbot.misc.states import Searching, UserType
+from tgbot.keyboards.inline import create_start_menu_keyboard, create_settings_keyboard
+from tgbot.misc.states import Searching
+from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.db_api.db_commands import database
 
 router = Router()
 
 
-async def set_commands(_bot: Bot):
+async def set_commands(bot_: Bot):
+    """
+    Setting the commands to be displayed in the menu
+    :param bot_: telegram bot
+    """
     data = [
         (
             [
@@ -31,11 +40,16 @@ async def set_commands(_bot: Bot):
         )
     ]
     for commands_list, commands_scope, language in data:
-        await bot.set_my_commands(commands=commands_list, scope=commands_scope, language_code=language)
+        await bot_.set_my_commands(commands=commands_list, scope=commands_scope, language_code=language)
 
 
 @router.message(Command("start"))
 async def start_command(message: Message, state: FSMContext):
+    """
+    Handling `start` command
+    :param message: */start*
+    :param state:
+    """
     await state.clear()
     logging.info("start -- id:%s", message.from_user.id)
     await message.answer(
@@ -45,18 +59,28 @@ async def start_command(message: Message, state: FSMContext):
                   "➖➖➖➖➖➖➖➖➖➖➖➖\n"
                   "⬇️ Получить расписание по:")
               ),
-        reply_markup=await create_start_choice_keyboard(),
+        reply_markup=await create_start_menu_keyboard(),
     )
 
 
 @router.message(Command("educator"))
 async def educator_search_command(message: Message, state: FSMContext):
+    """
+    Handling `educator` command
+    :param message: */educator*
+    :param state:
+    """
     await message.answer(_("🔎 Введите фамилию преподавателя для поиска:"))
     await state.set_state(Searching.getting_educator_choice)
 
 
 @router.message(Command("group"))
 async def group_search_command(message: Message, state: FSMContext):
+    """
+    Handling `group` command
+    :param message: */group*
+    :param state:
+    """
     await message.answer(_("🔎 Введите название группы для поиска:\n"
                            "*️⃣ <i>например, 20.Б08-мм</i>"))
     await state.set_state(Searching.getting_group_choice)
@@ -64,6 +88,10 @@ async def group_search_command(message: Message, state: FSMContext):
 
 @router.message(Command("settings"))
 async def settings_command(message: Message):
+    """
+    Handling `settings` command
+    :param message: */settings*
+    """
     user = await database.get_user(tg_user_id=message.chat.id)
     settings = await database.get_settings(user)
     main_schedule = await database.get_main_schedule(user_id=user.user_id)
@@ -80,6 +108,11 @@ async def settings_command(message: Message):
 @router.message(Command("my_schedule"))
 @flags.chat_action('typing')
 async def my_schedule_command(message: Message, state: FSMContext):
+    """
+    Handling `my_schedule` command
+    :param message: */my_schedule*
+    :param state:
+    """
     user = await database.get_user(tg_user_id=message.chat.id)
     main_schedule = await database.get_main_schedule(user_id=user.user_id)
     if main_schedule:
@@ -97,6 +130,10 @@ async def my_schedule_command(message: Message, state: FSMContext):
 
 @router.message(Command("help"))
 async def help_command(message: Message):
+    """
+    Handling `help` command
+    :param message: */help*
+    """
     answer = _("🤖 Список команд: \n")
     commands = await bot.get_my_commands()
     for cmd in commands:

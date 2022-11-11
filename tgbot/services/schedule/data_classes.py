@@ -1,4 +1,6 @@
+""" Dataclasses for working with a schedule """
 from dataclasses import dataclass
+from enum import Enum
 
 from pydantic import BaseModel, Field
 
@@ -34,3 +36,8 @@ class StudyLevel(BaseModel):
 class GroupSearchInfo:
     tt_id: int
     name: str
+
+
+class UserType(str, Enum):
+    STUDENT = "student"
+    EDUCATOR = "educator"

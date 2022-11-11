@@ -1,9 +1,10 @@
+""" Handling program navigation to select a student's group """
 from aiogram import Router, flags
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.cb_data import (
+from tgbot.misc.cb_data import (
     StudyDivisionCallbackFactory,
     StudyLevelCallbackFactory,
     ProgramCombinationsCallbackFactory,
@@ -27,6 +28,12 @@ router = Router()
 async def study_divisions_navigation_callback(
         callback: CallbackQuery, callback_data: StudyDivisionCallbackFactory, state: FSMContext
 ):
+    """
+    Handling the study division selection, sends a keyboard with a list of study levels
+    :param callback:
+    :param callback_data:
+    :param state:
+    """
     await change_message_to_loading(callback.message)
     study_levels = await get_study_levels(callback_data.alias)
     await callback.message.delete()
@@ -41,6 +48,12 @@ async def study_divisions_navigation_callback(
 async def study_levels_navigation_callback(
         callback: CallbackQuery, callback_data: StudyLevelCallbackFactory, state: FSMContext
 ):
+    """
+    Handling the study level selection, sends a keyboard with a list of program combinations
+    :param callback:
+    :param callback_data:
+    :param state:
+    """
     data = await state.get_data()
     program_combinations = data["study_levels"][callback_data.serial]["program_combinations"]
     await callback.message.edit_text(
@@ -54,6 +67,12 @@ async def study_levels_navigation_callback(
 async def admission_years_navigation_callback(
         callback: CallbackQuery, callback_data: ProgramCombinationsCallbackFactory, state: FSMContext
 ):
+    """
+    Handling the program combination selection, sends a keyboard with a list of admission years
+    :param callback:
+    :param callback_data:
+    :param state:
+    """
     data = await state.get_data()
     admission_years = data["program_combinations"][callback_data.serial]["admission_years"]
     await callback.message.edit_text(
@@ -68,6 +87,12 @@ async def admission_years_navigation_callback(
 async def group_choice_navigation_callback(
         callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext
 ):
+    """
+    Handling the admission year selection, sends a keyboard with a list of groups
+    :param callback:
+    :param callback_data:
+    :param state:
+    """
     await change_message_to_loading(callback.message)
     groups = await get_groups(callback_data.study_program_id)
     if len(groups) > 0:

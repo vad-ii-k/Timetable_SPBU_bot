@@ -1,3 +1,4 @@
+""" Timetable API request """
 import asyncio
 from datetime import timedelta
 from random import shuffle
@@ -10,6 +11,11 @@ from tgbot.config import app_config
 
 
 def _get_cache(expire_after_days: float) -> RedisBackend:
+    """
+
+    :param expire_after_days:
+    :return:
+    """
     redis_cache = RedisBackend(
         cache_name='aiohttp-cache',
         address=f'redis://{app_config.redis.host}',
@@ -22,6 +28,12 @@ def _get_cache(expire_after_days: float) -> RedisBackend:
 
 
 async def request(url: str, expire_after_days: float = 0.1) -> dict:
+    """
+
+    :param url:
+    :param expire_after_days:
+    :return:
+    """
     shuffle(app_config.proxy.ips)
     # Iterating through the proxy until we get the OK status
     for proxy_ip in app_config.proxy.ips:

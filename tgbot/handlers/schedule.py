@@ -1,9 +1,10 @@
+""" Handling the keyboard with a schedule """
 import asyncio
 
 from aiogram import Router, F, flags
 from aiogram.types import CallbackQuery
 
-from tgbot.cb_data import ScheduleCallbackFactory
+from tgbot.misc.cb_data import ScheduleCallbackFactory
 from tgbot.handlers.helpers import change_message_to_loading, schedule_keyboard_helper, delete_message
 from tgbot.services.schedule.getting_shedule import (
     get_text_week_schedule,
@@ -18,6 +19,11 @@ router = Router()
 @router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"1-1", "1-2", "1-3"})))
 @flags.chat_action('typing')
 async def schedule_days_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
+    """
+    Handling button clicks to change the day using a scheduled keyboard
+    :param callback:
+    :param callback_data:
+    """
     await change_message_to_loading(callback.message)
     callback_data.week_counter = None
     if callback_data.day_counter is None:
@@ -43,6 +49,11 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
 @router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"2-1", "2-2"})))
 @flags.chat_action('typing')
 async def schedule_weeks_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
+    """
+    Handling button clicks to change the week using a scheduled keyboard
+    :param callback:
+    :param callback_data:
+    """
     await change_message_to_loading(callback.message)
     callback_data.day_counter = None
     if callback_data.week_counter is None:
@@ -66,6 +77,11 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
 @router.callback_query(ScheduleCallbackFactory.filter(F.button == "3-1"))
 @flags.chat_action('typing')
 async def schedule_photo_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
+    """
+    Handling button clicks to change the schedule view using a scheduled keyboard
+    :param callback:
+    :param callback_data:
+    """
     await change_message_to_loading(callback.message)
     tt_id, user_type = callback_data.tt_id, callback_data.user_type
     day_counter, week_counter = callback_data.day_counter, callback_data.week_counter

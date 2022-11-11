@@ -1,3 +1,4 @@
+""" Module for working with notifications """
 import logging
 from datetime import datetime, time
 
@@ -5,7 +6,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pydantic import ValidationError
 
 from tgbot.config import bot
-from tgbot.misc.states import UserType
+from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.db_api.db_commands import database
 from tgbot.services.schedule.getting_shedule import get_text_day_schedule, get_image_day_schedule
 

@@ -1,10 +1,11 @@
+""" Handling the selection of a group or teacher from the suggested list """
 from aiogram import Router, flags
 from aiogram import html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.cb_data import TTObjectChoiceCallbackFactory
+from tgbot.misc.cb_data import TTObjectChoiceCallbackFactory
 from tgbot.handlers.helpers import send_schedule
 from tgbot.keyboards.inline import create_educators_keyboard, create_groups_keyboard
 from tgbot.misc.states import Searching
@@ -17,6 +18,11 @@ router = Router()
 @router.message(Searching.getting_educator_choice)
 @flags.chat_action('typing')
 async def getting_choice_for_educator(message: Message, state: FSMContext):
+    """
+    Handling the selection of a teacher from the suggested list
+    :param message:
+    :param state:
+    """
     teachers_list = await educator_search(message.text)
     if len(teachers_list) == 0:
         await message.answer(_("❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
@@ -34,6 +40,11 @@ async def getting_choice_for_educator(message: Message, state: FSMContext):
 
 @router.message(Searching.getting_group_choice)
 async def getting_choice_for_student(message: Message, state: FSMContext):
+    """
+    Handling the selection of a group from the suggested list
+    :param message:
+    :param state:
+    """
     groups_list = await database.get_groups_by_name(message.text)
     if len(groups_list) == 0:
         await message.answer(_("Группа \"<i>{group_name}</i>\" не найдена!\n"
@@ -55,6 +66,12 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
 async def sending_schedule_after_search(
         callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ):
+    """
+    Sending a schedule for the selected group or teacher after selecting from the suggested list
+    :param callback:
+    :param callback_data:
+    :param state:
+    """
     await callback.message.delete()
     await state.set_state(state=None)
     await state.update_data({'tt_id': callback_data.tt_id, 'user_type': callback_data.user_type})

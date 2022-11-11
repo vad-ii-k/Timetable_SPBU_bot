@@ -1,10 +1,11 @@
+""" [Inline Keyboards](https://docs.aiogram.dev/en/dev-3.x/utils/keyboard.html#inline-keyboard) """
 from datetime import date, timedelta, time, datetime
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from tgbot.cb_data import (
+from tgbot.misc.cb_data import (
     StudyDivisionCallbackFactory,
     StudyLevelCallbackFactory,
     ProgramCombinationsCallbackFactory,
@@ -16,17 +17,20 @@ from tgbot.cb_data import (
     SettingsDailySummaryCallbackFactory,
     ScheduleSubscriptionCallbackFactory,
 )
-from tgbot.misc.states import UserType
 from tgbot.services.db_api.db_models import Settings
 from tgbot.services.schedule.data_classes import (
     StudyDivision,
     StudyLevel,
     GroupSearchInfo,
-    EducatorSearchInfo,
+    EducatorSearchInfo, UserType,
 )
 
 
-async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
+async def create_start_menu_keyboard() -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard for the start menu
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     keyboard.button(
         text=_("Названию группы"), callback_data=StartMenuCallbackFactory(type="student_search")
@@ -42,6 +46,11 @@ async def create_start_choice_keyboard() -> InlineKeyboardMarkup:
 
 
 async def create_study_divisions_keyboard(study_divisions: list[StudyDivision]) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard with a list of study divisions
+    :param study_divisions:
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     for division in study_divisions:
         keyboard.button(text=division.name, callback_data=StudyDivisionCallbackFactory(alias=division.alias))
@@ -50,6 +59,11 @@ async def create_study_divisions_keyboard(study_divisions: list[StudyDivision]) 
 
 
 async def create_study_levels_keyboard(study_levels: list[StudyLevel]) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard with a list of study levels
+    :param study_levels:
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     for serial, level in enumerate(study_levels):
         keyboard.button(text=level.name, callback_data=StudyLevelCallbackFactory(serial=serial))
@@ -58,6 +72,11 @@ async def create_study_levels_keyboard(study_levels: list[StudyLevel]) -> Inline
 
 
 async def create_study_programs_keyboard(program_combinations: list[dict[str, str]]) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard with a list of program combinations
+    :param program_combinations:
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     for serial, program in enumerate(program_combinations):
         keyboard.button(text=program['name'], callback_data=ProgramCombinationsCallbackFactory(serial=serial))
@@ -66,6 +85,11 @@ async def create_study_programs_keyboard(program_combinations: list[dict[str, st
 
 
 async def create_admission_years_keyboard(admission_years: list[dict[str, str]]) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard with a list of admission years
+    :param admission_years:
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     for year in admission_years:
         keyboard.button(
@@ -77,6 +101,11 @@ async def create_admission_years_keyboard(admission_years: list[dict[str, str]])
 
 
 async def create_groups_keyboard(groups: list[GroupSearchInfo]) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard with a list of groups
+    :param groups:
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     for group in groups:
         keyboard.button(
@@ -88,6 +117,11 @@ async def create_groups_keyboard(groups: list[GroupSearchInfo]) -> InlineKeyboar
 
 
 async def create_educators_keyboard(educators: list[EducatorSearchInfo]) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard with a list of educators
+    :param educators:
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     for educator in educators:
         keyboard.button(
@@ -99,6 +133,12 @@ async def create_educators_keyboard(educators: list[EducatorSearchInfo]) -> Inli
 
 
 async def create_schedule_keyboard(is_photo: bool, callback_data: ScheduleCallbackFactory) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard for a schedule
+    :param is_photo: current schedule view
+    :param callback_data:
+    :return:
+    """
     day_counter = 0 if callback_data.day_counter is None else callback_data.day_counter
     current_date = date.today() + timedelta(day_counter)
     prev_day_date = current_date - timedelta(days=1)
@@ -127,7 +167,12 @@ async def create_schedule_keyboard(is_photo: bool, callback_data: ScheduleCallba
     return keyboard.as_markup()
 
 
-async def create_settings_keyboard(settings: Settings):
+async def create_settings_keyboard(settings: Settings) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard for settings
+    :param settings: current user settings
+    :return:
+    """
     settings_keyboard = InlineKeyboardBuilder()
     text = _("Присылать сводку ")
     if settings.daily_summary is None:
@@ -153,7 +198,12 @@ async def create_settings_keyboard(settings: Settings):
     return settings_keyboard.as_markup()
 
 
-async def create_settings_daily_summary_keyboard(selected_option: datetime):
+async def create_settings_daily_summary_keyboard(selected_option: datetime) -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard to change the parameters of the daily summary
+    :param selected_option: current time for the daily summary
+    :return:
+    """
     daily_summary_keyboard = InlineKeyboardBuilder()
 
     suggested_time = [(19, "🕖"), (7, "🕖"), (20, "🕗"), (8, "🕗"), (21, "🕘"), (9, "🕘")]
@@ -178,6 +228,10 @@ async def create_settings_daily_summary_keyboard(selected_option: datetime):
 
 
 async def create_schedule_subscription_keyboard() -> InlineKeyboardMarkup:
+    """
+    Creating a keyboard for a schedule subscription question
+    :return:
+    """
     keyboard = InlineKeyboardBuilder()
     keyboard.button(text=_("Да, сделать основным ✅"),
                     callback_data=ScheduleSubscriptionCallbackFactory(answer=True))

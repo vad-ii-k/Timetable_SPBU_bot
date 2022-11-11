@@ -1,3 +1,4 @@
+""" Setting configs for the bot from environment variables """
 from dataclasses import dataclass
 
 from aiogram import Bot
@@ -6,54 +7,83 @@ from environs import Env
 
 @dataclass(slots=True, frozen=True)
 class DbConfig:
+    """ Postgres database config """
     host: str
+    """ Host """
     port: int
+    """ Port """
     password: str
+    """ User password """
     user: str
+    """ User name """
     database: str
+    """ Database name """
     are_groups_collected: bool
+    """
+    If false, then groups will be collected for the search function by group name
+    
+    **Need to set to True after the first run in ./../.env**
+    """
 
     @property
-    def connection_url(self):
-        pg_uri = f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
-        return pg_uri
+    def connection_url(self) -> str:
+        """
+        Postgresql db url
+        :return: url for connecting to the database
+        """
+        pg_url = f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+        return pg_url
 
 
 @dataclass(slots=True, frozen=True)
 class RedisConfig:
+    """ Redis data store config """
     host: str
+    """ Host """
     port: int
+    """ Port """
     password: str
+    """ Password """
 
 
 @dataclass(slots=True, frozen=True)
 class TgBot:
+    """ Telegram bot config """
     token: str
+    """ The token for bot from BotFather """
     admin_ids: list[int]
+    """ Telegram admin IDs """
 
 
 @dataclass(slots=True, frozen=True)
 class Proxy:
+    """ Proxy config """
     login: str
+    """ Login for proxies """
     password: str
+    """ Password for proxies """
     ips: list[str]
-
-
-@dataclass(slots=True, frozen=True)
-class Miscellaneous:
-    other_params: str = None
+    """ List of IP addresses for proxies """
 
 
 @dataclass(slots=True, frozen=True)
 class Config:
+    """ Combining config for the program """
     tg_bot: TgBot
+    """ Telegram bot config """
     database: DbConfig
+    """ Postgres database config """
     redis: RedisConfig
+    """ Redis data store config """
     proxy: Proxy
-    misc: Miscellaneous
+    """ Proxy config """
 
 
 def load_config(path: str = None) -> Config:
+    """ Loading and installing configs from environment variables
+    :param path: path to .env
+    :return: Config object
+    """
     env = Env()
     env.read_env(path)
 
@@ -79,8 +109,7 @@ def load_config(path: str = None) -> Config:
             login=env.str('PROXY_LOGIN'),
             password=env.str('PROXY_PASSWORD'),
             ips=list(map(str, env.list("PROXY_IPS"))),
-        ),
-        misc=Miscellaneous()
+        )
     )
 
 

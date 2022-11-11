@@ -1,3 +1,4 @@
+""" Database Model definition """
 from gino import Gino
 from sqlalchemy import Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Index, Date, func
 
@@ -49,5 +50,6 @@ class MainScheduleInfo(db_gino.Model):
 
 
 async def create_db() -> None:
+    """ Creating a database """
     await db_gino.set_bind(app_config.database.connection_url)
     await db_gino.gino.create_all()

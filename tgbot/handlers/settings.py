@@ -1,3 +1,4 @@
+""" Handling related to settings """
 import datetime
 
 from aiogram import Router, F
@@ -5,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.cb_data import (
+from tgbot.misc.cb_data import (
     SettingsCallbackFactory,
     SettingsDailySummaryCallbackFactory,
     ScheduleSubscriptionCallbackFactory,
@@ -20,6 +21,10 @@ router = Router()
 
 @router.callback_query(SettingsCallbackFactory.filter(F.type == "daily_summary"))
 async def daily_summary_callback(callback: CallbackQuery):
+    """
+    Setting the time for the daily summary, sends a keyboard with parameters for notification
+    :param callback:
+    """
     settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     await callback.message.edit_text(
         text=_("⚙️<b> Выберите время для получения\n"
@@ -32,6 +37,11 @@ async def daily_summary_callback(callback: CallbackQuery):
 
 @router.callback_query(SettingsDailySummaryCallbackFactory.filter())
 async def settings_daily_summary_callback(callback: CallbackQuery, callback_data: SettingsDailySummaryCallbackFactory):
+    """
+    Handling the time selection button for the daily summary
+    :param callback:
+    :param callback_data:
+    """
     settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     if callback_data.choice != "back":
         value = datetime.time(int(callback_data.choice)) if callback_data.choice != "disabling" else None
@@ -43,6 +53,10 @@ async def settings_daily_summary_callback(callback: CallbackQuery, callback_data
 
 @router.callback_query(SettingsCallbackFactory.filter(F.type == "schedule_view"))
 async def settings_view_callback(callback: CallbackQuery):
+    """
+    Handling changes to the default schedule view
+    :param callback:
+    """
     settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     await settings.update(schedule_view_is_picture=not settings.schedule_view_is_picture).apply()
     await callback.message.edit_reply_markup(reply_markup=await create_settings_keyboard(settings))
@@ -51,6 +65,10 @@ async def settings_view_callback(callback: CallbackQuery):
 
 @router.callback_query(SettingsCallbackFactory.filter(F.type == "language"))
 async def settings_language_callback(callback: CallbackQuery):
+    """
+    Handling language changes
+    :param callback:
+    """
     settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
     await settings.update(language='en' if settings.language == 'ru' else 'ru').apply()
     await callback.answer(
@@ -65,6 +83,12 @@ async def settings_language_callback(callback: CallbackQuery):
 async def schedule_subscription_callback(
         callback: CallbackQuery, callback_data: ScheduleSubscriptionCallbackFactory, state: FSMContext
 ):
+    """
+    Handling subscription selection for a schedule
+    :param callback:
+    :param callback_data:
+    :param state:
+    """
     if callback_data.answer:
         data = await state.get_data()
         await database.set_main_schedule(

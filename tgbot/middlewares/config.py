@@ -1,3 +1,4 @@
+""" Middlewares """
 import asyncio
 from typing import Callable, Any, Awaitable
 
@@ -12,7 +13,15 @@ from tgbot.services.db_api.db_commands import database
 
 
 class ActionMiddleware(BaseMiddleware):
+    """
+    Middleware for setting [Chat action sender](https://docs.aiogram.dev/en/dev-3.x/utils/chat_action.html)
+
+    It is needed to handle events with a potentially long response
+    """
     def __init__(self, config) -> None:
+        """
+        :param config:
+        """
         self.config = config
 
     async def __call__(
@@ -21,6 +30,12 @@ class ActionMiddleware(BaseMiddleware):
             event: Message | CallbackQuery,
             data: dict[str, Any]
     ) -> Any:
+        """
+        :param handler:
+        :param event:
+        :param data:
+        :return:
+        """
         data['config'] = self.config
         action = get_flag(data, "chat_action")
         if not action:
@@ -40,7 +55,14 @@ class ActionMiddleware(BaseMiddleware):
 
 
 class LanguageI18nMiddleware(I18nMiddleware):
+    """ Custom [I18nMiddleware](https://docs.aiogram.dev/en/dev-3.x/utils/i18n.html#i18nmiddleware) """
     async def get_locale(self, event: TelegramObject, data: dict[str, Any]):
+        """
+        Redefining the method of getting the locale from the database
+        :param event:
+        :param data:
+        :return:
+        """
         tg_user: User = data.get('event_from_user')
         user = await database.get_user(tg_user_id=tg_user.id)
         if user is None:

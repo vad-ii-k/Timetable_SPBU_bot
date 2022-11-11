@@ -1,3 +1,4 @@
+""" Module for getting bot statistics """
 import csv
 from dataclasses import dataclass
 from datetime import date, time
@@ -13,7 +14,11 @@ class UserStatistics:
     language: str
 
 
-async def collecting_statistics(full_statistics: list[UserStatistics]):
+async def collecting_statistics(full_statistics: list[UserStatistics]) -> None:
+    """
+
+    :param full_statistics:
+    """
     with open('data/statistics.csv', 'w', encoding='utf-8', newline='') as csvfile:
         dict_writer = csv.DictWriter(csvfile, delimiter='\t', fieldnames=[
             "Username", "Start date", "Schedule name", "Daily summary time", "Default schedule view", "Language"
