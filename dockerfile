@@ -3,14 +3,18 @@ ENV BOT_NAME=$BOT_NAME
 
 WORKDIR /usr/src/app/"${BOT_NAME:-tg_bot}"
 
-COPY requirements.txt /usr/src/app/"${BOT_NAME:-tg_bot}"
-RUN pip install --upgrade pip -r /usr/src/app/"${BOT_NAME:-tg_bot}"/requirements.txt
-COPY . /usr/src/app/"${BOT_NAME:-tg_bot}"
-
-#Installing chromium for pyppeteer
-RUN apk -U add chromium udev npm
+# Installing curl for poetry, chromium for pyppeteer, npm for sass
+RUN apk -U add curl chromium udev npm
 RUN npm install -g sass
 
-# Updating locales
-# pybabel extract --input-dirs=tgbot -o tgbot/locales/messages.pot -w 100
-# pybabel update -d tgbot/locales -D messages -i tgbot/locales/messages.pot -w 100
+# Installing poetry
+RUN curl -sSL https://install.python-poetry.org | python
+ENV PATH=/root/.local/bin:$PATH
+
+# Installing project dependencies from poetry.lock
+RUN python -m venv /venv
+ENV PATH=/venv/bin:$PATH \
+    VIRTUAL_ENV=/venv
+COPY pyproject.toml poetry.lock /usr/src/app/"${BOT_NAME:-tg_bot}"/
+# Will install into the /venv virtualenv
+RUN poetry install --no-root

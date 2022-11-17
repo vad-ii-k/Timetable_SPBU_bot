@@ -21,7 +21,6 @@ services:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-      USE_REDIS: ${USE_REDIS}
 
       PG_NAME: ${DB_NAME}
       PG_USER: ${DB_USER}
@@ -37,9 +36,9 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        pybabel compile -d tgbot/locales -D messages
+        poetry run pybabel compile -d tgbot/locales -D messages
         sass --update data/styles:data/compiled_html_pages/styles
-        python3 -m bot
+        poetry run python bot.py
     network_mode: host
     restart: unless-stopped
 
