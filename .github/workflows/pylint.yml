@@ -16,7 +16,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip pylint
+        python -m pip install --upgrade pip poetry pylint
+        poetry install --no-interaction --no-root
     - name: Analysing the code with pylint
       run: |
         pylint --fail-under=9 $(git ls-files '*.py')
