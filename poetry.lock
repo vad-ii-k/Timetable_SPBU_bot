@@ -22,7 +22,7 @@ python-versions = ">=3.7,<4.0"
 
 [[package]]
 name = "aiogram"
-version = "3.0.0b5"
+version = "3.0.0b6"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
 category = "main"
 optional = false
@@ -31,6 +31,7 @@ python-versions = ">=3.8,<4.0"
 [package.dependencies]
 aiofiles = ">=22.1.0,<23.0.0"
 aiohttp = ">=3.8.3,<4.0.0"
+certifi = ">=2022.9.24,<2023.0.0"
 magic-filter = ">=1.0.9,<2.0.0"
 pydantic = ">=1.10.2,<2.0.0"
 
@@ -910,7 +911,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "f9acc6049fce5bffcf11280f82832de339a291c74d38421b3adb9e0cd5c2868a"
+content-hash = "45d3cf54919999a93afd9b6a92d7b967a514905cac4307a649938b2cf3fb005c"
 
 [metadata.files]
 aiocache = [
@@ -922,8 +923,8 @@ aiofiles = [
     {file = "aiofiles-22.1.0.tar.gz", hash = "sha256:9107f1ca0b2a5553987a94a3c9959fe5b491fdf731389aa5b7b1bd0733e32de6"},
 ]
 aiogram = [
-    {file = "aiogram-3.0.0b5-py3-none-any.whl", hash = "sha256:2d79e3ca7fb8299a76b793540fa49810aecabacda5b327fb5bc698332fafb0ca"},
-    {file = "aiogram-3.0.0b5.tar.gz", hash = "sha256:d714d6d11a5e0d1ce27a445f73a5d34815873edf22ad8d398db8bf00acee728a"},
+    {file = "aiogram-3.0.0b6-py3-none-any.whl", hash = "sha256:0fc67867a4f12d22871d3b0244e1019c9ff8a18859a48cf82aa0d29c555ad01b"},
+    {file = "aiogram-3.0.0b6.tar.gz", hash = "sha256:2f4382ca23a8ae45d9d1016307ea576b8e11fc0ca5235be03f138934c35602cb"},
 ]
 aiohttp = [
     {file = "aiohttp-3.8.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ba71c9b4dcbb16212f334126cc3d8beb6af377f6703d9dc2d9fb3874fd667ee9"},

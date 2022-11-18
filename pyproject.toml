@@ -9,7 +9,7 @@ packages = [{include = "timetable_spbu_bot"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 aiocache = "^0.11.1"
-aiogram = "3.0.0b5"
+aiogram = "3.0.0b6"
 aiohttp-client-cache = "^0.7.3"
 aiohttp-socks = "^0.7.1"
 aioredis = "^2.0.1"
