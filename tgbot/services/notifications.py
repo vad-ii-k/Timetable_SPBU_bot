@@ -12,6 +12,13 @@ from tgbot.services.schedule.getting_shedule import get_text_day_schedule, get_i
 
 
 async def send_daily_summary(tg_id: int, user_type: UserType, tt_id: int, day_counter: int) -> None:
+    """
+    Sending a daily summary to the user
+    :param tg_id:
+    :param user_type:
+    :param tt_id:
+    :param day_counter:
+    """
     settings = await database.get_settings_by_tg_id(tg_id)
     is_picture: bool = settings.schedule_view_is_picture
     header = f"🔔 Расписание на {'завтра' if day_counter == 1 else 'сегодня'}\n"
@@ -24,6 +31,9 @@ async def send_daily_summary(tg_id: int, user_type: UserType, tt_id: int, day_co
 
 
 async def job_send_daily_summary():
+    """
+    Job to send a daily summary
+    """
     current_hour = datetime.now().hour
     user_with_main_schedule = await database.get_users_with_sign_to_summary(time(current_hour))
     day_counter = 1 * (current_hour > 12)
@@ -35,5 +45,9 @@ async def job_send_daily_summary():
 
 
 async def start_scheduler(scheduler: AsyncIOScheduler):
+    """
+    Launching scheduler
+    :param scheduler: [AsyncIOScheduler](https://apscheduler.readthedocs.io/en/3.x/modules/schedulers/asyncio.html)
+    """
     scheduler.add_job(job_send_daily_summary, "cron", hour="7-9, 19-21")
     scheduler.start()

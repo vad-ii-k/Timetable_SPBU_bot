@@ -4,8 +4,9 @@ from dataclasses import dataclass
 from datetime import date, time
 
 
-@dataclass
+@dataclass(slots=True, frozen=True)
 class UserStatistics:
+    """ Dataclass for user statistics """
     username: str
     start_date: date
     schedule_name: str | None
@@ -14,9 +15,9 @@ class UserStatistics:
     language: str
 
 
-async def collecting_statistics(full_statistics: list[UserStatistics]) -> None:
+async def writing_statistics_to_csv(full_statistics: list[UserStatistics]) -> None:
     """
-
+    Writing statistics to a csv file
     :param full_statistics:
     """
     with open('data/statistics.csv', 'w', encoding='utf-8', newline='') as csvfile:

@@ -9,7 +9,7 @@ from tgbot.config import bot
 from tgbot.filters.admin import AdminFilter
 from tgbot.services.broadcaster import broadcast
 from tgbot.services.db_api.db_statistics import database_statistics
-from tgbot.services.statistics import collecting_statistics
+from tgbot.services.statistics import writing_statistics_to_csv
 
 admin_router = Router()
 admin_router.message.filter(AdminFilter())
@@ -34,6 +34,6 @@ async def get_statistics(message: Message):
     """
     number_of_users = await database_statistics.get_number_of_users()
     full_statistics = await database_statistics.get_full_statistics()
-    await collecting_statistics(full_statistics)
+    await writing_statistics_to_csv(full_statistics)
     await message.answer_document(document=FSInputFile('data/statistics.csv'),
                                   caption=f"Количество пользователей: {number_of_users}")

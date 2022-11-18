@@ -104,7 +104,8 @@ class DBCommands:
         :param group_name:
         :return:
         """
-        groups = await Group.query.where(func.lower(Group.name).contains(group_name.lower())).order_by(asc(Group.name)).gino.all()
+        groups = await Group.query.where(func.lower(Group.name).contains(group_name.lower())).\
+            order_by(asc(Group.name)).gino.all()
         return groups
 
     async def set_main_schedule(self, tg_user_id: int, tt_id: int, user_type: UserType, schedule_name: str) -> None:

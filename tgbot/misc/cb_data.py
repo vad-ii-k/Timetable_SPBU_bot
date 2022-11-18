@@ -56,19 +56,19 @@ class ScheduleCallbackFactory(CallbackData, prefix="schedule"):
     button: Literal["1-1", "1-2", "1-3", "2-1", "2-2", "3-1"] | None
     """
     Button id
-    
+
     (*None when the schedule is received without pressing the schedule keyboard buttons*)
     """
     day_counter: int | None
     """
     Day counter relative to the current date
-    
+
     (*None when the schedule is received without pressing the schedule keyboard buttons*)
     """
     week_counter: int | None = 0
     """
     Week counter relative to the current date
-    
+
     (*None when the schedule is received without pressing the schedule keyboard buttons*)
     """
 

@@ -8,6 +8,7 @@ db_gino = Gino()
 
 
 class User(db_gino.Model):
+    """ User """
     __tablename__ = "user"
 
     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
@@ -18,6 +19,7 @@ class User(db_gino.Model):
 
 
 class Settings(db_gino.Model):
+    """ User settings """
     __tablename__ = "settings"
 
     settings_id = Column(Integer, Sequence("settings_id_seq"), primary_key=True)
@@ -29,6 +31,7 @@ class Settings(db_gino.Model):
 
 
 class Group(db_gino.Model):
+    """ Group """
     __tablename__ = "group"
 
     group_id = Column(Integer, Sequence("group_id_seq"), primary_key=True)
@@ -39,6 +42,7 @@ class Group(db_gino.Model):
 
 
 class MainScheduleInfo(db_gino.Model):
+    """ Information about main schedule of user """
     __tablename__ = "main_schedule_info"
 
     user_id = Column(None, ForeignKey("user.user_id"))

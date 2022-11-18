@@ -21,7 +21,7 @@ class DbConfig:
     are_groups_collected: bool
     """
     If false, then groups will be collected for the search function by group name
-    
+
     **Need to set to True after the first run in ./../.env**
     """
 
