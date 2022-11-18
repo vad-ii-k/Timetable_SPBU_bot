@@ -18,16 +18,16 @@ $heading-font: "Source Sans Pro", sans-serif;
   font-family: $paragraph-font;
   font-style: normal;
   font-weight: 400;
-  font-size: 25px;
-  line-height: 28px;
+  font-size: 30px;
+  line-height: 33px;
 }
 
 @mixin paragraph-small {
   font-family: $paragraph-font;
   font-style: normal;
   font-weight: 400;
-  font-size: 15px;
-  line-height: 18px;
+  font-size: 18px;
+  line-height: 21px;
 }
 
 @mixin heading-1 {
@@ -42,14 +42,14 @@ $heading-font: "Source Sans Pro", sans-serif;
   font-family: $heading-font;
   font-style: normal;
   font-weight: 700;
-  font-size: 31px;
-  line-height: 37px;
+  font-size: 34px;
+  line-height: 39px;
 }
 
 @mixin heading-3 {
   font-family: $heading-font;
   font-style: normal;
   font-weight: 700;
-  font-size: 25px;
-  line-height: 32px;
+  font-size: 30px;
+  line-height: 35px;
 }
