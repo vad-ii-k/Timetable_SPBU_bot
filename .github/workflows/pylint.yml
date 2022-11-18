@@ -47,4 +47,4 @@ jobs:
       - name: Analysing the code with pylint
         run: |
           source .venv/bin/activate
-          pylint --fail-under=9 $(git ls-files '*.py')
+          pylint --fail-under=9 tgbot/ bot.py
