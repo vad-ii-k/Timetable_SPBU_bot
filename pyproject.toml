@@ -27,6 +27,14 @@ redis = "^4.3.4"
 [tool.poetry.group.dev.dependencies]
 pdoc = "^12.2.2"
 pytest = "^7.2.0"
+pylint = "^2.15.5"
+pytest-asyncio = "^0.20.2"
+
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 120 # Maximum number of lines in a module.
+disable = 'R0903, E0213, C0209' # too-few-public-methods, no-self-argument, consider-using-f-string
+extension-pkg-whitelist = "pydantic"
 
 [build-system]
 requires = ["poetry-core"]
