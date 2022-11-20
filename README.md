@@ -52,11 +52,14 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
     <a href="https://github.com/python/cpython" target="_blank">
         <img alt="Python logo" align="left" src="https://www.python.org/static/img/python-logo@2x.png" height="35px">
     </a>
+    <a href="https://github.com/python-poetry/poetry" target="_blank">
+        <img alt="Poetry logo" align="left" src="https://python-poetry.org/images/logo-origami.svg" height="35px">
+    </a>
     <a href="https://github.com/aiogram/aiogram" target="_blank">
         <img alt="Aiogram logo" align="left" src="https://avatars.githubusercontent.com/u/33784865?s=200&v=4" height="35px">
     </a>
-    <a href="https://github.com/aio-libs/aioredis-py" target="_blank">
-        <img alt="Redis logo" align="left" src="https://avatars.githubusercontent.com/u/1529926?s=200&v=4" height="35px">
+    <a href="https://github.com/pydantic/pydantic" target="_blank">
+        <img alt="Pydantic logo" align="left" src="https://pydantic-docs.helpmanual.io/logo-white.svg" height="35px">
     </a>
     <a href="https://github.com/sqlalchemy" target="_blank">
         <img alt="SQLAlchemy logo" align="left" src="https://www.sqlalchemy.org/img/sqla_logo.png" height="35px">
@@ -73,11 +76,11 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
     <a href="https://github.com/aio-libs/aiohttp" target="_blank">
         <img alt="Aiohttp logo" align="left" src="https://docs.aiohttp.org/en/stable/_static/aiohttp-plain.svg" height="35px">
     </a>
-    <a href="https://github.com/requests-cache/aiohttp-client-cache" target="_blank">
-        <img alt="Aiohttp-client-cache logo" align="left" src="https://avatars.githubusercontent.com/u/105573137?s=200&v=4" height="35px">
+    <a href="https://github.com/aio-libs/aioredis-py" target="_blank">
+        <img alt="Redis logo" align="left" src="https://avatars.githubusercontent.com/u/1529926?s=200&v=4" height="35px">
     </a>
-    <a href="https://github.com/pydantic/pydantic" target="_blank">
-        <img alt="Pydantic logo" align="left" src="https://pydantic-docs.helpmanual.io/logo-white.svg" height="35px">
+    <a href="https://github.com/Krukov/cashews" target="_blank">
+        <img alt="Cashews logo" align="left" src="https://github.githubassets.com/images/icons/emoji/unicode/1f954.png" height="35px">
     </a>
     <a href="https://github.com/pallets/jinja" target="_blank">
         <img alt="Jinja logo" align="left" src="https://jinja.palletsprojects.com/en/3.1.x/_images/jinja-logo.png" height="35px">
