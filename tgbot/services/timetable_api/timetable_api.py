@@ -1,10 +1,10 @@
 """ Wrappers over the timetable API """
 import json
-from datetime import timedelta
 from typing import Final
 
-from aiocache import cached
+from cashews import cache
 
+from tgbot.config import app_config
 from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule
 from tgbot.services.schedule.data_classes import (
     StudyDivision,
@@ -17,8 +17,10 @@ from tgbot.services.timetable_api.api_request import request
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
 TT_URL: Final[str] = "https://timetable.spbu.ru/"
 
+cache.setup(app_config.redis.connection_url, db=2)
 
-@cached(ttl=timedelta(days=10).seconds)
+
+@cache(ttl="10d")
 async def get_study_divisions() -> list[StudyDivision]:
     """
 
@@ -33,7 +35,7 @@ async def get_study_divisions() -> list[StudyDivision]:
     return study_divisions
 
 
-@cached(ttl=timedelta(days=1).seconds)
+@cache(ttl="1d")
 async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
     """
 
@@ -50,7 +52,7 @@ async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
     return educators
 
 
-@cached(ttl=timedelta(days=1).seconds)
+@cache(ttl="1d")
 async def get_study_levels(alias: str) -> list[StudyLevel]:
     """
 
@@ -66,7 +68,7 @@ async def get_study_levels(alias: str) -> list[StudyLevel]:
     return study_levels
 
 
-@cached(ttl=timedelta(days=1).seconds)
+@cache(ttl="1d")
 async def get_groups(program_id: str) -> list[GroupSearchInfo]:
     """
 

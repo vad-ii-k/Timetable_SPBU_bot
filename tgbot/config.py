@@ -45,6 +45,15 @@ class RedisConfig:
     password: str
     """ Password """
 
+    @property
+    def connection_url(self) -> str:
+        """
+        Redis data store url
+        :return: url for connecting to the storage without db
+        """
+        redis_url = f"redis://:{self.password}@{self.host}:{self.port}"
+        return redis_url
+
 
 @dataclass(slots=True, frozen=True)
 class TgBot:
