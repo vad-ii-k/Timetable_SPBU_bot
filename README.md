@@ -10,7 +10,7 @@
         <img alt="Pylint"  src="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml/badge.svg?branch=master">
     </a>
 </p>
-<img alt="Bot logo" align="right" width="150" src="data/github/bot_logo.png"/>
+<img alt="Bot logo" align="right" width="150" src=".github/images/bot_logo.png"/>
 
 
 # Telegram bot for SPBU timetable
@@ -19,7 +19,7 @@
 # [Bot](https://t.me/timetable_SPBU_bot?start)
 <div>
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
-        <img alt="Telegram logo" align="left" src="data/github/telegram_logo.png" width="80">
+        <img alt="Telegram logo" align="left" src=".github/images/telegram_logo.png" width="80">
     </a>
     <hr>
     <p align="center">🤖 This is a bot for quick access to the schedule of classes for students and teachers of SPBU</p>
@@ -28,7 +28,7 @@
 
 
 ## Demonstration
-![Student demo](data/github/demo.gif)
+![Student demo](.github/images/demo.gif)
 
 
 ## Features
