@@ -2,7 +2,7 @@
 import asyncio
 import logging
 
-import aioredis
+from redis import asyncio as aioredis
 from aiogram import Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.i18n import I18n
