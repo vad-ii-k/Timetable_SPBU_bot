@@ -104,6 +104,19 @@ async def get_groups(session: ClientSession, program_id: str) -> None:
         remaining_program_ids.append(program_id)
 
 
+def edit_env_variable(env_variable: str, old_value: str, new_value: str) -> None:
+    """
+    Changing the value of a variable in .env file
+    :param env_variable:
+    :param old_value:
+    :param new_value:
+    """
+    with open('.env', 'r', encoding='utf-8') as env_file:
+        new_data = env_file.read().replace(f"{env_variable}={old_value}", f"{env_variable}={new_value}")
+    with open('.env', 'w', encoding='utf-8') as env_file:
+        env_file.write(new_data)
+
+
 async def adding_groups_to_db() -> None:
     """ Adding all groups to the database """
     logging.info("Collecting programs...")
@@ -120,3 +133,4 @@ async def adding_groups_to_db() -> None:
             break
         program_ids = remaining_program_ids.copy()
         remaining_program_ids.clear()
+    edit_env_variable('ARE_GROUPS_COLLECTED', 'False', 'True')
