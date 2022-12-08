@@ -15,6 +15,6 @@ ENV PATH=/root/.local/bin:$PATH
 RUN python -m venv /venv
 ENV PATH=/venv/bin:$PATH \
     VIRTUAL_ENV=/venv
-COPY pyproject.toml poetry.lock /usr/src/app/"${BOT_NAME:-tg_bot}"/
+COPY pyproject.toml poetry.lock ./
 # Will install into the /venv virtualenv
 RUN poetry install --no-root
