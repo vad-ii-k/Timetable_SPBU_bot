@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-22 20:06+0300\n"
+"POT-Creation-Date: 2022-12-17 15:16+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -288,13 +288,17 @@ msgstr "Yes, make it the main ✅ "
 msgid "Нет, только посмотреть ❌"
 msgstr "No, just to see ❌"
 
-#: tgbot/middlewares/config.py:53
+#: tgbot/middlewares/config.py:57
 msgid ""
 "⚠ Превышено время ожидания ответа :(\n"
 "🔄 Попробуйте снова❕"
 msgstr ""
 "⚠ Response waiting time exceeded :(\n"
 "🔄 Try again❕"
+
+#: tgbot/middlewares/config.py:86
+msgid "⚠️ Больше одного действия за секунду!"
+msgstr "⚠️ More than one action per second!"
 
 #: tgbot/services/schedule/class_schedule.py:142
 msgid "📆 Неделя: "

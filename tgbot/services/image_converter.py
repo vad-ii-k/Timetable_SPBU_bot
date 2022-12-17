@@ -104,7 +104,7 @@ async def take_browser_screenshot(schedule_type: Literal['day', 'week']):
         _WS_ENDPOINT = browser.wsEndpoint
     browser_page = await browser.newPage()
     await browser_page.goto(f'file:///{os.path.abspath(f"data/compiled_html_pages/{schedule_type}_schedule.html")}')
-    await browser_page.screenshot(path='data/output.jpeg', type='jpeg', fullPage=True, quality=99)
+    await browser_page.screenshot(path='data/output.jpeg', type='jpeg', fullPage=True, quality=75)
     await browser_page.close()
 
 

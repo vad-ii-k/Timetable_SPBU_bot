@@ -18,7 +18,7 @@ from tgbot.handlers.settings import router as settings_router
 from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
 from tgbot.handlers.unexpected_updates import router as unexpected_updates_router
-from tgbot.middlewares.config import ActionMiddleware, LanguageI18nMiddleware
+from tgbot.middlewares.config import ActionMiddleware, LanguageI18nMiddleware, ThrottlingMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import create_db
 from tgbot.services.db_api.initial_filling_of_groups import adding_groups_to_db
@@ -42,9 +42,9 @@ async def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
     :param dispatcher:
     :param i18n:
     """
-    action_middleware = ActionMiddleware(app_config)
     dispatcher.message.middleware()
-    dispatcher.callback_query.middleware(action_middleware)
+    dispatcher.callback_query.middleware(ActionMiddleware(app_config))
+    dispatcher.callback_query.middleware(ThrottlingMiddleware())
     dispatcher.update.outer_middleware(LanguageI18nMiddleware(i18n))
 
 
