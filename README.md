@@ -78,7 +78,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
     <a href="https://github.com/aio-libs/aiohttp" target="_blank">
         <img alt="Aiohttp logo" align="left" src="https://docs.aiohttp.org/en/stable/_static/aiohttp-plain.svg" height="35px">
     </a>
-    <a href="https://github.com/aio-libs/aioredis-py" target="_blank">
+    <a href="https://github.com/redis/redis-py" target="_blank">
         <img alt="Redis logo" align="left" src="https://avatars.githubusercontent.com/u/1529926?s=200&v=4" height="35px">
     </a>
     <a href="https://github.com/Krukov/cashews" target="_blank">
@@ -89,6 +89,9 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
     </a>
     <a href="https://github.com/pyppeteer/pyppeteer" target="_blank">
         <img alt="Pyppeteer logo" align="left" src="https://avatars.githubusercontent.com/u/60474196?s=200&v=4" height="35px">
+    </a>
+    <a href="https://github.com/pdoc3/pdoc" target="_blank">
+        <img alt="Pdoc logo" align="left" src="https://avatars.githubusercontent.com/u/46306955?s=200&v=4" height="35px">
     </a>
     <a href="https://github.com/PyCQA/pylint" target="_blank">
         <img alt="Pylint logo" align="left" src="https://avatars.githubusercontent.com/u/8749848?s=200&v=4" height="35px">
