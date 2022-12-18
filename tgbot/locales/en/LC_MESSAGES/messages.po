@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-17 15:16+0300\n"
+"POT-Creation-Date: 2022-12-18 16:30+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -288,7 +288,7 @@ msgstr "Yes, make it the main ✅ "
 msgid "Нет, только посмотреть ❌"
 msgstr "No, just to see ❌"
 
-#: tgbot/middlewares/config.py:57
+#: tgbot/middlewares/config.py:50
 msgid ""
 "⚠ Превышено время ожидания ответа :(\n"
 "🔄 Попробуйте снова❕"
@@ -296,7 +296,7 @@ msgstr ""
 "⚠ Response waiting time exceeded :(\n"
 "🔄 Try again❕"
 
-#: tgbot/middlewares/config.py:86
+#: tgbot/middlewares/config.py:77
 msgid "⚠️ Больше одного действия за секунду!"
 msgstr "⚠️ More than one action per second!"
 
@@ -312,7 +312,7 @@ msgstr "🧑‍🏫 Educator: "
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
-#: tgbot/services/schedule/getting_shedule.py:125 tgbot/services/schedule/getting_shedule.py:149
+#: tgbot/services/schedule/getting_shedule.py:119 tgbot/services/schedule/getting_shedule.py:143
 msgid ""
 "\n"
 "\n"
@@ -322,7 +322,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: tgbot/services/schedule/getting_shedule.py:128
+#: tgbot/services/schedule/getting_shedule.py:122
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"
@@ -330,7 +330,7 @@ msgstr ""
 "\n"
 "🏖 There are no classes this week"
 
-#: tgbot/services/schedule/getting_shedule.py:156
+#: tgbot/services/schedule/getting_shedule.py:150
 msgid "🏖 Занятий в этот день нет"
 msgstr "🏖 There are no classes on this day"
 

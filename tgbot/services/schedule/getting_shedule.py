@@ -1,5 +1,5 @@
 """ Functions for getting a schedule """
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 
 from cashews import cache
 from aiogram.types import BufferedInputFile
@@ -9,21 +9,15 @@ from tgbot.config import app_config
 from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.image_converter import get_rendered_image
 from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, Schedule, EventsDay
-from tgbot.services.schedule.helpers import _get_monday_and_sunday_dates, get_schedule_weekday_header
+from tgbot.services.schedule.helpers import (
+    get_monday_and_sunday_dates,
+    get_schedule_weekday_header,
+    get_number_of_seconds_until_tomorrow
+)
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
 
 cache.setup(app_config.redis.connection_url, db=2)
 
-
-def _get_number_of_seconds_until_tomorrow() -> int:
-    """
-
-    :return:
-    """
-    current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    tomorrow_date = current_date + timedelta(days=1)
-    time_until_tomorrow = tomorrow_date - datetime.now()
-    return time_until_tomorrow.seconds
 
 
 async def get_schedule_from_tt_depending_on_user_type(
@@ -44,7 +38,7 @@ async def get_schedule_from_tt_depending_on_user_type(
     return schedule_from_timetable
 
 
-@cache(ttl=_get_number_of_seconds_until_tomorrow())
+@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, str]:
     """
 
@@ -53,14 +47,14 @@ async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: 
     :param week_counter:
     :return:
     """
-    monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
+    monday, sunday = get_monday_and_sunday_dates(week_counter=week_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_week_body(schedule, schedule_from_timetable.events_days)
     return schedule, schedule_from_timetable.name
 
 
-@cache(ttl=_get_number_of_seconds_until_tomorrow())
+@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> str:
     """
 
@@ -69,14 +63,14 @@ async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: in
     :param day_counter:
     :return:
     """
-    monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
+    monday, sunday = get_monday_and_sunday_dates(day_counter=day_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule = await schedule_day_body(schedule, schedule_from_timetable.events_days, day_counter)
     return schedule
 
 
-@cache(ttl=_get_number_of_seconds_until_tomorrow())
+@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, BufferedInputFile]:
     """
 
@@ -85,14 +79,14 @@ async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter:
     :param week_counter:
     :return:
     """
-    monday, sunday = _get_monday_and_sunday_dates(week_counter=week_counter)
+    monday, sunday = get_monday_and_sunday_dates(week_counter=week_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     photo = await get_rendered_image(schedule_from_timetable, schedule_type='week')
     return schedule, photo
 
 
-@cache(ttl=_get_number_of_seconds_until_tomorrow())
+@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> tuple[str, BufferedInputFile]:
     """
 
@@ -101,7 +95,7 @@ async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: i
     :param day_counter:
     :return:
     """
-    monday, sunday = _get_monday_and_sunday_dates(day_counter=day_counter)
+    monday, sunday = get_monday_and_sunday_dates(day_counter=day_counter)
     schedule_from_timetable = await get_schedule_from_tt_depending_on_user_type(tt_id, user_type, monday, sunday)
     schedule = await schedule_from_timetable.get_schedule_week_header()
     schedule += await _transforming_schedule_for_image_for_day(schedule_from_timetable, day_counter)

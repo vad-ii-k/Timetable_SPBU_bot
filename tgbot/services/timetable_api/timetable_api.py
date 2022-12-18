@@ -12,6 +12,7 @@ from tgbot.services.schedule.data_classes import (
     StudyLevel,
     GroupSearchInfo,
 )
+from tgbot.services.schedule.helpers import get_number_of_seconds_until_tomorrow
 from tgbot.services.timetable_api.api_request import request
 
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
@@ -84,6 +85,7 @@ async def get_groups(program_id: str) -> list[GroupSearchInfo]:
     return groups
 
 
+@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> EducatorSchedule:
     """
 
@@ -103,6 +105,7 @@ async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str
     return educator_schedule
 
 
+@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> GroupSchedule:
     """
 

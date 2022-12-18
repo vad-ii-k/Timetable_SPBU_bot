@@ -1,5 +1,5 @@
 """ Auxiliary functions for getting a schedule """
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from aiogram.utils.i18n import get_i18n
 from babel.dates import format_date
@@ -24,7 +24,19 @@ async def get_schedule_weekday_header(day: date, general_location: str = None) -
     return header
 
 
-def _get_monday_and_sunday_dates(day_counter: int = None, week_counter: int = None) -> tuple[date, date]:
+
+def get_number_of_seconds_until_tomorrow() -> int:
+    """
+
+    :return:
+    """
+    current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    tomorrow_date = current_date + timedelta(days=1)
+    time_until_tomorrow = tomorrow_date - datetime.now()
+    return time_until_tomorrow.seconds
+
+
+def get_monday_and_sunday_dates(day_counter: int = None, week_counter: int = None) -> tuple[date, date]:
     """
 
     :param day_counter:
