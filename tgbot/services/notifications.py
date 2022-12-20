@@ -49,5 +49,6 @@ async def start_scheduler(scheduler: AsyncIOScheduler):
     Launching scheduler
     :param scheduler: [AsyncIOScheduler](https://apscheduler.readthedocs.io/en/3.x/modules/schedulers/asyncio.html)
     """
-    scheduler.add_job(job_send_daily_summary, "cron", hour="7-9, 19-21")
+    scheduler.add_job(job_send_daily_summary, "cron", day_of_week="mon-sat", hour="7-9")
+    scheduler.add_job(job_send_daily_summary, "cron", day_of_week="mon-fri, sun", hour="19-21")
     scheduler.start()
