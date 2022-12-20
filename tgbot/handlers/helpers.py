@@ -92,7 +92,9 @@ async def send_subscription_question(tg_user_id: int) -> None:
     """
     answer_sub = await bot.send_message(
         chat_id=tg_user_id,
-        text=_("⚙️ Хотите сделать это расписание своим основным?"),
+        text=_("ℹ️ Для быстрого доступа 💨 к расписанию командой /my_schedule "
+               "и возможности настроить уведомления 🔔 о предстоящих занятиях необходимо подписаться на расписание\n"
+               "⚙️ Хотите сделать это расписание своим основным?"),
         reply_markup=await create_schedule_subscription_keyboard()
     )
-    asyncio.create_task(delete_message(answer_sub, 30))
+    asyncio.create_task(delete_message(answer_sub, 60))
