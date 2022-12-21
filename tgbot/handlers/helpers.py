@@ -38,7 +38,9 @@ async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) 
         schedule_text, schedule_name = await get_text_week_schedule(tt_id, user_type, week_counter=0)
         await bot.send_message(chat_id=tg_user_id, text=schedule_text, reply_markup=reply_markup)
     await state.update_data({'schedule_name': schedule_name})
-    if subscription:
+
+    current_main_schedule = await database.get_main_schedule(user.user_id)
+    if subscription and (current_main_schedule is None or schedule_name != current_main_schedule.name):
         await send_subscription_question(tg_user_id)
 
 

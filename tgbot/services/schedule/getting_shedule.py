@@ -19,7 +19,6 @@ from tgbot.services.timetable_api.timetable_api import get_educator_schedule_fro
 cache.setup(app_config.redis.connection_url, db=2)
 
 
-
 async def get_schedule_from_tt_depending_on_user_type(
         tt_id: int, user_type: UserType, monday: date, sunday: date
 ) -> GroupSchedule | EducatorSchedule:

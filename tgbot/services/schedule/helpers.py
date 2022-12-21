@@ -24,7 +24,6 @@ async def get_schedule_weekday_header(day: date, general_location: str = None) -
     return header
 
 
-
 def get_number_of_seconds_until_tomorrow() -> int:
     """
 
