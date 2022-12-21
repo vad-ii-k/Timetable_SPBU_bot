@@ -25,14 +25,24 @@ async def daily_summary_callback(callback: CallbackQuery):
     Setting the time for the daily summary, sends a keyboard with parameters for notification
     :param callback:
     """
-    settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
-    await callback.message.edit_text(
-        text=_("⚙️<b> Выберите время для получения\n"
-               "ㅤㅤ сводки расписания на день</b>\n"
-               "Заранее вечером в ┃ В день занятий в"),
-        reply_markup=await create_settings_daily_summary_keyboard(settings.daily_summary)
-    )
-    await callback.answer(cache_time=1)
+    user = await database.get_user(tg_user_id=callback.from_user.id)
+    main_schedule = await database.get_main_schedule(user_id=user.user_id)
+
+    if main_schedule:
+        settings = await database.get_settings_by_tg_id(tg_user_id=callback.from_user.id)
+        await callback.message.edit_text(
+            text=_("⚙️<b> Выберите время для получения\n"
+                   "ㅤㅤ сводки расписания на день</b>\n"
+                   "Заранее вечером в ┃ В день занятий в"),
+            reply_markup=await create_settings_daily_summary_keyboard(settings.daily_summary)
+        )
+        await callback.answer(cache_time=1)
+    else:
+        await callback.answer(
+            text=_("⚠️ Для настройки уведомлений необходимо наличие основного расписания"),
+            show_alert=True,
+            cache_time=1
+        )
 
 
 @router.callback_query(SettingsDailySummaryCallbackFactory.filter())

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-20 23:24+0300\n"
+"POT-Creation-Date: 2022-12-22 01:08+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -84,18 +84,18 @@ msgstr ""
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
-#: tgbot/handlers/helpers.py:72
+#: tgbot/handlers/helpers.py:74
 msgid "🕒 <i>Загрузка...</i>"
 msgstr "🕒 <i>Loading...</i>"
 
-#: tgbot/handlers/helpers.py:95
+#: tgbot/handlers/helpers.py:97
 msgid ""
 "ℹ️ Для быстрого доступа 💨 к расписанию командой /my_schedule и возможности настроить уведомления "
 "🔔 о предстоящих занятиях необходимо подписаться на расписание\n"
 "⚙️ Хотите сделать это расписание своим основным?"
 msgstr ""
-"ℹ️ For quick access 💨 to the schedule with the /my_schedule command and the ability to configure notifications "
-"🔔 about upcoming classes, you need to subscribe to the schedule\n"
+"ℹ️ For quick access 💨 to the schedule with the /my_schedule command and the ability to configure "
+"notifications 🔔 about upcoming classes, you need to subscribe to the schedule\n"
 "⚙️ Do you want to make this schedule your main one?"
 
 #: tgbot/handlers/searching.py:29
@@ -138,7 +138,7 @@ msgstr ""
 msgid "⬇️ Выберите группу из списка:"
 msgstr "⬇️ Select a group from the list:"
 
-#: tgbot/handlers/settings.py:30
+#: tgbot/handlers/settings.py:34
 msgid ""
 "⚙️<b> Выберите время для получения\n"
 "ㅤㅤ сводки расписания на день</b>\n"
@@ -148,11 +148,15 @@ msgstr ""
 "  schedule summary for the day</b>\n"
 " Day before at ┃ On day of classes at"
 
-#: tgbot/handlers/settings.py:49 tgbot/handlers/settings.py:63
+#: tgbot/handlers/settings.py:42
+msgid "⚠️ Для настройки уведомлений необходимо наличие основного расписания"
+msgstr "⚠️ To configure notifications, you need to have a main schedule"
+
+#: tgbot/handlers/settings.py:59 tgbot/handlers/settings.py:73
 msgid "Настройки обновлены ✅"
 msgstr "Settings updated ✅"
 
-#: tgbot/handlers/settings.py:75
+#: tgbot/handlers/settings.py:85
 msgid ""
 "The language has been successfully changed to 🇬🇧\n"
 "Messages will now be sent in English"
@@ -160,7 +164,7 @@ msgstr ""
 "Язык успешно изменён на 🇷🇺\n"
 "Теперь сообщения будут присылаться на русском"
 
-#: tgbot/handlers/settings.py:100
+#: tgbot/handlers/settings.py:110
 msgid ""
 "Вы подписались на расписание! ✅\n"
 "Воспользуйтесь командой:\n"
@@ -172,7 +176,7 @@ msgstr ""
 "— /my_schedule to view your main schedule\n"
 "— /settings to configure notifications"
 
-#: tgbot/handlers/settings.py:109
+#: tgbot/handlers/settings.py:119
 msgid "Вы отказались от подписки! ❌"
 msgstr "You didn't subscribe! ❌"
 
@@ -318,7 +322,7 @@ msgstr "🧑‍🏫 Educator: "
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
-#: tgbot/services/schedule/getting_shedule.py:119 tgbot/services/schedule/getting_shedule.py:143
+#: tgbot/services/schedule/getting_shedule.py:118 tgbot/services/schedule/getting_shedule.py:142
 msgid ""
 "\n"
 "\n"
@@ -328,7 +332,7 @@ msgstr ""
 "\n"
 "📛 The message is too long..."
 
-#: tgbot/services/schedule/getting_shedule.py:122
+#: tgbot/services/schedule/getting_shedule.py:121
 msgid ""
 "\n"
 "🏖 Занятий на этой неделе нет"
@@ -336,7 +340,7 @@ msgstr ""
 "\n"
 "🏖 There are no classes this week"
 
-#: tgbot/services/schedule/getting_shedule.py:150
+#: tgbot/services/schedule/getting_shedule.py:149
 msgid "🏖 Занятий в этот день нет"
 msgstr "🏖 There are no classes on this day"
 
