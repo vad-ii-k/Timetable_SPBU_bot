@@ -41,7 +41,7 @@ async def get_statistics(message: Message):
     basic_statistics += f"💌 С основным расписанием {number_of_users_with_main_schedule / number_of_users * 100:.1f}%\n"
     number_of_users_with_daily_summary = sum(user.daily_summary is not None for user in full_statistics)
     basic_statistics += f"🔔 С уведомлениями {number_of_users_with_daily_summary / number_of_users * 100:.1f}%\n"
-    number_of_educators = sum(not user.is_student for user in full_statistics)
+    number_of_educators = sum(not user.is_student and user.is_student is not None for user in full_statistics)
     basic_statistics += f"👨🏻‍🏫 Количество преподавателей: {number_of_educators}\n"
 
     await message.answer_document(document=FSInputFile('data/statistics.csv'), caption=basic_statistics)
