@@ -32,7 +32,7 @@ async def writing_statistics_to_csv(full_statistics: list[UserStatistics]) -> No
             writer.writerow([
                 user.username,
                 user.start_date,
-                "student" if user.is_student else "educator",
+                "" if user.is_student is None else ("student" if user.is_student else "educator"),
                 user.schedule_name,
                 user.daily_summary,
                 'image' if user.schedule_view_is_picture else 'text',
