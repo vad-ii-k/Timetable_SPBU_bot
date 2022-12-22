@@ -35,7 +35,8 @@ class DBStatistics:
         full_users_info = await User.join(Settings).join(MainScheduleInfo, isouter=True).select().\
             order_by(asc(User.start_date)).gino.all()
         return list(map(
-            lambda user: UserStatistics(user[3], user[4], user[14], user[7], user[9], user[10]), full_users_info
+            lambda user: UserStatistics(user[3], user[4], user[13], user[14], user[7], user[9], user[10]),
+            full_users_info
         ))
 
 

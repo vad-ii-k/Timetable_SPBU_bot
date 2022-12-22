@@ -9,6 +9,7 @@ class UserStatistics:
     """ Dataclass for user statistics """
     username: str
     start_date: date
+    is_student: bool
     schedule_name: str | None
     daily_summary: time | None
     schedule_view_is_picture: bool
@@ -22,7 +23,7 @@ async def writing_statistics_to_csv(full_statistics: list[UserStatistics]) -> No
     """
     with open('data/statistics.csv', 'w', encoding='utf-8', newline='') as csvfile:
         dict_writer = csv.DictWriter(csvfile, delimiter='\t', fieldnames=[
-            "Username", "Start date", "Schedule name", "Daily summary time", "Default schedule view", "Language"
+            "Username", "Start date", "Type", "Schedule name", "Daily summary time", "Default schedule view", "Language"
         ])
         dict_writer.writeheader()
 
@@ -31,6 +32,7 @@ async def writing_statistics_to_csv(full_statistics: list[UserStatistics]) -> No
             writer.writerow([
                 user.username,
                 user.start_date,
+                "student" if user.is_student else "educator",
                 user.schedule_name,
                 user.daily_summary,
                 'image' if user.schedule_view_is_picture else 'text',

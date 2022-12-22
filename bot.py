@@ -21,7 +21,7 @@ from tgbot.handlers.unexpected_updates import router as unexpected_updates_route
 from tgbot.middlewares.config import ActionMiddleware, LanguageI18nMiddleware, ThrottlingMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import create_db
-from tgbot.services.db_api.initial_filling_of_groups import adding_groups_to_db
+from tgbot.services.initial_filling_of_groups import adding_groups_to_db
 from tgbot.services.notifications import start_scheduler
 
 logger = logging.getLogger(__name__)
