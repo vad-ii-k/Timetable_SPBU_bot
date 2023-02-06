@@ -45,9 +45,10 @@ class StudyEvent(BaseModel, ABC):
         Validator for cleaning location so that bot can parse html-tags
         :param value: example *Университетский проспект, д. 28, лит. А,1*,\n
             example to be cleaned *<по месту проведения>, <по месту проведения>*
-        :return:
+        :return: example *Университетский проспект, д. 28, лит. А,1*,\n
+            example to be cleaned *по месту проведения, по месту проведения*
         """
-        return value.replace('<по месту проведения>, <по месту проведения>', 'по месту проведения')
+        return value.replace('<', '').replace('>', '')
 
     @root_validator(allow_reuse=True)
     def separation_of_subject(cls, values):
