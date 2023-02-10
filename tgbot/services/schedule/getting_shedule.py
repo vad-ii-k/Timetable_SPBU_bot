@@ -1,22 +1,14 @@
 """ Functions for getting a schedule """
 from datetime import date, timedelta
 
-from cashews import cache
 from aiogram.types import BufferedInputFile
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.config import app_config
 from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.image_converter import get_rendered_image
 from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule, Schedule, EventsDay
-from tgbot.services.schedule.helpers import (
-    get_monday_and_sunday_dates,
-    get_schedule_weekday_header,
-    get_number_of_seconds_until_tomorrow
-)
+from tgbot.services.schedule.helpers import get_monday_and_sunday_dates, get_schedule_weekday_header
 from tgbot.services.timetable_api.timetable_api import get_educator_schedule_from_tt, get_group_schedule_from_tt
-
-cache.setup(app_config.redis.connection_url, db=2)
 
 
 async def get_schedule_from_tt_depending_on_user_type(
@@ -37,7 +29,6 @@ async def get_schedule_from_tt_depending_on_user_type(
     return schedule_from_timetable
 
 
-@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, str]:
     """
 
@@ -53,7 +44,6 @@ async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: 
     return schedule, schedule_from_timetable.name
 
 
-@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> str:
     """
 
@@ -69,7 +59,6 @@ async def get_text_day_schedule(tt_id: int, user_type: UserType, day_counter: in
     return schedule
 
 
-@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, BufferedInputFile]:
     """
 
@@ -85,7 +74,6 @@ async def get_image_week_schedule(tt_id: int, user_type: UserType, week_counter:
     return schedule, photo
 
 
-@cache(ttl=get_number_of_seconds_until_tomorrow())
 async def get_image_day_schedule(tt_id: int, user_type: UserType, day_counter: int) -> tuple[str, BufferedInputFile]:
     """
 
