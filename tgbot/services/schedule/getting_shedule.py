@@ -26,7 +26,7 @@ async def get_schedule_from_tt_depending_on_user_type(
         schedule_from_timetable = await get_group_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
     else:
         schedule_from_timetable = await get_educator_schedule_from_tt(tt_id, from_date=str(monday), to_date=str(sunday))
-    return schedule_from_timetable
+    return schedule_from_timetable.copy(deep=True)
 
 
 async def get_text_week_schedule(tt_id: int, user_type: UserType, week_counter: int) -> tuple[str, str]:
