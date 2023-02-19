@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 
 from aiogram import Bot
+from aiogram.enums import ParseMode
 from environs import Env
 
 
@@ -123,4 +124,4 @@ def load_config(path: str = None) -> Config:
 
 
 app_config = load_config(".env")
-bot = Bot(token=app_config.tg_bot.token, parse_mode='HTML')
+bot = Bot(token=app_config.tg_bot.token, parse_mode=ParseMode.HTML)

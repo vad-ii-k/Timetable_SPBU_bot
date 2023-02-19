@@ -1,5 +1,6 @@
 """ Handling program navigation to select a student's group """
 from aiogram import Router, flags
+from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
@@ -24,7 +25,7 @@ router = Router()
 
 
 @router.callback_query(StudyDivisionCallbackFactory.filter())
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def study_divisions_navigation_callback(
         callback: CallbackQuery, callback_data: StudyDivisionCallbackFactory, state: FSMContext
 ):
@@ -83,7 +84,7 @@ async def admission_years_navigation_callback(
 
 
 @router.callback_query(AdmissionYearsCallbackFactory.filter())
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def group_choice_navigation_callback(
         callback: CallbackQuery, callback_data: AdmissionYearsCallbackFactory, state: FSMContext
 ):

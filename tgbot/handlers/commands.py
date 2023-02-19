@@ -5,6 +5,7 @@ with the [Command](https://docs.aiogram.dev/en/dev-3.x/dispatcher/filters/comman
 import logging
 
 from aiogram import Router, Bot, flags
+from aiogram.enums import ChatAction
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, BotCommand, BotCommandScopeAllPrivateChats
@@ -106,7 +107,7 @@ async def settings_command(message: Message):
 
 
 @router.message(Command("my_schedule"))
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def my_schedule_command(message: Message, state: FSMContext):
     """
     Handling `my_schedule` command

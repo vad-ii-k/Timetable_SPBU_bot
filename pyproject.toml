@@ -8,7 +8,7 @@ packages = [{include = "timetable_spbu_bot"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-aiogram = "3.0.0b6"
+aiogram = "3.0.0b7"
 aiohttp-socks = "^0.7.1"
 alembic = "^1.8.1"
 apscheduler = "^3.9.1.post1"

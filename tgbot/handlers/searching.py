@@ -1,6 +1,7 @@
 """ Handling the selection of a group or teacher from the suggested list """
 from aiogram import Router, flags
 from aiogram import html
+from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.i18n import gettext as _
@@ -16,7 +17,7 @@ router = Router()
 
 
 @router.message(Searching.getting_educator_choice)
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def getting_choice_for_educator(message: Message, state: FSMContext):
     """
     Handling the selection of a teacher from the suggested list
@@ -62,7 +63,7 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
 
 
 @router.callback_query(TTObjectChoiceCallbackFactory.filter(), Searching.choosing)
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def sending_schedule_after_search(
         callback: CallbackQuery, callback_data: TTObjectChoiceCallbackFactory, state: FSMContext
 ):

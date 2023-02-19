@@ -2,6 +2,7 @@
 import asyncio
 
 from aiogram import Router, F, flags
+from aiogram.enums import ChatAction
 from aiogram.filters import and_f
 from aiogram.types import CallbackQuery
 
@@ -18,7 +19,7 @@ router = Router()
 
 
 @router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"1-1", "1-2", "1-3"})))
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def schedule_days_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     """
     Handling button clicks to change the day using a scheduled keyboard
@@ -48,7 +49,7 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
 
 
 @router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"2-1", "2-2"})))
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def schedule_weeks_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     """
     Handling button clicks to change the week using a scheduled keyboard
@@ -76,7 +77,7 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
 
 
 @router.callback_query(and_f(ScheduleCallbackFactory.filter(F.button == "3-1"), F.message.document))
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def schedule_document_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     """
     Handling button clicks to change the schedule view using a scheduled keyboard
@@ -96,7 +97,7 @@ async def schedule_document_callback(callback: CallbackQuery, callback_data: Sch
 
 
 @router.callback_query(and_f(ScheduleCallbackFactory.filter(F.button == "3-1"), ~F.message.document))
-@flags.chat_action('upload_document')
+@flags.chat_action(ChatAction.UPLOAD_DOCUMENT)
 async def schedule_text_callback(callback: CallbackQuery, callback_data: ScheduleCallbackFactory):
     """
     Handling button clicks to change the schedule view using a scheduled keyboard

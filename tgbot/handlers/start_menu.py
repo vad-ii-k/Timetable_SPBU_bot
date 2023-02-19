@@ -1,5 +1,6 @@
 """ Handling the start menu button click """
 from aiogram import Router, F, flags
+from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
@@ -25,7 +26,7 @@ async def group_search_callback(callback: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(StartMenuCallbackFactory.filter(F.type == "student_navigation"))
-@flags.chat_action('typing')
+@flags.chat_action(ChatAction.TYPING)
 async def student_navigation_callback(callback: CallbackQuery):
     """
     Handling clicking on the group search button by program navigation
