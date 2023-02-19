@@ -1,18 +1,20 @@
-{% macro event(start_time, end_time, events, general_location) -%}
+{% macro event(start_time, end_time, events, general_location, are_all_events_canceled) -%}
 <section class="event">
-  <time class="event__time">
+  <time class="event__time {{ "event__time--inactive" * are_all_events_canceled }}">
       {{ start_time.strftime('%H:%M') }}
       <br>
       {{ end_time.strftime('%H:%M') }}
   </time>
-  <ul class="event__subjects-container">
-  {%- for (name, event_format, is_canceled), subjects in events | events_group_by('main_info') %}
+  <ul class="event__subjects-container {{ "event__subjects-container--inactive" * are_all_events_canceled }}">
+  {%- for (name, event_format, is_canceled), subjects in events | events_group_by('event_info') %}
     <li class="subject">
       <header class="subject__header">
         <h2 class="subject__header__name {{ "subject__header__name--inactive" * is_canceled }}">
           {{ name }}
         </h2>
-        <p class="subject__header__type">{{ event_format }}</p>
+        <p class="subject__header__type {{ "subject__header__type--inactive" * is_canceled }}">
+            {{ event_format }}
+        </p>
       </header>
       <ul class="subject__annotations-container">
       {%- for subject in subjects %}

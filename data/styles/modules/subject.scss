@@ -17,6 +17,10 @@
     &__type {
       @include paragraph;
       color: $black;
+
+      &--inactive {
+        color: $black-50;
+      }
     }
   }
 
