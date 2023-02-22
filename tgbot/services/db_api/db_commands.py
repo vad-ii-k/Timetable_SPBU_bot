@@ -4,8 +4,8 @@ from datetime import time
 from aiogram import types
 from sqlalchemy import asc, func
 
-from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.db_api.db_models import User, Settings, Group, MainScheduleInfo
+from tgbot.services.schedule.data_classes import UserType
 
 
 class DBCommands:
@@ -123,7 +123,7 @@ class DBCommands:
         new_main_schedule = MainScheduleInfo()
         new_main_schedule.user_id = user.user_id
         new_main_schedule.timetable_id = tt_id
-        new_main_schedule.user_type_is_student = (user_type == UserType.STUDENT)
+        new_main_schedule.user_type_is_student = user_type == UserType.STUDENT
         new_main_schedule.name = schedule_name
         await new_main_schedule.create()
 

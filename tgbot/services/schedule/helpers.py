@@ -1,5 +1,5 @@
 """ Auxiliary functions for getting a schedule """
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 
 from aiogram.utils.i18n import get_i18n
 from babel.dates import format_date

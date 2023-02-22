@@ -53,7 +53,6 @@ class MainScheduleInfo(db_gino.Model):
     _idx1 = Index('main_schedule_info_idx_user_id', 'user_id', unique=True)
 
 
-async def create_db() -> None:
-    """ Creating a database """
+async def connect_to_db() -> None:
+    """ Connecting to database """
     await db_gino.set_bind(app_config.database.connection_url)
-    # await db_gino.gino.create_all()

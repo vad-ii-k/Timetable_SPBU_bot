@@ -20,7 +20,7 @@ from tgbot.handlers.student_navigation import router as student_navigation_route
 from tgbot.handlers.unexpected_updates import router as unexpected_updates_router
 from tgbot.middlewares.config import ActionMiddleware, LanguageI18nMiddleware, ThrottlingMiddleware
 from tgbot.services import broadcaster
-from tgbot.services.db_api.db_models import create_db
+from tgbot.services.db_api.db_models import connect_to_db
 from tgbot.services.initial_filling_of_groups import adding_groups_to_db
 from tgbot.services.notifications import start_scheduler
 
@@ -59,7 +59,7 @@ async def main():
         root_logger.setLevel(logging.WARN)
     logger.info("Starting bot...")
 
-    await create_db()
+    await connect_to_db()
     if not app_config.database.are_groups_collected:
         await adding_groups_to_db()
 
