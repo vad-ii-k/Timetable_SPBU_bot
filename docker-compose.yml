@@ -36,6 +36,7 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
+        python -m alembic upgrade head
         poetry run pybabel compile -d tgbot/locales -D messages
         sass --update data/styles:data/compiled_html_pages/styles
         poetry run python bot.py
@@ -63,7 +64,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - /usr/src/app/${BOT_NAME:-tg_bot}/postgresg/init:/docker-entrypoint-initdb.d
+      - /usr/src/app/${BOT_NAME:-tg_bot}/postgres/init:/docker-entrypoint-initdb.d
       - /usr/src/app/${BOT_NAME:-tg_bot}/postgres/data:/var/lib/postgresql/data
     network_mode: host
     restart: unless-stopped
