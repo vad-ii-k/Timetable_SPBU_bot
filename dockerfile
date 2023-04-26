@@ -15,6 +15,6 @@ ENV PATH=/root/.local/bin:$PATH
 RUN python -m venv /venv
 ENV PATH=/venv/bin:$PATH \
     VIRTUAL_ENV=/venv
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml ./
 # Will install into the /venv virtualenv
 RUN poetry install --no-root
