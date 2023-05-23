@@ -7,7 +7,10 @@
         <img src="https://api.codeclimate.com/v1/badges/022748d512cfa936f3b5/maintainability" />
     </a>
     <a href="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml" target="_blank">
-        <img alt="Pylint"  src="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml/badge.svg?branch=master">
+        <img alt="Pylint" src="https://github.com/vad-ii-k/Timetable_SPBU_bot/actions/workflows/pylint.yml/badge.svg?branch=master">
+    </a>
+    <a href="https://app.codacy.com/gh/vad-ii-k/Timetable_SPBU_bot/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" target="_blank">
+        <img alt="Codacy Badge" src="https://app.codacy.com/project/badge/Grade/3a264756dd7a4342a72bcea0272c3dc7">
     </a>
 </p>
 <img alt="Bot logo" align="right" width="230" src=".github/images/bot_pic.png"/>
