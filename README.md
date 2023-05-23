@@ -61,7 +61,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
         <img alt="Aiogram logo" align="left" src="https://avatars.githubusercontent.com/u/33784865?s=200&v=4" height="35px">
     </a>
     <a href="https://github.com/pydantic/pydantic" target="_blank">
-        <img alt="Pydantic logo" align="left" src="https://pydantic-docs.helpmanual.io/logo-white.svg" height="35px">
+        <img alt="Pydantic logo" align="left" src="https://docs.pydantic.dev/latest/logo-white.svg" height="35px">
     </a>
     <a href="https://github.com/sqlalchemy" target="_blank">
         <img alt="SQLAlchemy logo" align="left" src="https://www.sqlalchemy.org/img/sqla_logo.png" height="35px">
