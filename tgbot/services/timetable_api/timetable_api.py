@@ -1,5 +1,4 @@
 """ Wrappers over the timetable API """
-import json
 from typing import Final
 
 from cashews import cache
@@ -64,7 +63,7 @@ async def get_study_levels(alias: str) -> list[StudyLevel]:
 
 
 @cache(ttl="1d")
-async def get_groups(program_id: str) -> list[GroupSearchInfo]:
+async def get_groups(program_id: int) -> list[GroupSearchInfo]:
     """
 
     :param program_id:
@@ -95,7 +94,7 @@ async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str
         "from_date": from_date,
         "to_date": to_date,
     }
-    educator_schedule = EducatorSchedule.parse_raw(json.dumps(response | support_info))
+    educator_schedule = EducatorSchedule.model_validate(response | support_info)
     return educator_schedule
 
 
@@ -115,5 +114,5 @@ async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -
         "from_date": from_date,
         "to_date": to_date,
     }
-    group_schedule = GroupSchedule.parse_raw(json.dumps(response | support_info))
+    group_schedule = GroupSchedule.model_validate(response | support_info)
     return group_schedule

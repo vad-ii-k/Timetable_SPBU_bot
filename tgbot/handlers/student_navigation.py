@@ -42,7 +42,7 @@ async def study_divisions_navigation_callback(
         text=_("⬇️ Выберите уровень подготовки:"),
         reply_markup=await create_study_levels_keyboard(study_levels),
     )
-    await state.set_data({"study_levels": [level.dict() for level in study_levels]})
+    await state.set_data({"study_levels": [level.model_dump() for level in study_levels]})
 
 
 @router.callback_query(StudyLevelCallbackFactory.filter())
