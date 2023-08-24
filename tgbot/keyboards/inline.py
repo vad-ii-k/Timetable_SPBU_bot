@@ -211,7 +211,7 @@ async def create_settings_daily_summary_keyboard(selected_option: datetime) -> I
         daily_summary_keyboard.button(
             text=f"{'●' if selected_option is not None and option == selected_option.hour else '○'}"
                  f" {option}:00 {sticker}",
-            callback_data=SettingsDailySummaryCallbackFactory(choice=option),
+            callback_data=SettingsDailySummaryCallbackFactory(choice=str(option)),
         )
     daily_summary_keyboard.adjust(2)
     disabling_button = InlineKeyboardButton(
