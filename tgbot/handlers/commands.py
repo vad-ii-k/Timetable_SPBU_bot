@@ -8,15 +8,15 @@ from aiogram import Router, Bot, flags
 from aiogram.enums import ChatAction
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, BotCommand, BotCommandScopeAllPrivateChats
+from aiogram.types import Message, BotCommandScopeAllPrivateChats
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.config import bot
+from tgbot.constants.commands import bot_commands
 from tgbot.handlers.helpers import send_schedule
 from tgbot.keyboards.inline import create_start_menu_keyboard, create_settings_keyboard
 from tgbot.misc.states import Searching
-from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.db_api.db_commands import database
+from tgbot.services.schedule.data_classes import UserType
 
 router = Router()
 
@@ -28,14 +28,7 @@ async def set_commands(bot_: Bot):
     """
     data = [
         (
-            [
-                BotCommand(command="start", description="🔄 Перезапустить бота"),
-                BotCommand(command="my_schedule", description="📆 Получить своё расписание"),
-                BotCommand(command="settings", description="⚙️ Настройки"),
-                BotCommand(command="help", description="📒 Вывести справку о командах"),
-                BotCommand(command="educator", description="🧑‍🏫️ Посмотреть расписание преподавателя"),
-                BotCommand(command="group", description="👨‍👩‍👧‍👦 Посмотреть расписание группы"),
-            ],
+            bot_commands,
             BotCommandScopeAllPrivateChats(),
             None
         )
@@ -136,7 +129,6 @@ async def help_command(message: Message):
     :param message: */help*
     """
     answer = _("🤖 Список команд: \n")
-    commands = await bot.get_my_commands()
-    for cmd in commands:
+    for cmd in bot_commands:
         answer += f"/{cmd.command} — {cmd.description}\n"
     await message.answer(answer)
