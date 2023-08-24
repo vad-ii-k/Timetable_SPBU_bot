@@ -35,13 +35,13 @@ class ProgramCombinationsCallbackFactory(CallbackData, prefix="program_combinati
 
 class AdmissionYearsCallbackFactory(CallbackData, prefix="admission_years"):
     """ CallbackFactory to process the selection of the admission year """
-    study_program_id: str
+    study_program_id: int
     """ Study program ID number of the selected admission year """
 
 
 class TTObjectChoiceCallbackFactory(CallbackData, prefix="timetable_object_choice"):
     """ CallbackFactory to process the selection of the timetable.spbu.ru object (group or educator) """
-    tt_id: str
+    tt_id: int
     """ Timetable object id """
     user_type: UserType
     """ Type of timetable object (*student or educator*) """
@@ -53,13 +53,13 @@ class ScheduleCallbackFactory(CallbackData, prefix="schedule"):
     """ Timetable object id """
     user_type: UserType
     """ Type of timetable object (*student or educator*) """
-    button: Literal["1-1", "1-2", "1-3", "2-1", "2-2", "3-1"] | None
+    button: Literal["1-1", "1-2", "1-3", "2-1", "2-2", "3-1"] | None = None
     """
     Button id
 
     (*None when the schedule is received without pressing the schedule keyboard buttons*)
     """
-    day_counter: int | None
+    day_counter: int | None = None
     """
     Day counter relative to the current date
 

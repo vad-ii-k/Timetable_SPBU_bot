@@ -22,7 +22,7 @@ class EducatorSearchInfo:
 class AdmissionYear(BaseModel):
     """ Dataclass for admission year from timetable """
     year: str = Field(alias="YearName")
-    study_program_id: str = Field(alias="StudyProgramId")
+    study_program_id: int = Field(alias="StudyProgramId")
 
 
 class ProgramCombination(BaseModel):

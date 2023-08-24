@@ -9,6 +9,7 @@ from aiogram.utils.chat_action import ChatActionSender
 from aiogram.utils.i18n import I18nMiddleware, gettext as _
 from cashews import cache
 
+from tgbot.config import bot
 from tgbot.handlers.helpers import delete_message
 from tgbot.services.db_api.db_commands import database
 
@@ -41,7 +42,7 @@ class ActionMiddleware(BaseMiddleware):
         action = get_flag(data, "chat_action")
         if not action:
             return await handler(event, data)
-        async with ChatActionSender(action=action, chat_id=event.message.chat.id):
+        async with ChatActionSender(bot=bot, action=action, chat_id=event.message.chat.id):
             handler_cor = handler(event, data)
             try:
                 return await asyncio.wait_for(handler_cor, timeout=15)

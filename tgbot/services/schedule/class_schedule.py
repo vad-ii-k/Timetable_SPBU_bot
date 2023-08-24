@@ -5,8 +5,7 @@ from itertools import groupby
 from typing import TypeVar, Generic
 
 from aiogram.utils.i18n import gettext as _
-from pydantic import BaseModel, Field, validator, root_validator
-from pydantic.generics import GenericModel
+from pydantic import field_validator, model_validator, BaseModel, Field
 
 from tgbot.services.schedule.helpers import get_schedule_weekday_header, get_time_sticker, get_subject_format_sticker
 
@@ -16,7 +15,7 @@ class StudyEvent(BaseModel, ABC):
     start_time: time = Field(alias="Start")
     end_time: time = Field(alias="End")
     name: str = Field(alias="Subject")
-    event_format: str | None
+    event_format: str | None = None
     location: str = Field(alias="LocationsDisplayText")
     is_canceled: bool = Field(alias="IsCancelled")
 
@@ -30,7 +29,8 @@ class StudyEvent(BaseModel, ABC):
     def contingent_sticker(self) -> str:
         """ Property for getting an educator or group sticker """
 
-    @validator('start_time', 'end_time', pre=True, allow_reuse=True)
+    @classmethod
+    @field_validator('start_time', 'end_time', mode="before")
     def from_datetime_to_time(cls, value):
         """
         Separating time from datetime
@@ -39,7 +39,8 @@ class StudyEvent(BaseModel, ABC):
         """
         return value.split('T')[1]
 
-    @validator('location', pre=True, allow_reuse=True)
+    @classmethod
+    @field_validator('location', mode="before")
     def clearing_location(cls, value: str):
         """
         Validator for cleaning location so that bot can parse html-tags
@@ -50,7 +51,8 @@ class StudyEvent(BaseModel, ABC):
         """
         return value.replace('<', '').replace('>', '')
 
-    @root_validator(allow_reuse=True)
+    @classmethod
+    @model_validator(mode='before')
     def separation_of_subject(cls, values):
         """
         Separation of subject into name and type of event
@@ -65,14 +67,15 @@ class StudyEvent(BaseModel, ABC):
 TypeOfStudyEvents = TypeVar('TypeOfStudyEvents')
 
 
-class EventsDay(GenericModel, Generic[TypeOfStudyEvents]):
+class EventsDay(BaseModel, Generic[TypeOfStudyEvents]):
     """ Timetable day of events """
     day: date = Field(alias="Day")
     events: list[TypeOfStudyEvents] = Field(alias="DayStudyEvents")
 
     general_location: str | None = None
 
-    @validator('day', pre=True, allow_reuse=True)
+    @classmethod
+    @field_validator('day', mode="before")
     def from_datetime_to_date(cls, value):
         """
         Separating date from datetime
@@ -81,7 +84,8 @@ class EventsDay(GenericModel, Generic[TypeOfStudyEvents]):
         """
         return value.split('T')[0]
 
-    @root_validator(allow_reuse=True)
+    @classmethod
+    @model_validator(mode='before')
     def combining_locations_of_events(cls, values):
         """
         Validator separates addresses of all events of the day from cabinet and,
@@ -207,7 +211,8 @@ class GroupStudyEvent(StudyEvent):
     def contingent_sticker(self) -> str:
         return '👨🏻‍🏫 '
 
-    @validator('educators', pre=True, allow_reuse=True)
+    @classmethod
+    @field_validator('educators', mode="before")
     def removing_academic_degrees(cls, educators):
         """
         Removing a teacher's academic degree
