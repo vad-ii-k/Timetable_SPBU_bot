@@ -15,7 +15,7 @@ async def get_schedule_weekday_header(day: date, general_location: str = None) -
     try:
         locale = get_i18n().current_locale
     except LookupError:
-        locale = 'ru'
+        locale = "ru"
     formatted_date = format_date(day, "EEEE, d MMMM", locale=locale)
     weekday_sticker = _get_weekday_sticker(formatted_date)
     header = f"{weekday_sticker} <b>{formatted_date}</b>\n"

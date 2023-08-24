@@ -4,7 +4,7 @@ version = "2.0"
 description = ""
 authors = ["vad-ii-k <sazanov7615@gmail.com>"]
 readme = "README.md"
-packages = [{include = "timetable_spbu_bot"}]
+packages = [{ include = "timetable_spbu_bot" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -21,13 +21,23 @@ pyppeteer = "^1.0.2"
 redis = "^5.0.0"
 cashews = "^6.2.0"
 
-
 [tool.poetry.group.dev.dependencies]
 pdoc = "^12.2.2"
 pytest = "^7.2.0"
 pylint = "^2.15.5"
 pytest-asyncio = "^0.20.2"
+black = "^23.7.0"
+isort = "^5.12.0"
 
+[tool.black]
+target-version = ['py311']
+line-length = 120
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+combine_as_imports = true
+line_length = 120
 
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 120 # Maximum number of lines in a module.

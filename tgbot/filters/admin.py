@@ -6,7 +6,8 @@ from tgbot.config import app_config
 
 
 class AdminFilter(BaseFilter):
-    """ Custom filter to check if the user is an administrator """
+    """Custom filter to check if the user is an administrator"""
+
     is_admin: bool = True
     """ Is the user an admin """
 

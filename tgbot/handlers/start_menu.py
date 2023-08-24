@@ -1,13 +1,13 @@
 """ Handling the start menu button click """
-from aiogram import Router, F, flags
+from aiogram import F, Router, flags
 from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.misc.cb_data import StartMenuCallbackFactory
 from tgbot.handlers.helpers import change_message_to_loading
 from tgbot.keyboards.inline import create_study_divisions_keyboard
+from tgbot.misc.cb_data import StartMenuCallbackFactory
 from tgbot.misc.states import Searching
 from tgbot.services.timetable_api.timetable_api import get_study_divisions
 
@@ -37,7 +37,7 @@ async def student_navigation_callback(callback: CallbackQuery):
     await callback.message.delete()
     await callback.message.answer(
         text=_("⬇️ Выберите направление: "),
-        reply_markup=await create_study_divisions_keyboard(study_divisions)
+        reply_markup=await create_study_divisions_keyboard(study_divisions),
     )
     await callback.answer(cache_time=2)
 

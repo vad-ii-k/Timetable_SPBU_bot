@@ -8,7 +8,7 @@ from aiogram import Router
 from aiogram.exceptions import AiogramError, TelegramAPIError
 from aiogram.types.error_event import ErrorEvent
 
-from tgbot.config import bot, app_config
+from tgbot.config import app_config, bot
 from tgbot.services import broadcaster
 
 router = Router()

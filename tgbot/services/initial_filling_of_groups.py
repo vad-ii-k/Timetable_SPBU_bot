@@ -2,10 +2,10 @@
 import asyncio
 import logging
 from itertools import cycle
-from typing import Iterable, Callable, Coroutine
+from typing import Callable, Coroutine, Iterable
 
 from aiohttp import ClientSession
-from aiohttp_socks import ProxyConnector, ProxyError, ProxyConnectionError
+from aiohttp_socks import ProxyConnectionError, ProxyConnector, ProxyError
 
 from tgbot.config import app_config
 from tgbot.services.db_api.db_commands import database
@@ -42,7 +42,7 @@ def chunks_generator(arr: list[str], chuck_size: int) -> Iterable[list[str]]:
     :param chuck_size:
     """
     for i in range(0, len(arr), chuck_size):
-        yield arr[i: i + chuck_size]
+        yield arr[i : i + chuck_size]
 
 
 async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[ClientSession, str], Coroutine]):
@@ -81,7 +81,7 @@ async def get_study_levels(session: ClientSession, alias: str) -> None:
 
 
 async def collecting_program_ids() -> None:
-    """ Getting IDs of all programs """
+    """Getting IDs of all programs"""
     study_divisions = await get_study_divisions()
     aliases = [division.alias for division in study_divisions]
     aliases_by_parts = list(chunks_generator(aliases, 4))
@@ -111,14 +111,14 @@ def edit_env_variable(env_variable: str, old_value: str, new_value: str) -> None
     :param old_value:
     :param new_value:
     """
-    with open('.env', 'r', encoding='utf-8') as env_file:
+    with open(".env", "r", encoding="utf-8") as env_file:
         new_data = env_file.read().replace(f"{env_variable}={old_value}", f"{env_variable}={new_value}")
-    with open('.env', 'w', encoding='utf-8') as env_file:
+    with open(".env", "w", encoding="utf-8") as env_file:
         env_file.write(new_data)
 
 
 async def adding_groups_to_db() -> None:
-    """ Adding all groups to the database """
+    """Adding all groups to the database"""
     logging.info("Collecting programs...")
     await collecting_program_ids()
     logging.info("Collecting groups...")
@@ -133,4 +133,4 @@ async def adding_groups_to_db() -> None:
             break
         program_ids = remaining_program_ids.copy()
         remaining_program_ids.clear()
-    edit_env_variable('ARE_GROUPS_COLLECTED', 'False', 'True')
+    edit_env_variable("ARE_GROUPS_COLLECTED", "False", "True")

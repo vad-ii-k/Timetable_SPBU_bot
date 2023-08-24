@@ -1,6 +1,6 @@
 """ Database Model definition """
 from gino import Gino
-from sqlalchemy import Column, Integer, BigInteger, Sequence, String, ForeignKey, Boolean, Time, Index, Date, func
+from sqlalchemy import BigInteger, Boolean, Column, Date, ForeignKey, Index, Integer, Sequence, String, Time, func
 
 from tgbot.config import app_config
 
@@ -8,7 +8,8 @@ db_gino = Gino()
 
 
 class User(db_gino.Model):
-    """ User """
+    """User"""
+
     __tablename__ = "user"
 
     user_id = Column(Integer, Sequence("user_id_seq"), primary_key=True)
@@ -19,7 +20,8 @@ class User(db_gino.Model):
 
 
 class Settings(db_gino.Model):
-    """ User settings """
+    """User settings"""
+
     __tablename__ = "settings"
 
     settings_id = Column(Integer, Sequence("settings_id_seq"), primary_key=True)
@@ -31,18 +33,20 @@ class Settings(db_gino.Model):
 
 
 class Group(db_gino.Model):
-    """ Group """
+    """Group"""
+
     __tablename__ = "group"
 
     group_id = Column(Integer, Sequence("group_id_seq"), primary_key=True)
     tt_id = Column(Integer, nullable=False)
     name = Column(String(150), nullable=False)
 
-    _idx1 = Index('group_idx_name', 'name')
+    _idx1 = Index("group_idx_name", "name")
 
 
 class MainScheduleInfo(db_gino.Model):
-    """ Information about main schedule of user """
+    """Information about main schedule of user"""
+
     __tablename__ = "main_schedule_info"
 
     user_id = Column(None, ForeignKey("user.user_id"), nullable=False)
@@ -50,9 +54,9 @@ class MainScheduleInfo(db_gino.Model):
     user_type_is_student = Column(Boolean, nullable=False)
     name = Column(String(150), nullable=False)
 
-    _idx1 = Index('main_schedule_info_idx_user_id', 'user_id', unique=True)
+    _idx1 = Index("main_schedule_info_idx_user_id", "user_id", unique=True)
 
 
 async def connect_to_db() -> None:
-    """ Connecting to database """
+    """Connecting to database"""
     await db_gino.set_bind(app_config.database.connection_url)

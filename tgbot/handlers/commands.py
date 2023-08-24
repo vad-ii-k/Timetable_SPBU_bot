@@ -4,16 +4,16 @@ with the [Command](https://docs.aiogram.dev/en/dev-3.x/dispatcher/filters/comman
 """
 import logging
 
-from aiogram import Router, Bot, flags
+from aiogram import Bot, Router, flags
 from aiogram.enums import ChatAction
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, BotCommandScopeAllPrivateChats
+from aiogram.types import BotCommandScopeAllPrivateChats, Message
 from aiogram.utils.i18n import gettext as _
 
 from tgbot.constants.commands import bot_commands
 from tgbot.handlers.helpers import send_schedule
-from tgbot.keyboards.inline import create_start_menu_keyboard, create_settings_keyboard
+from tgbot.keyboards.inline import create_settings_keyboard, create_start_menu_keyboard
 from tgbot.misc.states import Searching
 from tgbot.services.db_api.db_commands import database
 from tgbot.services.schedule.data_classes import UserType
@@ -26,13 +26,7 @@ async def set_commands(bot_: Bot):
     Setting the commands to be displayed in the menu
     :param bot_: telegram bot
     """
-    data = [
-        (
-            bot_commands,
-            BotCommandScopeAllPrivateChats(),
-            None
-        )
-    ]
+    data = [(bot_commands, BotCommandScopeAllPrivateChats(), None)]
     for commands_list, commands_scope, language in data:
         await bot_.set_my_commands(commands=commands_list, scope=commands_scope, language_code=language)
 
@@ -47,12 +41,11 @@ async def start_command(message: Message, state: FSMContext):
     await state.clear()
     logging.info("start -- id:%s", message.from_user.id)
     await message.answer(
-        text=(_("👋🏻 <b>Добро пожаловать, ")
-              + f"{message.from_user.full_name}!</b>\n"
-              + _("ℹ️ Следуйте указаниям для настройки\n"
-                  "➖➖➖➖➖➖➖➖➖➖➖➖\n"
-                  "⬇️ Получить расписание по:")
-              ),
+        text=(
+            _("👋🏻 <b>Добро пожаловать, ")
+            + f"{message.from_user.full_name}!</b>\n"
+            + _("ℹ️ Следуйте указаниям для настройки\n" "➖➖➖➖➖➖➖➖➖➖➖➖\n" "⬇️ Получить расписание по:")
+        ),
         reply_markup=await create_start_menu_keyboard(),
     )
 
@@ -75,8 +68,7 @@ async def group_search_command(message: Message, state: FSMContext):
     :param message: */group*
     :param state:
     """
-    await message.answer(_("🔎 Введите название группы для поиска:\n"
-                           "*️⃣ <i>например, 20.Б08-мм</i>"))
+    await message.answer(_("🔎 Введите название группы для поиска:\n" "*️⃣ <i>например, 20.Б08-мм</i>"))
     await state.set_state(Searching.getting_group_choice)
 
 
@@ -111,14 +103,18 @@ async def my_schedule_command(message: Message, state: FSMContext):
     main_schedule = await database.get_main_schedule(user_id=user.user_id)
     if main_schedule:
         user_type = UserType.STUDENT if main_schedule.user_type_is_student else UserType.EDUCATOR
-        await state.update_data({'tt_id': main_schedule.timetable_id, 'user_type': user_type})
+        await state.update_data({"tt_id": main_schedule.timetable_id, "user_type": user_type})
         await send_schedule(state, subscription=False, tg_user_id=message.from_user.id)
     else:
-        await message.answer(text=_("🚫 Основное расписание отсутствует\n"
-                                    "1. 🔎 Воспользуйтесь одной из команд:\n"
-                                    "      /start, /group или /educator\n"
-                                    "2. 🔖 Выберите нужное Вам расписание\n"
-                                    "3. ✅ Сделайте расписание основным"))
+        await message.answer(
+            text=_(
+                "🚫 Основное расписание отсутствует\n"
+                "1. 🔎 Воспользуйтесь одной из команд:\n"
+                "      /start, /group или /educator\n"
+                "2. 🔖 Выберите нужное Вам расписание\n"
+                "3. ✅ Сделайте расписание основным"
+            )
+        )
         await message.delete()
 
 

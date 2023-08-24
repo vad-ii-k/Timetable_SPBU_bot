@@ -1,18 +1,18 @@
 """ Handling the keyboard with a schedule """
 import asyncio
 
-from aiogram import Router, F, flags
+from aiogram import F, Router, flags
 from aiogram.enums import ChatAction
 from aiogram.filters import and_f
 from aiogram.types import CallbackQuery
 
+from tgbot.handlers.helpers import change_message_to_loading, delete_message, schedule_keyboard_helper
 from tgbot.misc.cb_data import ScheduleCallbackFactory
-from tgbot.handlers.helpers import change_message_to_loading, schedule_keyboard_helper, delete_message
 from tgbot.services.schedule.getting_shedule import (
-    get_text_week_schedule,
-    get_text_day_schedule,
-    get_image_week_schedule,
     get_image_day_schedule,
+    get_image_week_schedule,
+    get_text_day_schedule,
+    get_text_week_schedule,
 )
 
 router = Router()
@@ -37,7 +37,11 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
             callback_data.day_counter = 0
         case "1-3":
             callback_data.day_counter += 1
-    tt_id, user_type, day_counter = callback_data.tt_id, callback_data.user_type, callback_data.day_counter
+    tt_id, user_type, day_counter = (
+        callback_data.tt_id,
+        callback_data.user_type,
+        callback_data.day_counter,
+    )
     if callback.message.content_type == "document":
         text, photo = await get_image_day_schedule(tt_id, user_type, day_counter=day_counter)
         await schedule_keyboard_helper(callback, callback_data, text, photo)
@@ -65,7 +69,11 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
             callback_data.week_counter = 0
         case "2-2":
             callback_data.week_counter += 1
-    tt_id, user_type, week_counter = callback_data.tt_id, callback_data.user_type, callback_data.week_counter
+    tt_id, user_type, week_counter = (
+        callback_data.tt_id,
+        callback_data.user_type,
+        callback_data.week_counter,
+    )
     if callback.message.content_type == "document":
         text, photo = await get_image_week_schedule(tt_id, user_type, week_counter=week_counter)
         await schedule_keyboard_helper(callback, callback_data, text, photo)
