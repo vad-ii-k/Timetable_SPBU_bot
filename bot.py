@@ -19,8 +19,8 @@ from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
 from tgbot.handlers.unexpected_updates import router as unexpected_updates_router
 from tgbot.middlewares.action import ActionMiddleware
-from tgbot.middlewares.language_18n import LanguageI18nMiddleware
 from tgbot.middlewares.throttling import ThrottlingMiddleware
+from tgbot.middlewares.language_18n import LanguageI18nMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import connect_to_db
 from tgbot.services.initial_filling_of_groups import adding_groups_to_db
