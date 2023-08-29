@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from datetime import date, time
 from itertools import groupby
-from typing import Generic, TypeVar
+from typing import Generic, Self, TypeVar
 
 from aiogram.utils.i18n import gettext as _
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -30,9 +30,8 @@ class StudyEvent(BaseModel, ABC):
     def contingent_sticker(self) -> str:
         """Property for getting an educator or group sticker"""
 
-    @classmethod
     @field_validator("start_time", "end_time", mode="before")
-    def from_datetime_to_time(cls, value):
+    def from_datetime_to_time(cls, value: str):
         """
         Separating time from datetime
         :param value: example *2022-11-14T11:05:00*
@@ -40,7 +39,6 @@ class StudyEvent(BaseModel, ABC):
         """
         return value.split("T")[1]
 
-    @classmethod
     @field_validator("location", mode="before")
     def clearing_location(cls, value: str):
         """
@@ -52,16 +50,15 @@ class StudyEvent(BaseModel, ABC):
         """
         return value.replace("<", "").replace(">", "")
 
-    @classmethod
-    @model_validator(mode="before")
-    def separation_of_subject(cls, values):
+    @model_validator(mode="after")
+    def separation_of_subject(cls, values: Self):
         """
         Separation of subject into name and type of event
         :param values: example *Методы вычислений и вычислительный практикум, лекция*
         :return:
         """
-        values["name"], values["event_format"] = (
-            values["name"].rsplit(sep=", ", maxsplit=1) if values["name"].rfind(", ") != -1 else (values["name"], "—")
+        values.name, values.event_format = (
+            values.name.rsplit(sep=", ", maxsplit=1) if values.name.rfind(", ") != -1 else (values.name, "—")
         )
         return values
 
@@ -77,9 +74,8 @@ class EventsDay(BaseModel, Generic[TypeOfStudyEvents]):
 
     general_location: str | None = None
 
-    @classmethod
     @field_validator("day", mode="before")
-    def from_datetime_to_date(cls, value):
+    def from_datetime_to_date(cls, value: str):
         """
         Separating date from datetime
         :param value: example *2022-11-14T11:05:00*
@@ -87,25 +83,22 @@ class EventsDay(BaseModel, Generic[TypeOfStudyEvents]):
         """
         return value.split("T")[0]
 
-    @classmethod
-    @model_validator(mode="before")
-    def combining_locations_of_events(cls, values):
+    @model_validator(mode="after")
+    def combining_locations_of_events(cls, values: Self):
         """
         Validator separates addresses of all events of the day from cabinet and,
         if addresses match, records address in general_location, and replaces locations with cabinet number
         :param values:
         :return:
         """
-        events: list[TypeOfStudyEvents] = values["events"]
-        locations_without_office = list(map(lambda e: e.location.rsplit(",", maxsplit=1)[0], events))
+        locations_without_office = list(map(lambda e: e.location.rsplit(",", maxsplit=1)[0], values.events))
         if locations_without_office.count(locations_without_office[0]) == len(locations_without_office):
-            values["general_location"] = locations_without_office[0]
-            for value in events:
+            values.general_location = locations_without_office[0]
+            for value in values.events:
                 if value.location.rfind(",") != -1:
                     value.location = value.location.rsplit(",", maxsplit=1)[1].strip(" ")
                 else:
                     value.location = "—"
-            values["events"] = events
         return values
 
     async def events_day_converter_to_msg(self) -> str:
@@ -129,8 +122,9 @@ class EventsDay(BaseModel, Generic[TypeOfStudyEvents]):
                 f"     ┈┈┈┈┈┈┈┈┈┈┈┈\n"
                 f'    {"<s>" * is_canceled}<b>{name}</b>{"</s>" * is_canceled}\n'
                 f"    {get_time_sticker(start_time.hour)} {start_time:%H:%M}-{end_time:%H:%M}\n"
-                f"    <i>{get_subject_format_sticker(event_format)} {event_format}</i>\n"
             )
+            if event_format:
+                day_timetable += f"    <i>{get_subject_format_sticker(event_format)} {event_format}</i>\n"
             for subject in subjects:
                 day_timetable += (
                     f"    <i>{subject.contingent_sticker}{subject.contingent}\n"
@@ -224,9 +218,8 @@ class GroupStudyEvent(StudyEvent):
     def contingent_sticker(self) -> str:
         return "👨🏻‍🏫 "
 
-    @classmethod
     @field_validator("educators", mode="before")
-    def removing_academic_degrees(cls, educators):
+    def removing_academic_degrees(cls, educators: str):
         """
         Removing a teacher's academic degree
         :param educators: example *Лебедева А. В., доцент*
