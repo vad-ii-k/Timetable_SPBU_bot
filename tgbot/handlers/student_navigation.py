@@ -97,8 +97,8 @@ async def group_choice_navigation_callback(
     await change_message_to_loading(callback.message)
     groups = await get_groups(callback_data.study_program_id)
     if len(groups) > 0:
+        await callback.message.delete()
         await callback.message.answer(text=_("⬇️ Выберите группу:"), reply_markup=await create_groups_keyboard(groups))
         await state.set_state(Searching.choosing)
     else:
         await callback.message.edit_text(_("❌ По данной программе группы не найдены!"))
-    await callback.message.delete()
