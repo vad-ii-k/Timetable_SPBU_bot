@@ -3,7 +3,7 @@ Handling admin commands
 """
 from aiogram import Router
 from aiogram.filters import Command
-from aiogram.types import Message, FSInputFile
+from aiogram.types import FSInputFile, Message
 
 from tgbot.config import bot
 from tgbot.filters.admin import AdminFilter
@@ -22,7 +22,7 @@ async def broadcast_news(message: Message):
     :param message: */broadcast news*
     """
     tg_ids = await database_statistics.get_tg_ids_of_users()
-    news = message.text.split(' ', maxsplit=1)[1]
+    news = message.text.split(" ", maxsplit=1)[1]
     await broadcast(bot, users_ids=tg_ids, text=news, disable_notification=True)
 
 
@@ -44,4 +44,4 @@ async def get_statistics(message: Message):
     number_of_educators = sum(not user.is_student and user.is_student is not None for user in full_statistics)
     basic_statistics += f"👨🏻‍🏫 Количество преподавателей: {number_of_educators}\n"
 
-    await message.answer_document(document=FSInputFile('data/statistics.csv'), caption=basic_statistics)
+    await message.answer_document(document=FSInputFile("data/statistics.csv"), caption=basic_statistics)

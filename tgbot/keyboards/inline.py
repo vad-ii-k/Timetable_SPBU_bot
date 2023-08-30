@@ -1,28 +1,29 @@
 """ [Inline Keyboards](https://docs.aiogram.dev/en/dev-3.x/utils/keyboard.html#inline-keyboard) """
-from datetime import date, timedelta, time, datetime
+from datetime import date, datetime, time, timedelta
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from tgbot.misc.cb_data import (
-    StudyDivisionCallbackFactory,
-    StudyLevelCallbackFactory,
-    ProgramCombinationsCallbackFactory,
     AdmissionYearsCallbackFactory,
-    StartMenuCallbackFactory,
+    ProgramCombinationsCallbackFactory,
     ScheduleCallbackFactory,
-    TTObjectChoiceCallbackFactory,
+    ScheduleSubscriptionCallbackFactory,
     SettingsCallbackFactory,
     SettingsDailySummaryCallbackFactory,
-    ScheduleSubscriptionCallbackFactory,
+    StartMenuCallbackFactory,
+    StudyDivisionCallbackFactory,
+    StudyLevelCallbackFactory,
+    TTObjectChoiceCallbackFactory,
 )
 from tgbot.services.db_api.db_models import Settings
 from tgbot.services.schedule.data_classes import (
+    EducatorSearchInfo,
+    GroupSearchInfo,
     StudyDivision,
     StudyLevel,
-    GroupSearchInfo,
-    EducatorSearchInfo, UserType,
+    UserType,
 )
 
 
@@ -32,20 +33,19 @@ async def create_start_menu_keyboard() -> InlineKeyboardMarkup:
     :return:
     """
     keyboard = InlineKeyboardBuilder()
+    keyboard.button(text=_("Названию группы"), callback_data=StartMenuCallbackFactory(type="student_search"))
     keyboard.button(
-        text=_("Названию группы"), callback_data=StartMenuCallbackFactory(type="student_search")
+        text=_("Навигации по программам"),
+        callback_data=StartMenuCallbackFactory(type="student_navigation"),
     )
-    keyboard.button(
-        text=_("Навигации по программам"), callback_data=StartMenuCallbackFactory(type="student_navigation")
-    )
-    keyboard.button(
-        text=_("ФИО преподавателя"), callback_data=StartMenuCallbackFactory(type="educator_search")
-    )
+    keyboard.button(text=_("ФИО преподавателя"), callback_data=StartMenuCallbackFactory(type="educator_search"))
     keyboard.adjust(1)
     return keyboard.as_markup()
 
 
-async def create_study_divisions_keyboard(study_divisions: list[StudyDivision]) -> InlineKeyboardMarkup:
+async def create_study_divisions_keyboard(
+    study_divisions: list[StudyDivision],
+) -> InlineKeyboardMarkup:
     """
     Creating a keyboard with a list of study divisions
     :param study_divisions:
@@ -79,7 +79,7 @@ async def create_study_programs_keyboard(program_combinations: list[dict[str, st
     """
     keyboard = InlineKeyboardBuilder()
     for serial, program in enumerate(program_combinations):
-        keyboard.button(text=program['name'], callback_data=ProgramCombinationsCallbackFactory(serial=serial))
+        keyboard.button(text=program["name"], callback_data=ProgramCombinationsCallbackFactory(serial=serial))
     keyboard.adjust(1)
     return keyboard.as_markup()
 
@@ -93,8 +93,8 @@ async def create_admission_years_keyboard(admission_years: list[dict[str, str]])
     keyboard = InlineKeyboardBuilder()
     for year in admission_years:
         keyboard.button(
-            text=year['year'],
-            callback_data=AdmissionYearsCallbackFactory(study_program_id=year['study_program_id'])
+            text=year["year"],
+            callback_data=AdmissionYearsCallbackFactory(study_program_id=year["study_program_id"]),
         )
     keyboard.adjust(1)
     return keyboard.as_markup()
@@ -110,7 +110,7 @@ async def create_groups_keyboard(groups: list[GroupSearchInfo]) -> InlineKeyboar
     for group in groups:
         keyboard.button(
             text=group.name,
-            callback_data=TTObjectChoiceCallbackFactory(tt_id=group.tt_id, user_type=UserType.STUDENT)
+            callback_data=TTObjectChoiceCallbackFactory(tt_id=group.tt_id, user_type=UserType.STUDENT),
         )
     keyboard.adjust(1)
     return keyboard.as_markup()
@@ -126,7 +126,7 @@ async def create_educators_keyboard(educators: list[EducatorSearchInfo]) -> Inli
     for educator in educators:
         keyboard.button(
             text=educator.full_name,
-            callback_data=TTObjectChoiceCallbackFactory(tt_id=educator.tt_id, user_type=UserType.EDUCATOR)
+            callback_data=TTObjectChoiceCallbackFactory(tt_id=educator.tt_id, user_type=UserType.EDUCATOR),
         )
     keyboard.adjust(1)
     return keyboard.as_markup()
@@ -145,9 +145,12 @@ async def create_schedule_keyboard(is_photo: bool, callback_data: ScheduleCallba
     next_day_date = current_date + timedelta(days=1)
 
     text_of_buttons = [
-        f"⬅ {prev_day_date:%d.%m}", _("Сегодня"), f"{next_day_date:%d.%m} ➡️",
-        _("⏹ Эта неделя"), _("След. неделя ⏩"),
-        _("📝 Текстом 📝") if is_photo else _("🖼 Картинкой 🖼")
+        f"⬅ {prev_day_date:%d.%m}",
+        _("Сегодня"),
+        f"{next_day_date:%d.%m} ➡️",
+        _("⏹ Эта неделя"),
+        _("След. неделя ⏩"),
+        _("📝 Текстом 📝") if is_photo else _("🖼 Картинкой 🖼"),
     ]
     button_ids = ["1-1", "1-2", "1-3", "2-1", "2-2", "3-1"]
 
@@ -160,8 +163,8 @@ async def create_schedule_keyboard(is_photo: bool, callback_data: ScheduleCallba
                 tt_id=callback_data.tt_id,
                 user_type=callback_data.user_type,
                 day_counter=callback_data.day_counter,
-                week_counter=callback_data.week_counter
-            ).pack()
+                week_counter=callback_data.week_counter,
+            ).pack(),
         )
     keyboard.adjust(3, 2, 1)
     return keyboard.as_markup()
@@ -192,7 +195,7 @@ async def create_settings_keyboard(settings: Settings) -> InlineKeyboardMarkup:
     settings_keyboard.row(schedule_view)
 
     text = _("Язык: ")
-    text += "🇷🇺" if settings.language == 'ru' else "🇬🇧"
+    text += "🇷🇺" if settings.language == "ru" else "🇬🇧"
     language = InlineKeyboardButton(text=text, callback_data=SettingsCallbackFactory(type="language").pack())
     settings_keyboard.row(language)
     return settings_keyboard.as_markup()
@@ -210,8 +213,8 @@ async def create_settings_daily_summary_keyboard(selected_option: datetime) -> I
     for option, sticker in suggested_time:
         daily_summary_keyboard.button(
             text=f"{'●' if selected_option is not None and option == selected_option.hour else '○'}"
-                 f" {option}:00 {sticker}",
-            callback_data=SettingsDailySummaryCallbackFactory(choice=option),
+            f" {option}:00 {sticker}",
+            callback_data=SettingsDailySummaryCallbackFactory(choice=str(option)),
         )
     daily_summary_keyboard.adjust(2)
     disabling_button = InlineKeyboardButton(
@@ -233,9 +236,13 @@ async def create_schedule_subscription_keyboard() -> InlineKeyboardMarkup:
     :return:
     """
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(text=_("Да, сделать основным ✅"),
-                    callback_data=ScheduleSubscriptionCallbackFactory(answer=True))
-    keyboard.button(text=_("Нет, только посмотреть ❌"),
-                    callback_data=ScheduleSubscriptionCallbackFactory(answer=False))
+    keyboard.button(
+        text=_("Да, сделать основным ✅"),
+        callback_data=ScheduleSubscriptionCallbackFactory(answer=True),
+    )
+    keyboard.button(
+        text=_("Нет, только посмотреть ❌"),
+        callback_data=ScheduleSubscriptionCallbackFactory(answer=False),
+    )
     keyboard.adjust(1)
     return keyboard.as_markup()

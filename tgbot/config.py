@@ -8,7 +8,8 @@ from environs import Env
 
 @dataclass(slots=True, frozen=True)
 class DbConfig:
-    """ Postgres database config """
+    """Postgres database config"""
+
     host: str
     """ Host """
     port: int
@@ -38,7 +39,8 @@ class DbConfig:
 
 @dataclass(slots=True, frozen=True)
 class RedisConfig:
-    """ Redis data store config """
+    """Redis data store config"""
+
     host: str
     """ Host """
     port: int
@@ -58,7 +60,8 @@ class RedisConfig:
 
 @dataclass(slots=True, frozen=True)
 class TgBot:
-    """ Telegram bot config """
+    """Telegram bot config"""
+
     token: str
     """ The token for bot from BotFather """
     admin_ids: list[int]
@@ -67,7 +70,8 @@ class TgBot:
 
 @dataclass(slots=True, frozen=True)
 class Proxy:
-    """ Proxy config """
+    """Proxy config"""
+
     login: str
     """ Login for proxies """
     password: str
@@ -78,7 +82,8 @@ class Proxy:
 
 @dataclass(slots=True, frozen=True)
 class Config:
-    """ Combining config for the program """
+    """Combining config for the program"""
+
     tg_bot: TgBot
     """ Telegram bot config """
     database: DbConfig
@@ -90,7 +95,7 @@ class Config:
 
 
 def load_config(path: str = None) -> Config:
-    """ Loading and installing configs from environment variables
+    """Loading and installing configs from environment variables
     :param path: path to .env
     :return: Config object
     """
@@ -98,28 +103,25 @@ def load_config(path: str = None) -> Config:
     env.read_env(path)
 
     return Config(
-        tg_bot=TgBot(
-            token=env.str("BOT_TOKEN"),
-            admin_ids=list(map(int, env.list("ADMINS")))
-        ),
+        tg_bot=TgBot(token=env.str("BOT_TOKEN"), admin_ids=list(map(int, env.list("ADMINS")))),
         database=DbConfig(
-            host=env.str('DB_HOST'),
-            port=env.int('DB_PORT'),
-            password=env.str('DB_PASS'),
-            user=env.str('DB_USER'),
-            database=env.str('DB_NAME'),
-            are_groups_collected=env.bool('ARE_GROUPS_COLLECTED'),
+            host=env.str("DB_HOST"),
+            port=env.int("DB_PORT"),
+            password=env.str("DB_PASS"),
+            user=env.str("DB_USER"),
+            database=env.str("DB_NAME"),
+            are_groups_collected=env.bool("ARE_GROUPS_COLLECTED"),
         ),
         redis=RedisConfig(
-            host=env.str('REDIS_HOST'),
-            port=env.int('REDIS_PORT'),
-            password=env.str('REDIS_PASSWORD'),
+            host=env.str("REDIS_HOST"),
+            port=env.int("REDIS_PORT"),
+            password=env.str("REDIS_PASSWORD"),
         ),
         proxy=Proxy(
-            login=env.str('PROXY_LOGIN'),
-            password=env.str('PROXY_PASSWORD'),
+            login=env.str("PROXY_LOGIN"),
+            password=env.str("PROXY_PASSWORD"),
             ips=list(map(str, env.list("PROXY_IPS"))),
-        )
+        ),
     )
 
 

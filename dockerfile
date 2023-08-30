@@ -1,20 +1,21 @@
-FROM python:3.11-alpine
-ENV BOT_NAME=$BOT_NAME
+FROM python:3.11.4-alpine
 
-WORKDIR /usr/src/app/"${BOT_NAME:-tg_bot}"
+WORKDIR /usr/src/app/timetable_bot
 
-# Installing curl for poetry, chromium for pyppeteer, npm for sass
-RUN apk -U add curl chromium udev npm
-RUN npm install -g sass
+ENV PATH=/venv/bin:/root/.local/bin:$PATH
+ENV VIRTUAL_ENV=/venv
 
-# Installing poetry
-RUN curl -sSL https://install.python-poetry.org | python
-ENV PATH=/root/.local/bin:$PATH
+RUN apk --no-cache add curl chromium npm && \
+    npm install -g sass && \
+    curl -sSL https://install.python-poetry.org | python3 - && \
+    python -m venv /venv
 
-# Installing project dependencies from poetry.lock
-RUN python -m venv /venv
-ENV PATH=/venv/bin:$PATH \
-    VIRTUAL_ENV=/venv
-COPY pyproject.toml ./
-# Will install into the /venv virtualenv
-RUN poetry install --no-root
+COPY . .
+
+RUN sass --update data/styles:data/compiled_html_pages/styles
+
+RUN apk del curl npm
+
+RUN poetry install --no-interaction --no-ansi --no-root --without=dev
+
+RUN poetry run pybabel compile -d tgbot/locales -D messages

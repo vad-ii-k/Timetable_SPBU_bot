@@ -2,11 +2,11 @@
 import asyncio
 import logging
 
-from redis import asyncio as aioredis
 from aiogram import Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.i18n import I18n
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from redis import asyncio as aioredis
 
 from tgbot.config import app_config, bot
 from tgbot.handlers.admin import admin_router
@@ -18,7 +18,9 @@ from tgbot.handlers.settings import router as settings_router
 from tgbot.handlers.start_menu import router as start_menu_router
 from tgbot.handlers.student_navigation import router as student_navigation_router
 from tgbot.handlers.unexpected_updates import router as unexpected_updates_router
-from tgbot.middlewares.config import ActionMiddleware, LanguageI18nMiddleware, ThrottlingMiddleware
+from tgbot.middlewares.action import ActionMiddleware
+from tgbot.middlewares.throttling import ThrottlingMiddleware
+from tgbot.middlewares.language_18n import LanguageI18nMiddleware
 from tgbot.services import broadcaster
 from tgbot.services.db_api.db_models import connect_to_db
 from tgbot.services.initial_filling_of_groups import adding_groups_to_db
@@ -49,10 +51,10 @@ async def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
 
 
 async def main():
-    """ Configuring and launching the bot """
+    """Configuring and launching the bot"""
     logging.basicConfig(
         level=logging.INFO,
-        format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
+        format="%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s",
     )
     root_logger = logging.getLogger("gino")
     if root_logger.level == logging.NOTSET:
@@ -69,7 +71,7 @@ async def main():
         host=app_config.redis.host,
         port=app_config.redis.port,
         password=app_config.redis.password,
-        db=1
+        db=1,
     )
     storage = RedisStorage(redis)
     dispatcher = Dispatcher(storage=storage)
@@ -97,7 +99,7 @@ async def main():
     await dispatcher.start_polling(bot)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):

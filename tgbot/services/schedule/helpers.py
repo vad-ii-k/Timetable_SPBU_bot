@@ -15,7 +15,7 @@ async def get_schedule_weekday_header(day: date, general_location: str = None) -
     try:
         locale = get_i18n().current_locale
     except LookupError:
-        locale = 'ru'
+        locale = "ru"
     formatted_date = format_date(day, "EEEE, d MMMM", locale=locale)
     weekday_sticker = _get_weekday_sticker(formatted_date)
     header = f"{weekday_sticker} <b>{formatted_date}</b>\n"
@@ -72,28 +72,29 @@ def get_time_sticker(hour: int) -> str:
     return time_sticker
 
 
-def get_subject_format_sticker(subject_format: str) -> str:
+def get_subject_format_sticker(subject_format: str | None) -> str:
     """
 
     :param subject_format:
     :return:
     """
     format_sticker = "✍🏼"
-    match subject_format.split(" ")[0]:
-        case "лекция":
-            format_sticker = "🗣"
-        case "практическое":
-            format_sticker = "🧑🏻‍💻"
-        case "лабораторная":
-            format_sticker = "🔬"
-        case "семинар":
-            format_sticker = "💬"
-        case "консультация":
-            format_sticker = "🤝🏼"
-        case "экзамен":
-            format_sticker = "❗"
-        case "зачёт":
-            format_sticker = "⚠️"
+    if subject_format is not None:
+        match subject_format.split(" ")[0]:
+            case "лекция":
+                format_sticker = "🗣"
+            case "практическое":
+                format_sticker = "🧑🏻‍💻"
+            case "лабораторная":
+                format_sticker = "🔬"
+            case "семинар":
+                format_sticker = "💬"
+            case "консультация":
+                format_sticker = "🤝🏼"
+            case "экзамен":
+                format_sticker = "❗"
+            case "зачёт":
+                format_sticker = "⚠️"
     return format_sticker
 
 

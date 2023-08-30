@@ -6,9 +6,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pydantic import ValidationError
 
 from tgbot.config import bot
-from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.db_api.db_commands import database
-from tgbot.services.schedule.getting_shedule import get_text_day_schedule, get_image_day_schedule
+from tgbot.services.schedule.data_classes import UserType
+from tgbot.services.schedule.getting_shedule import get_image_day_schedule, get_text_day_schedule
 
 
 async def send_daily_summary(tg_id: int, user_type: UserType, tt_id: int, day_counter: int) -> None:

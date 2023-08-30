@@ -4,12 +4,13 @@ from datetime import time
 from aiogram import types
 from sqlalchemy import asc, func
 
-from tgbot.services.db_api.db_models import User, Settings, Group, MainScheduleInfo
+from tgbot.services.db_api.db_models import Group, MainScheduleInfo, Settings, User
 from tgbot.services.schedule.data_classes import UserType
 
 
 class DBCommands:
-    """ Database commands for working with the bot """
+    """Database commands for working with the bot"""
+
     async def add_new_user(self, tg_user: types.User) -> User:
         """
         Adding a new user to the database
@@ -104,8 +105,11 @@ class DBCommands:
         :param group_name:
         :return:
         """
-        groups = await Group.query.where(func.lower(Group.name).contains(group_name.lower())).\
-            order_by(asc(Group.name)).gino.all()
+        groups = (
+            await Group.query.where(func.lower(Group.name).contains(group_name.lower()))
+            .order_by(asc(Group.name))
+            .gino.all()
+        )
         return groups
 
     async def set_main_schedule(self, tg_user_id: int, tt_id: int, user_type: UserType, schedule_name: str) -> None:
@@ -146,11 +150,18 @@ class DBCommands:
         """
         users = await Settings.select("user_id").where(Settings.daily_summary == current_time).gino.all()
         users_ids = list(map(lambda user: user[0], users))
-        main_schedule_of_users = await User.join(MainScheduleInfo, User.user_id == MainScheduleInfo.user_id).select(). \
-            where(MainScheduleInfo.user_id.in_(users_ids)).gino.all()
-        user_with_main_schedule = list(map(
-            lambda user: (user[1], UserType.STUDENT if user[7] else UserType.EDUCATOR, user[6]), main_schedule_of_users
-        ))
+        main_schedule_of_users = (
+            await User.join(MainScheduleInfo, User.user_id == MainScheduleInfo.user_id)
+            .select()
+            .where(MainScheduleInfo.user_id.in_(users_ids))
+            .gino.all()
+        )
+        user_with_main_schedule = list(
+            map(
+                lambda user: (user[1], UserType.STUDENT if user[7] else UserType.EDUCATOR, user[6]),
+                main_schedule_of_users,
+            )
+        )
         return user_with_main_schedule
 
 

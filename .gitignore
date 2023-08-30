@@ -5,7 +5,6 @@
 .env
 
 # Post-build files
-poetry.lock
 tgbot/locales/messages.pot
 tgbot/locales/en/LC_MESSAGES/messages.mo
 data/compiled_html_pages/

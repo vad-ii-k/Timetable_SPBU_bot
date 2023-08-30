@@ -1,0 +1,23 @@
+# IDEs and editors
+.idea
+
+# Docker files
+.dockerignore
+dockerfile
+docker-compose.yml
+
+# git files
+.git
+.github
+.gitignore
+README.md
+
+# compiled output
+tgbot/locales/messages.pot
+tgbot/locales/en/LC_MESSAGES/messages.mo
+data/compiled_html_pages/
+data/output.jpeg
+data/statistics.csv
+
+# env files
+.env*

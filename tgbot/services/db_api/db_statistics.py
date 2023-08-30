@@ -1,12 +1,13 @@
 """ Statistical work with the database """
 from sqlalchemy import asc
 
-from tgbot.services.db_api.db_models import db_gino, User, Settings, MainScheduleInfo
+from tgbot.services.db_api.db_models import MainScheduleInfo, Settings, User, db_gino
 from tgbot.services.statistics import UserStatistics
 
 
 class DBStatistics:
-    """ Commands for getting statistics from the database """
+    """Commands for getting statistics from the database"""
+
     @staticmethod
     async def get_tg_ids_of_users() -> list[int]:
         """
@@ -32,12 +33,19 @@ class DBStatistics:
         Get information about bot users
         :return:
         """
-        full_users_info = await User.join(Settings).join(MainScheduleInfo, isouter=True).select().\
-            order_by(asc(User.start_date)).gino.all()
-        return list(map(
-            lambda user: UserStatistics(user[3], user[4], user[13], user[14], user[7], user[9], user[10]),
-            full_users_info
-        ))
+        full_users_info = (
+            await User.join(Settings)
+            .join(MainScheduleInfo, isouter=True)
+            .select()
+            .order_by(asc(User.start_date))
+            .gino.all()
+        )
+        return list(
+            map(
+                lambda user: UserStatistics(user[3], user[4], user[13], user[14], user[7], user[9], user[10]),
+                full_users_info,
+            )
+        )
 
 
 database_statistics = DBStatistics()
