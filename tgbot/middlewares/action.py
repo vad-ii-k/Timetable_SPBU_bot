@@ -44,7 +44,7 @@ class ActionMiddleware(BaseMiddleware):
         async with ChatActionSender(bot=bot, action=action, chat_id=event.message.chat.id):
             handler_cor = handler(event, data)
             try:
-                return await asyncio.wait_for(handler_cor, timeout=15)
+                return await asyncio.wait_for(handler_cor, timeout=20)
             except asyncio.TimeoutError:
                 await delete_message(event.message)
                 return await event.message.answer(_("⚠ Превышено время ожидания ответа :(\n" "🔄 Попробуйте снова❕"))

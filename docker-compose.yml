@@ -32,9 +32,8 @@ services:
     environment:
       TZ: Europe/Moscow
     volumes:
-    # Поправить пути (заменить tg_bot на timetable_bot)
-      - /usr/src/app/tg_bot/redis/config:/usr/local/etc/redis
-      - /usr/src/app/tg_bot/redis/data:/data
+      - /usr/src/app/timetable_bot/redis/config:/usr/local/etc/redis
+      - /usr/src/app/timetable_bot/redis/data:/data
     network_mode: host
 
   postgres:
@@ -48,7 +47,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-    # Поправить пути (заменить tg_bot на timetable_bot)
-      - /usr/src/app/tg_bot/postgres/init:/docker-entrypoint-initdb.d
-      - /usr/src/app/tg_bot/postgres/data:/var/lib/postgresql/data
+      - /usr/src/app/timetable_bot/postgres/init:/docker-entrypoint-initdb.d
+      - /usr/src/app/timetable_bot/postgres/data:/var/lib/postgresql/data
     network_mode: host

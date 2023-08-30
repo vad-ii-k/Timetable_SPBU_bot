@@ -25,7 +25,7 @@ async def request(url: str) -> dict:
                     if resp.status == 200:
                         return await resp.json()
             except ProxyError:
-                continue
+                break
             except asyncio.exceptions.TimeoutError:
                 break
     # Trying to get a response without a proxy
