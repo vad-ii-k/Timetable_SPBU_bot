@@ -15,6 +15,7 @@ class UserStatistics:
     daily_summary: time | None
     schedule_view_is_picture: bool
     language: str
+    is_bot_blocked: bool
 
 
 async def writing_statistics_to_csv(full_statistics: list[UserStatistics]) -> None:
@@ -34,6 +35,7 @@ async def writing_statistics_to_csv(full_statistics: list[UserStatistics]) -> No
                 "Daily summary time",
                 "Default schedule view",
                 "Language",
+                "Is active",
             ],
         )
         dict_writer.writeheader()
@@ -49,5 +51,6 @@ async def writing_statistics_to_csv(full_statistics: list[UserStatistics]) -> No
                     user.daily_summary,
                     "image" if user.schedule_view_is_picture else "text",
                     user.language,
+                    not user.is_bot_blocked,
                 ]
             )

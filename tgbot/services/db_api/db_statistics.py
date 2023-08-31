@@ -1,4 +1,6 @@
 """ Statistical work with the database """
+import logging
+
 from sqlalchemy import asc
 
 from tgbot.services.db_api.db_models import MainScheduleInfo, Settings, User, db_gino
@@ -42,7 +44,7 @@ class DBStatistics:
         )
         return list(
             map(
-                lambda user: UserStatistics(user[3], user[4], user[13], user[14], user[7], user[9], user[10]),
+                lambda user: UserStatistics(user[3], user[4], user[14], user[15], user[8], user[10], user[11], user[5]),
                 full_users_info,
             )
         )

@@ -37,10 +37,16 @@ async def get_statistics(message: Message):
 
     number_of_users = await database_statistics.get_number_of_users()
     basic_statistics = f"📈 Количество пользователей: {number_of_users}\n"
+
     number_of_users_with_main_schedule = sum(user.schedule_name is not None for user in full_statistics)
-    basic_statistics += f"💌 С основным расписанием {number_of_users_with_main_schedule / number_of_users * 100:.1f}%\n"
+    basic_statistics += f"💌 С основным расписанием: {number_of_users_with_main_schedule}\n"
+
     number_of_users_with_daily_summary = sum(user.daily_summary is not None for user in full_statistics)
-    basic_statistics += f"🔔 С уведомлениями {number_of_users_with_daily_summary / number_of_users * 100:.1f}%\n"
+    basic_statistics += f"🔔 С уведомлениями: {number_of_users_with_daily_summary}\n"
+
+    number_of_blocked = sum(user.is_bot_blocked for user in full_statistics)
+    basic_statistics += f"🛑 Заблокировали бота: {number_of_blocked}\n"
+
     number_of_educators = sum(not user.is_student and user.is_student is not None for user in full_statistics)
     basic_statistics += f"👨🏻‍🏫 Количество преподавателей: {number_of_educators}\n"
 
