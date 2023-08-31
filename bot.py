@@ -10,6 +10,7 @@ from redis import asyncio as aioredis
 
 from tgbot.config import app_config, bot
 from tgbot.handlers.admin import admin_router
+from tgbot.handlers.blocking import router as blocking_router
 from tgbot.handlers.commands import router as commands_router, set_commands
 from tgbot.handlers.errors import router as errors_router
 from tgbot.handlers.schedule import router as schedule_router
@@ -86,6 +87,7 @@ async def main():
         searching_router,
         settings_router,
         unexpected_updates_router,
+        blocking_router,
     ]:
         dispatcher.include_router(router)
 
