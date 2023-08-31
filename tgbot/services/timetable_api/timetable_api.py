@@ -78,7 +78,7 @@ async def get_groups(program_id: int) -> list[GroupSearchInfo]:
     return groups
 
 
-@cache(ttl="5h")
+@cache(ttl="2h")
 async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> EducatorSchedule:
     """
 
@@ -98,7 +98,7 @@ async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str
     return educator_schedule
 
 
-@cache(ttl="5h")
+@cache(ttl="2h")
 async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -> GroupSchedule:
     """
 

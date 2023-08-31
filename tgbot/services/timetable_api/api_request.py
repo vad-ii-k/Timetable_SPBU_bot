@@ -21,7 +21,7 @@ async def request(url: str) -> dict:
         connector = ProxyConnector.from_url(f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{proxy_ip}")
         async with ClientSession(connector=connector) as session:
             try:
-                async with session.get(url, timeout=3) as resp:
+                async with session.get(url, timeout=5) as resp:
                     if resp.status == 200:
                         return await resp.json()
             except ProxyError:
