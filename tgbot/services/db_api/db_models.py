@@ -17,6 +17,7 @@ class User(db_gino.Model):
     full_name = Column(String(100), nullable=False)
     username = Column(String(50), nullable=True)
     start_date = Column(Date, default=func.current_date())
+    is_bot_blocked = Column(Boolean, nullable=False, default=False)
 
 
 class Settings(db_gino.Model):
