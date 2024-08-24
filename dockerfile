@@ -1,6 +1,6 @@
 FROM python:3.12.5-alpine
 
-WORKDIR /usr/src/app/timetable_bot
+WORKDIR /app
 
 ENV PATH=/venv/bin:/root/.local/bin:$PATH
 ENV VIRTUAL_ENV=/venv

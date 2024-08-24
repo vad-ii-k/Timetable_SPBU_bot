@@ -1,11 +1,6 @@
-version: '3.9'
-
 services:
     timetable-tgbot:
-        image: timetable_bot-image
         restart: always
-        container_name: python-timetable
-        working_dir: /usr/src/app/timetable_bot
         build:
             context: .
             dockerfile: ./dockerfile
@@ -25,7 +20,6 @@ services:
 
     redis:
         image: redis:7.2-alpine
-        container_name: redis-timetable
         restart: always
         command: >
             --requirepass ${REDIS_PASSWORD}
@@ -38,7 +32,6 @@ services:
 
     postgres:
         image: postgres:14.9-alpine
-        container_name: postgres-timetable
         restart: always
         environment:
             TZ: Europe/Moscow
