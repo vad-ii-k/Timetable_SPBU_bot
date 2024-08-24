@@ -15,11 +15,12 @@
 </p>
 <img alt="Bot logo" align="right" width="230" src=".github/images/bot_pic.png"/>
 
-
 # Telegram bot for SPBU timetable
+
 > Educational practice of the 4-5th semesters of St. Petersburg State University
 
 # [Bot](https://t.me/timetable_SPBU_bot?start)
+
 <div>
     <a href="https://t.me/timetable_SPBU_bot?start" target="_blank">
         <img alt="Telegram logo" align="left" src=".github/images/telegram_logo.png" width="85">
@@ -29,14 +30,14 @@
     <hr>
 </div>
 
-
 ## Demonstration
+
 <p align="center">
     <img alt="Bot demo" src=".github/images/demo.gif">
 </p>
 
-
 ## Features
+
 ```diff
 + Getting a group schedule by group name
 + Getting a group schedule using program navigation
@@ -47,12 +48,16 @@
 ```
 
 ## Author
-  * **Sazanov Vadim** — [@vad_ii_k](https://t.me/vad_ii_k)
+
+* **Sazanov Vadim** — [@vad_ii_k](https://t.me/vad_ii_k)
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/vad-ii-k/Timetable_SPBU_bot/blob/master/LICENSE) file for details
+
+This project is licensed under the MIT License - see
+the [LICENSE](https://github.com/vad-ii-k/Timetable_SPBU_bot/blob/master/LICENSE) file for details
 
 ## Used technologies
+
 <div>
     <a href="https://github.com/python/cpython" target="_blank">
         <img alt="Python logo" align="left" src="https://www.python.org/static/img/python-logo@2x.png" height="35px">
@@ -71,9 +76,6 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
     </a>
     <a href="https://github.com/psycopg/psycopg2" target="_blank">
         <img alt="Psycopg2 logo" align="left" src="https://avatars.githubusercontent.com/u/2947270?s=200&v=4" height="35px">
-    </a>
-    <a href="https://github.com/python-gino/gino" target="_blank">
-        <img alt="Gino logo" align="left" src="https://avatars.githubusercontent.com/u/59060114?s=200&v=4" height="35px">
     </a>
     <a href="https://github.com/python-babel/babel" target="_blank">
         <img alt="Babel logo" align="left" src="https://avatars.githubusercontent.com/u/14215782?s=200&v=4" height="35px">

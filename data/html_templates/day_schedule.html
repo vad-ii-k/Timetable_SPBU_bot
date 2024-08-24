@@ -5,9 +5,9 @@
 {{ sh.shedule_header(True if schedule.group_name else False, schedule.name, schedule.from_date, schedule.to_date) }}
 <main class="content" style="grid-template-columns: repeat(1, 1fr);">
     {%- for events_day in schedule.events_days %}
-        {{ ed.events_day(events_day) }}
+    {{ ed.events_day(events_day) }}
     {%- else %}
-        {{ em_d.empty_day(schedule.day) }}
+    {{ em_d.empty_day(schedule.day) }}
     {%- endfor %}
 </main>
 {% include 'footer.html' %}

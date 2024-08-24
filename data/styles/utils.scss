@@ -15,41 +15,41 @@ $heading-font: "Source Sans Pro", sans-serif;
 
 // weights
 @mixin paragraph {
-  font-family: $paragraph-font;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 30px;
-  line-height: 33px;
+    font-family: $paragraph-font;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 33px;
 }
 
 @mixin paragraph-small {
-  font-family: $paragraph-font;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 21px;
+    font-family: $paragraph-font;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
 }
 
 @mixin heading-1 {
-  font-family: $heading-font;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 36px;
-  line-height: 45px;
+    font-family: $heading-font;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 45px;
 }
 
 @mixin heading-2 {
-  font-family: $heading-font;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 34px;
-  line-height: 39px;
+    font-family: $heading-font;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 39px;
 }
 
 @mixin heading-3 {
-  font-family: $heading-font;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 30px;
-  line-height: 35px;
+    font-family: $heading-font;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 35px;
 }

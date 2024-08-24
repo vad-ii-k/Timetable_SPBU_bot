@@ -1,39 +1,39 @@
 @import "../utils.scss";
 
 .day {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-
-  &__header {
-    @include heading-1;
-    width: fit-content;
-    padding: 16px 32px;
-    color: $white;
-    background: $primary;
-    box-shadow: 16px 16px 0 $black-10;
-
-    &--inactive {
-      background: $black-50;
-    }
-  }
-
-  &__address {
-    @include heading-3;
-    margin: 0 0 0 32px;
-    color: $black-75;
-  }
-
-  &__events {
     display: flex;
     flex-direction: column;
-    gap: 32px;
-    padding: 0 0 0 32px;
-  }
+    gap: 24px;
 
-  &--inactive {
-    @include heading-2;
-    margin: 0 0 0 32px;
-    color: $black-50;
-  }
+    &__header {
+        @include heading-1;
+        width: fit-content;
+        padding: 16px 32px;
+        color: $white;
+        background: $primary;
+        box-shadow: 16px 16px 0 $black-10;
+
+        &--inactive {
+            background: $black-50;
+        }
+    }
+
+    &__address {
+        @include heading-3;
+        margin: 0 0 0 32px;
+        color: $black-75;
+    }
+
+    &__events {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 0 0 0 32px;
+    }
+
+    &--inactive {
+        @include heading-2;
+        margin: 0 0 0 32px;
+        color: $black-50;
+    }
 }

@@ -5,11 +5,11 @@
 {{ sh.shedule_header(True if schedule.group_name else False, schedule.name, schedule.from_date, schedule.to_date) }}
 <main class="content" style="grid-template-columns: repeat(2, 1fr);">
     {%- for date in dates_of_days_of_week %}
-        {%- if date in dates_of_event_days %}
-            {{ ev_d.events_day(schedule.events_days[dates_of_event_days.index(date)]) }}
-        {%- else %}
-            {{ em_d.empty_day(date) }}
-        {%- endif %}
+    {%- if date in dates_of_event_days %}
+    {{ ev_d.events_day(schedule.events_days[dates_of_event_days.index(date)]) }}
+    {%- else %}
+    {{ em_d.empty_day(date) }}
+    {%- endif %}
     {%- endfor %}
 </main>
 {% include 'footer.html' %}

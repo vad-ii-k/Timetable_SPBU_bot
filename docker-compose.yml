@@ -1,52 +1,52 @@
 version: '3.9'
 
 services:
-  timetable-tgbot:
-    image: timetable_bot-image
-    restart: always
-    container_name: python-timetable
-    working_dir: /usr/src/app/timetable_bot
-    build:
-      context: .
-      dockerfile: ./dockerfile
-    env_file:
-      - .env
-    environment:
-      TZ: Europe/Moscow
-    depends_on:
-      - postgres
-      - redis
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        python -m alembic upgrade head
-        poetry run python bot.py
-    network_mode: host
+    timetable-tgbot:
+        image: timetable_bot-image
+        restart: always
+        container_name: python-timetable
+        working_dir: /usr/src/app/timetable_bot
+        build:
+            context: .
+            dockerfile: ./dockerfile
+        env_file:
+            - .env
+        environment:
+            TZ: Europe/Moscow
+        depends_on:
+            - postgres
+            - redis
+        entrypoint: [ "/bin/sh", "-c" ]
+        command:
+            - |
+                python -m alembic upgrade head
+                poetry run python bot.py
+        network_mode: host
 
-  redis:
-    image: redis:7.2-alpine
-    container_name: redis-timetable
-    restart: always
-    command: >
-      --requirepass ${REDIS_PASSWORD}
-    environment:
-      TZ: Europe/Moscow
-    volumes:
-      - /usr/src/app/timetable_bot/redis/config:/usr/local/etc/redis
-      - /usr/src/app/timetable_bot/redis/data:/data
-    network_mode: host
+    redis:
+        image: redis:7.2-alpine
+        container_name: redis-timetable
+        restart: always
+        command: >
+            --requirepass ${REDIS_PASSWORD}
+        environment:
+            TZ: Europe/Moscow
+        volumes:
+            - /usr/src/app/timetable_bot/redis/config:/usr/local/etc/redis
+            - /usr/src/app/timetable_bot/redis/data:/data
+        network_mode: host
 
-  postgres:
-    image: postgres:14.9-alpine
-    container_name: postgres-timetable
-    restart: always
-    environment:
-      TZ: Europe/Moscow
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      PGDATA: /var/lib/postgresql/data/pgdata
-    volumes:
-      - /usr/src/app/timetable_bot/postgres/init:/docker-entrypoint-initdb.d
-      - /usr/src/app/timetable_bot/postgres/data:/var/lib/postgresql/data
-    network_mode: host
+    postgres:
+        image: postgres:14.9-alpine
+        container_name: postgres-timetable
+        restart: always
+        environment:
+            TZ: Europe/Moscow
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
+            PGDATA: /var/lib/postgresql/data/pgdata
+        volumes:
+            - /usr/src/app/timetable_bot/postgres/init:/docker-entrypoint-initdb.d
+            - /usr/src/app/timetable_bot/postgres/data:/var/lib/postgresql/data
+        network_mode: host

@@ -1,18 +1,18 @@
 @import "../utils.scss";
 
 .footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 32px;
-  background: $black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    background: $black;
 
-  &__text {
-    @include paragraph;
-    color: $white;
+    &__text {
+        @include paragraph;
+        color: $white;
 
-    &-bold {
-      font-weight: 600;
+        &-bold {
+            font-weight: 600;
+        }
     }
-  }
 }

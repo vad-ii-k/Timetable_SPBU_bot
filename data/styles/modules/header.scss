@@ -1,62 +1,62 @@
 @import "../utils.scss";
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 64px;
-  padding: 32px;
-  background: $black;
-
-  &__brand {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 64px;
+    padding: 32px;
+    background: $black;
 
-    &__logo {
-      width: 53px;
-      height: 53px;
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        &__logo {
+            width: 53px;
+            height: 53px;
+        }
+
+        &__separator {
+            align-self: stretch;
+            width: 1px;
+            background: $white;
+        }
+
+        &__name {
+            @include paragraph-small;
+            width: 210px;
+            color: $white;
+        }
     }
 
-    &__separator {
-      align-self: stretch;
-      width: 1px;
-      background: $white;
+    &__group,
+    &__week {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &__icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        &__name {
+            @include heading-1;
+            white-space: nowrap;
+            color: $white;
+        }
     }
 
-    &__name {
-      @include paragraph-small;
-      width: 210px;
-      color: $white;
+    &__group {
+        flex-grow: 1;
+        min-width: 0;
+
+        &__name {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
-  }
-
-  &__group,
-  &__week {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    &__icon {
-      width: 32px;
-      height: 32px;
-    }
-
-    &__name {
-      @include heading-1;
-      white-space: nowrap;
-      color: $white;
-    }
-  }
-
-  &__group {
-    flex-grow: 1;
-    min-width: 0;
-
-    &__name {
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
 }

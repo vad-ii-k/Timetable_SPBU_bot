@@ -2,18 +2,18 @@
 {% import 'event.html' as e %}
 {% macro events_day(events_day) -%}
 <article class="day">
-  {% set are_all_events_canceled = events_day.events | map(attribute='is_canceled') | min %}
-  <h1 class="day__header {{ "day__header--inactive" * are_all_events_canceled}}">
-      {{ events_day.day | date_format_ru | title }}
-  </h1>
-  <address class="day__address">{{ events_day.general_location | default('<br>', true) }}</address>
-  <div class="day__events">
-    {%- for (start_time, end_time), events in events_day.events | events_group_by('time') %}
+    {% set are_all_events_canceled = events_day.events | map(attribute='is_canceled') | min %}
+    <h1 class="day__header {{ " day__header--inactive" * are_all_events_canceled}}">
+    {{ events_day.day | date_format_ru | title }}
+    </h1>
+    <address class="day__address">{{ events_day.general_location | default('<br>', true) }}</address>
+    <div class="day__events">
+        {%- for (start_time, end_time), events in events_day.events | events_group_by('time') %}
         {%- if not loop.first %}
-            {{ lb.long_break(loop.previtem[0][1], start_time) }}
+        {{ lb.long_break(loop.previtem[0][1], start_time) }}
         {%- endif %}
         {{ e.event(start_time, end_time, events, events_day.general_location, are_all_events_canceled) }}
-    {%- endfor %}
-  </div>
+        {%- endfor %}
+    </div>
 </article>
 {%- endmacro %}
