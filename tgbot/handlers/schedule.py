@@ -1,6 +1,4 @@
 """ Handling the keyboard with a schedule """
-import asyncio
-
 from aiogram import F, Router, flags
 from aiogram.enums import ChatAction
 from aiogram.filters import and_f
@@ -49,7 +47,7 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
         text = await get_text_day_schedule(tt_id, user_type, day_counter=day_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
     await callback.answer(cache_time=2)
-    asyncio.create_task(delete_message(callback.message, 0))
+    await delete_message(callback.message, 0)
 
 
 @router.callback_query(ScheduleCallbackFactory.filter(F.button.in_({"2-1", "2-2"})))
@@ -81,7 +79,7 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
         text, _ = await get_text_week_schedule(tt_id, user_type, week_counter=week_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
     await callback.answer(cache_time=2)
-    asyncio.create_task(delete_message(callback.message, 0))
+    await delete_message(callback.message, 0)
 
 
 @router.callback_query(and_f(ScheduleCallbackFactory.filter(F.button == "3-1"), F.message.document))
@@ -101,7 +99,7 @@ async def schedule_document_callback(callback: CallbackQuery, callback_data: Sch
         text = await get_text_day_schedule(tt_id, user_type, day_counter=callback_data.day_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
     await callback.answer(cache_time=2)
-    asyncio.create_task(delete_message(callback.message, 0))
+    await delete_message(callback.message, 0)
 
 
 @router.callback_query(and_f(ScheduleCallbackFactory.filter(F.button == "3-1"), ~F.message.document))
@@ -121,4 +119,4 @@ async def schedule_text_callback(callback: CallbackQuery, callback_data: Schedul
         text, photo = await get_image_day_schedule(tt_id, user_type, day_counter=callback_data.day_counter)
         await schedule_keyboard_helper(callback, callback_data, text, photo)
     await callback.answer(cache_time=2)
-    asyncio.create_task(delete_message(callback.message, 0))
+    await delete_message(callback.message, 0)
