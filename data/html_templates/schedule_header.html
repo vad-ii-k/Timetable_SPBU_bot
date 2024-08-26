@@ -1,4 +1,4 @@
-{% macro shedule_header(is_group, shedule_name, schedule_from_date, schedule_to_date) -%}
+{% macro schedule_header(is_group, schedule_name, schedule_from_date, schedule_to_date) -%}
 <header class="header">
     <div class="header__brand">
         <img class="header__brand__logo" src="../images/spbu-logo.svg"/>
@@ -10,7 +10,7 @@
 
     <div class="header__group">
         <img class="header__group__icon" src="../images/{{" group-solid.svg" if is_group else "avatar-solid.svg"}}" />
-        <h1 class="header__group__name">{{ shedule_name }}</h1>
+        <h1 class="header__group__name">{{ schedule_name }}</h1>
     </div>
     <div class="header__week">
         <img class="header__week__icon" src="../images/calendar-week.svg"/>
