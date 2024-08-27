@@ -3,6 +3,7 @@ import asyncio
 import re
 from contextlib import suppress
 
+from aiogram.enums import ContentType
 from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, CallbackQuery, Message
@@ -70,8 +71,10 @@ async def change_message_to_loading(message: Message) -> None:
     Changes the message to bootable
     :param message:
     """
-    if message.content_type == "document":
-        await message.edit_caption(_("🕒 <i>Загрузка...</i>"))
+    if message.content_type == ContentType.DOCUMENT:
+        await message.edit_caption(
+            business_connection_id=message.business_connection_id, caption=_("🕒 <i>Загрузка...</i>")
+        )
     else:
         await message.edit_text("⏳")
 
