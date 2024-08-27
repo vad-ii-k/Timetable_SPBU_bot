@@ -1,5 +1,4 @@
 """ Module for converting a schedule into an image """
-import logging
 import os
 from datetime import date, timedelta
 from itertools import groupby
@@ -8,11 +7,9 @@ from typing import Literal
 from aiogram.types import BufferedInputFile
 from babel.dates import format_date
 from jinja2 import Environment, FileSystemLoader
-from pyppeteer import connect, launch
 
+from tgbot.services.browser.browser_manager import browser_manager
 from tgbot.services.schedule.class_schedule import Schedule, StudyEvent
-
-_WS_ENDPOINT: str | None = None
 
 
 async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
@@ -91,23 +88,18 @@ async def take_browser_screenshot(schedule_type: Literal["day", "week"]):
 
     :param schedule_type:
     """
-    default_viewport = {"width": 2048 if schedule_type == "week" else 1408, "height": 256}
-    global _WS_ENDPOINT
-    if _WS_ENDPOINT:
-        browser = await connect(browserWSEndpoint=_WS_ENDPOINT, defaultViewport=default_viewport)
-    else:
-        browser = await launch(
-            defaultViewport=default_viewport,
-            logLevel=logging.ERROR,
-            headless=True,
-            executablePath="/usr/bin/chromium-browser",
-            args=["--no-sandbox"],
-        )
-        _WS_ENDPOINT = browser.wsEndpoint
-    browser_page = await browser.newPage()
-    await browser_page.goto(f'file:///{os.path.abspath(f"data/compiled_html_pages/{schedule_type}_schedule.html")}')
-    await browser_page.screenshot(path="data/output.jpeg", type="jpeg", fullPage=True, quality=75)
-    await browser_page.close()
+    browser = await browser_manager.get_browser()
+
+    viewport = {"width": 2048 if schedule_type == "week" else 1408, "height": 256}
+    context = await browser.new_context(viewport=viewport)
+    page = await context.new_page()
+
+    try:
+        await page.goto(f'file:///{os.path.abspath(f"data/compiled_html_pages/{schedule_type}_schedule.html")}')
+        await page.screenshot(path="data/output.jpeg", type="jpeg", full_page=True, quality=75)
+    finally:
+        await page.close()
+        await context.close()
 
 
 async def get_rendered_image(schedule: Schedule, schedule_type: Literal["day", "week"]) -> BufferedInputFile:
