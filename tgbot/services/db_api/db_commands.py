@@ -1,4 +1,5 @@
 """ Functional work with the database """
+import logging
 from datetime import time
 
 from aiogram import types
@@ -80,13 +81,24 @@ class DBCommands:
         :param group_name:
         :return:
         """
-        old_group = await self.get_group(group_tt_id)
-        if old_group:
+        old_group_by_tt_id = await self.get_group(group_tt_id)
+        if old_group_by_tt_id:
+            logging.info(f"Группа с tt_id={group_tt_id} и group_name={group_name} не была создана. tt_id занят")
             return
+
+        old_group_by_name = await Group.query.where(Group.name == group_name).gino.first()
+
         new_group = Group()
         new_group.tt_id = group_tt_id
         new_group.name = group_name
         await new_group.create()
+
+        if old_group_by_name:
+            await MainScheduleInfo.update.values(timetable_id=group_tt_id).where(
+                MainScheduleInfo.timetable_id == old_group_by_name.tt_id
+            ).gino.status()
+
+            await old_group_by_name.delete()
 
     @staticmethod
     async def get_group(group_tt_id: int) -> Group:
