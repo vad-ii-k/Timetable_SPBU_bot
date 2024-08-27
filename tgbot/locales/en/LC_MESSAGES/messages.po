@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-19 13:45+0300\n"
+"POT-Creation-Date: 2024-08-27 11:53+0300\n"
 "PO-Revision-Date: 2022-10-06 13:01+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -16,13 +16,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.16.0\n"
 
-#: tgbot/handlers/commands.py:57
+#: tgbot/handlers/commands.py:45
 msgid "👋🏻 <b>Добро пожаловать, "
 msgstr "👋🏻 <b>Welcome, "
 
-#: tgbot/handlers/commands.py:59
+#: tgbot/handlers/commands.py:47
 msgid ""
 "ℹ️ Следуйте указаниям для настройки\n"
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
@@ -32,11 +32,11 @@ msgstr ""
 "➖➖➖➖➖➖➖➖➖➖➖➖\n"
 "⬇️ Get the schedule by:"
 
-#: tgbot/handlers/commands.py:74
+#: tgbot/handlers/commands.py:60
 msgid "🔎 Введите фамилию преподавателя для поиска:"
 msgstr "🔎 Enter the last name of the teacher to search:"
 
-#: tgbot/handlers/commands.py:85
+#: tgbot/handlers/commands.py:71
 msgid ""
 "🔎 Введите название группы для поиска:\n"
 "*️⃣ <i>например, 20.Б08-мм</i>"
@@ -44,7 +44,7 @@ msgstr ""
 "🔎 Enter the name of the group to search for:\n"
 "*️⃣ <i>for example, 20.Б08-мм</i>"
 
-#: tgbot/handlers/commands.py:100
+#: tgbot/handlers/commands.py:85
 msgid ""
 "📅 <b>Основное расписание:</b>\n"
 "ㅤㅤ"
@@ -52,11 +52,11 @@ msgstr ""
 "📅 <b>Main schedule:</b>\n"
 "ㅤㅤ"
 
-#: tgbot/handlers/commands.py:104
+#: tgbot/handlers/commands.py:89
 msgid "🚫 Не выбрано"
 msgstr "🚫 Not selected"
 
-#: tgbot/handlers/commands.py:105
+#: tgbot/handlers/commands.py:90
 msgid ""
 "\n"
 "\n"
@@ -66,7 +66,7 @@ msgstr ""
 "\n"
 "⚙️ <b>Current settings:</b>"
 
-#: tgbot/handlers/commands.py:124
+#: tgbot/handlers/commands.py:110
 msgid ""
 "🚫 Основное расписание отсутствует\n"
 "1. 🔎 Воспользуйтесь одной из команд:\n"
@@ -80,15 +80,15 @@ msgstr ""
 "2. 🔖 Select the schedule you need\n"
 "3. ✅ Make the schedule the main one"
 
-#: tgbot/handlers/commands.py:138
+#: tgbot/handlers/commands.py:127
 msgid "🤖 Список команд: \n"
 msgstr "🤖 List of commands: \n"
 
-#: tgbot/handlers/helpers.py:74
+#: tgbot/handlers/helpers.py:76
 msgid "🕒 <i>Загрузка...</i>"
 msgstr "🕒 <i>Loading...</i>"
 
-#: tgbot/handlers/helpers.py:97
+#: tgbot/handlers/helpers.py:100
 msgid ""
 "ℹ️ Для быстрого доступа 💨 к расписанию командой /my_schedule и возможности настроить уведомления "
 "🔔 о предстоящих занятиях необходимо подписаться на расписание\n"
@@ -98,7 +98,7 @@ msgstr ""
 "notifications 🔔 about upcoming classes, you need to subscribe to the schedule\n"
 "⚙️ Do you want to make this schedule your main one?"
 
-#: tgbot/handlers/searching.py:30
+#: tgbot/handlers/searching.py:31
 msgid ""
 "❌ Преподаватель \"<i>{last_name}</i>\" не найден!\n"
 "Пожалуйста, введите другую фамилию:"
@@ -106,7 +106,7 @@ msgstr ""
 "❌ Teacher \"<i>{last_name}</i>\" was not found!\n"
 "Please enter another surname:"
 
-#: tgbot/handlers/searching.py:33
+#: tgbot/handlers/searching.py:38
 msgid ""
 "❌ Фамилия \"<i>{last_name}</i>\" очень распространена\n"
 "Попробуйте ввести фамилию и первую букву имени:"
@@ -114,11 +114,11 @@ msgstr ""
 "❌ The surname \"<i>{last_name}</i>\" is very common\n"
 "Try to enter the last name and the first letter of the name:"
 
-#: tgbot/handlers/searching.py:36
+#: tgbot/handlers/searching.py:43
 msgid "⬇️ Выберите преподавателя из списка:"
 msgstr "⬇️ Select a teacher from the list:"
 
-#: tgbot/handlers/searching.py:53
+#: tgbot/handlers/searching.py:62
 msgid ""
 "Группа \"<i>{group_name}</i>\" не найдена!\n"
 "Попробуйте ещё раз или воспользуйтесь навигацией с помощью команды /start:"
@@ -126,7 +126,7 @@ msgstr ""
 "The group \"<i>{group_name}</i>\" was not found!\n"
 "Try again or use the navigation with the /start command:"
 
-#: tgbot/handlers/searching.py:56
+#: tgbot/handlers/searching.py:70
 msgid ""
 "Групп, содержащих в названии \"<i>{group_name}</i>\" слишком много!\n"
 "Попробуйте ввести подробнее:"
@@ -134,7 +134,7 @@ msgstr ""
 "There are too many groups containing \"<i>{group_name}</i>\" in the name!\n"
 "Try to enter more details:"
 
-#: tgbot/handlers/searching.py:59
+#: tgbot/handlers/searching.py:75
 msgid "⬇️ Выберите группу из списка:"
 msgstr "⬇️ Select a group from the list:"
 
@@ -148,15 +148,15 @@ msgstr ""
 "  schedule summary for the day</b>\n"
 " Day before at ┃ On day of classes at"
 
-#: tgbot/handlers/settings.py:42
+#: tgbot/handlers/settings.py:44
 msgid "⚠️ Для настройки уведомлений необходимо наличие основного расписания"
 msgstr "⚠️ To configure notifications, you need to have a main schedule"
 
-#: tgbot/handlers/settings.py:59 tgbot/handlers/settings.py:73
+#: tgbot/handlers/settings.py:61 tgbot/handlers/settings.py:75
 msgid "Настройки обновлены ✅"
 msgstr "Settings updated ✅"
 
-#: tgbot/handlers/settings.py:85
+#: tgbot/handlers/settings.py:87
 msgid ""
 "The language has been successfully changed to 🇬🇧\n"
 "Messages will now be sent in English"
@@ -164,7 +164,7 @@ msgstr ""
 "Язык успешно изменён на 🇷🇺\n"
 "Теперь сообщения будут присылаться на русском"
 
-#: tgbot/handlers/settings.py:110
+#: tgbot/handlers/settings.py:112
 msgid ""
 "Вы подписались на расписание! ✅\n"
 "Воспользуйтесь командой:\n"
@@ -176,7 +176,7 @@ msgstr ""
 "— /my_schedule to view your main schedule\n"
 "— /settings to configure notifications"
 
-#: tgbot/handlers/settings.py:119
+#: tgbot/handlers/settings.py:123
 msgid "Вы отказались от подписки! ❌"
 msgstr "You didn't subscribe! ❌"
 
@@ -212,11 +212,11 @@ msgstr "⬇️ Choose the admission year: "
 msgid "⬇️ Выберите группу:"
 msgstr "⬇️ Choose a group:"
 
-#: tgbot/handlers/student_navigation.py:106
+#: tgbot/handlers/student_navigation.py:104
 msgid "❌ По данной программе группы не найдены!"
 msgstr "❌ No groups were found for this program!"
 
-#: tgbot/handlers/unexpected_updates.py:24
+#: tgbot/handlers/unexpected_updates.py:25
 msgid ""
 "⛔️️ Запрос не обработан!\n"
 "⚠️ Пожалуйста, не используйте старые сообщения для взаимодействия с ботом\n"
@@ -230,75 +230,75 @@ msgstr ""
 msgid "Названию группы"
 msgstr "Group name"
 
-#: tgbot/keyboards/inline.py:39
+#: tgbot/keyboards/inline.py:38
 msgid "Навигации по программам"
 msgstr "Program navigation"
 
-#: tgbot/keyboards/inline.py:42
+#: tgbot/keyboards/inline.py:41
 msgid "ФИО преподавателя"
 msgstr "Teacher's full name"
 
-#: tgbot/keyboards/inline.py:148
+#: tgbot/keyboards/inline.py:149
 msgid "Сегодня"
 msgstr "Today"
 
-#: tgbot/keyboards/inline.py:149
+#: tgbot/keyboards/inline.py:151
 msgid "⏹ Эта неделя"
 msgstr "⏹ This week"
 
-#: tgbot/keyboards/inline.py:149
+#: tgbot/keyboards/inline.py:152
 msgid "След. неделя ⏩"
 msgstr "Next week ⏩"
 
-#: tgbot/keyboards/inline.py:150
+#: tgbot/keyboards/inline.py:153
 msgid "📝 Текстом 📝"
 msgstr "📝 as a Text 📝"
 
-#: tgbot/keyboards/inline.py:150
+#: tgbot/keyboards/inline.py:153
 msgid "🖼 Картинкой 🖼"
 msgstr "🖼 as a Picture 🖼"
 
-#: tgbot/keyboards/inline.py:177
+#: tgbot/keyboards/inline.py:180
 msgid "Присылать сводку "
 msgstr "Send a summary "
 
-#: tgbot/keyboards/inline.py:179
+#: tgbot/keyboards/inline.py:182
 msgid "на день: 🔇"
 msgstr "for a day: 🔇"
 
-#: tgbot/keyboards/inline.py:182
+#: tgbot/keyboards/inline.py:185
 msgid "за день до: в "
 msgstr "a day before: at "
 
-#: tgbot/keyboards/inline.py:184
+#: tgbot/keyboards/inline.py:187
 msgid "день в день: в "
 msgstr "day to day: at "
 
-#: tgbot/keyboards/inline.py:189
+#: tgbot/keyboards/inline.py:192
 msgid "Вид расписания по умолчанию: "
 msgstr "Default schedule view: "
 
-#: tgbot/keyboards/inline.py:194
+#: tgbot/keyboards/inline.py:197
 msgid "Язык: "
 msgstr "Language: "
 
-#: tgbot/keyboards/inline.py:218
+#: tgbot/keyboards/inline.py:221
 msgid " Не присылать 🔇"
 msgstr " Do not send 🔇"
 
-#: tgbot/keyboards/inline.py:223
+#: tgbot/keyboards/inline.py:226
 msgid "Назад ↩️"
 msgstr "Back ↩️"
 
-#: tgbot/keyboards/inline.py:236
+#: tgbot/keyboards/inline.py:240
 msgid "Да, сделать основным ✅"
 msgstr "Yes, make it the main ✅ "
 
-#: tgbot/keyboards/inline.py:238
+#: tgbot/keyboards/inline.py:244
 msgid "Нет, только посмотреть ❌"
 msgstr "No, just to see ❌"
 
-#: tgbot/middlewares/config.py:50
+#: tgbot/middlewares/action.py:50
 msgid ""
 "⚠ Превышено время ожидания ответа :(\n"
 "🔄 Попробуйте снова❕"
@@ -306,19 +306,19 @@ msgstr ""
 "⚠ Response waiting time exceeded :(\n"
 "🔄 Try again❕"
 
-#: tgbot/middlewares/config.py:77
+#: tgbot/middlewares/throttling.py:33
 msgid "⚠️ Больше одного действия за секунду!"
 msgstr "⚠️ More than one action per second!"
 
-#: tgbot/services/schedule/class_schedule.py:143
+#: tgbot/services/schedule/class_schedule.py:151
 msgid "📆 Неделя: "
 msgstr "📆 Week: "
 
-#: tgbot/services/schedule/class_schedule.py:192
+#: tgbot/services/schedule/class_schedule.py:202
 msgid "🧑‍🏫 Преподаватель: "
 msgstr "🧑‍🏫 Educator: "
 
-#: tgbot/services/schedule/class_schedule.py:235
+#: tgbot/services/schedule/class_schedule.py:247
 msgid "👨‍👩‍👧‍👦 Группа: "
 msgstr "👨‍👩‍👧‍👦 Group: "
 
