@@ -1,4 +1,5 @@
 """ This module contains the code for handling chat member updates """
+
 from aiogram import Router
 from aiogram.enums import ChatMemberStatus
 from aiogram.types import ChatMemberUpdated

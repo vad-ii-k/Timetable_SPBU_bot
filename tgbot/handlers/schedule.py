@@ -1,4 +1,5 @@
 """ Handling the keyboard with a schedule """
+
 from aiogram import F, Router, flags
 from aiogram.enums import ChatAction
 from aiogram.filters import and_f

@@ -1,4 +1,5 @@
 """ Module for converting a schedule into an image """
+
 import os
 from datetime import date, timedelta
 from itertools import groupby

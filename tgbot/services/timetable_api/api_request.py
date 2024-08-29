@@ -1,4 +1,5 @@
 """ Timetable API request """
+
 import asyncio
 from random import shuffle
 

@@ -2,6 +2,7 @@
 Handling all errors
 with [ErrorHandler](https://docs.aiogram.dev/en/dev-3.x/dispatcher/class_based_handlers/error.html)
 """
+
 import logging
 
 from aiogram import Router

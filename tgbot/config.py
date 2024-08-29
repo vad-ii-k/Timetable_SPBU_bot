@@ -1,4 +1,5 @@
 """ Setting configs for the bot from environment variables """
+
 from dataclasses import dataclass
 
 from aiogram import Bot

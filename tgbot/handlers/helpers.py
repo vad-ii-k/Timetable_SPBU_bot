@@ -1,4 +1,5 @@
 """ Auxiliary functions for event handling """
+
 import asyncio
 import re
 from contextlib import suppress

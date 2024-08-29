@@ -1,4 +1,5 @@
 """ Browser Manager definition """
+
 from playwright.async_api import Browser, Playwright, async_playwright
 
 

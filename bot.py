@@ -1,4 +1,5 @@
 """ Module for launching the bot """
+
 import asyncio
 import logging
 

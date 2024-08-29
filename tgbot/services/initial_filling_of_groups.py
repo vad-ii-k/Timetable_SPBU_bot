@@ -1,4 +1,5 @@
 """ Initial filling of groups for searching by name """
+
 import asyncio
 import logging
 from itertools import cycle

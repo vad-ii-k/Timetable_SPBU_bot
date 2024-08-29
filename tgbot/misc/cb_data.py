@@ -2,6 +2,7 @@
 [Callback Data Factory](https://docs.aiogram.dev/en/dev-3.x/dispatcher/filters/callback_data.html) classes
 for processing clicks on inline keyboards
 """
+
 from typing import Literal
 
 from aiogram.filters.callback_data import CallbackData

@@ -1,4 +1,5 @@
 """ Handling events that other handlers missed """
+
 from aiogram import Router
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.i18n import gettext as _

@@ -1,4 +1,5 @@
 """ Statistical work with the database """
+
 from sqlalchemy import asc
 
 from tgbot.services.db_api.db_models import MainScheduleInfo, Settings, User, db_gino

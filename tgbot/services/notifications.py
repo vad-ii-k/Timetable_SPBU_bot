@@ -1,4 +1,5 @@
 """ Module for working with notifications """
+
 import logging
 from datetime import datetime, time
 

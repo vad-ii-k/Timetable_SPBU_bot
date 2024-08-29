@@ -1,4 +1,5 @@
 """ Functions for getting a schedule """
+
 from datetime import date, timedelta
 
 from aiogram.types import BufferedInputFile

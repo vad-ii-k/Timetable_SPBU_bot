@@ -1,4 +1,5 @@
 """ Database Model definition """
+
 from gino import Gino
 from sqlalchemy import BigInteger, Boolean, Column, Date, ForeignKey, Index, Integer, Sequence, String, Time, func
 

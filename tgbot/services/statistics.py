@@ -1,4 +1,5 @@
 """ Module for getting bot statistics """
+
 import csv
 from dataclasses import dataclass
 from datetime import date, time

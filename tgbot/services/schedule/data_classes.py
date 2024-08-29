@@ -1,4 +1,5 @@
 """ Dataclasses for working with a schedule """
+
 from dataclasses import dataclass
 from enum import Enum
 

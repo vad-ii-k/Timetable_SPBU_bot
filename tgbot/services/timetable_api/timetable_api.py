@@ -1,4 +1,5 @@
 """ Wrappers over the timetable API """
+
 from typing import Final
 
 from cashews import cache

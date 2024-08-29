@@ -1,4 +1,5 @@
 """ Handling the start menu button click """
+
 from aiogram import F, Router, flags
 from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext

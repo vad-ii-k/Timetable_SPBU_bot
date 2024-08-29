@@ -1,4 +1,5 @@
 """ Handling program navigation to select a student's group """
+
 from aiogram import Router, flags
 from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext

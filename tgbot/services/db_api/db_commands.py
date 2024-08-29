@@ -1,4 +1,5 @@
 """ Functional work with the database """
+
 import logging
 from datetime import time
 
