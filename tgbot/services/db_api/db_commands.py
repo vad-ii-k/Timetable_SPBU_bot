@@ -171,7 +171,7 @@ class DBCommands:
         )
         user_with_main_schedule = list(
             map(
-                lambda user: (user[1], UserType.STUDENT if user[7] else UserType.EDUCATOR, user[6]),
+                lambda user: (user[1], UserType.STUDENT if user[8] else UserType.EDUCATOR, user[7]),
                 main_schedule_of_users,
             )
         )
