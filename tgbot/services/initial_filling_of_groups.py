@@ -30,20 +30,20 @@ async def request(session: ClientSession, url: str) -> dict:
             if response.status == 200:
                 return await response.json()
     except ProxyError as err:
-        print("Error: %s", err)
+        logging.error("Proxy error: %s", err)
     except ProxyConnectionError as err:
-        print("Error: %s", err)
+        logging.error("Proxy connection error: %s", err)
     return {}
 
 
-def chunks_generator(arr: list[str], chuck_size: int) -> Iterable[list[str]]:
+def chunks_generator(arr: list[str], chunk_size: int) -> Iterable[list[str]]:
     """
     Splitting a list into multiple lists
     :param arr:
-    :param chuck_size:
+    :param chunk_size:
     """
-    for i in range(0, len(arr), chuck_size):
-        yield arr[i : i + chuck_size]
+    for i in range(0, len(arr), chunk_size):
+        yield arr[i : i + chunk_size]
 
 
 async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[ClientSession, str], Coroutine]):
@@ -130,7 +130,7 @@ async def adding_groups_to_db() -> None:
         logging.info("Groups are gathering for the %s remaining programs...", len(remaining_program_ids))
         for group in groups:
             await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
-        if len(remaining_program_ids) == 0:
+        if len(remaining_program_ids) == 0 or not program_ids:
             break
         program_ids = remaining_program_ids.copy()
         remaining_program_ids.clear()
