@@ -13,7 +13,7 @@ from tgbot.services.db_api.db_commands import database
 from tgbot.services.schedule.data_classes import GroupSearchInfo, StudyLevel
 from tgbot.services.timetable_api.timetable_api import TT_API_URL, get_study_divisions
 
-program_ids: list[int] = []
+program_ids: list[str] = []
 groups: list[GroupSearchInfo] = []
 remaining_program_ids: list[str] = []
 
@@ -78,7 +78,7 @@ async def get_study_levels(session: ClientSession, alias: str) -> None:
         parsed_level = StudyLevel(**level)
         for program_combination in parsed_level.program_combinations:
             for admission_year in program_combination.admission_years:
-                program_ids.append(admission_year.study_program_id)
+                program_ids.append(str(admission_year.study_program_id))
 
 
 async def collecting_program_ids() -> None:
@@ -122,16 +122,35 @@ async def adding_groups_to_db() -> None:
     """Adding all groups to the database"""
     logging.info("Collecting programs...")
     await collecting_program_ids()
+
     logging.info("Collecting groups...")
+
     while True:
         global program_ids
-        program_ids_by_parts = list(chunks_generator(program_ids, 50))
-        await create_and_run_tasks(program_ids_by_parts, get_groups)
-        logging.info("Groups are gathering for the %s remaining programs...", len(remaining_program_ids))
-        for group in groups:
-            await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
-        if len(remaining_program_ids) == 0 or not program_ids:
+
+        # Проверка на пустоту перед началом цикла
+        if not program_ids:
+            logging.info("No more program IDs to process. Exiting loop.")
             break
+
+        logging.info("Current program IDs to process: %s", program_ids)
+
+        program_ids_by_parts = list(chunks_generator(program_ids, 50))
+        logging.info("Processing %d chunks of program IDs.", len(program_ids_by_parts))
+
+        await create_and_run_tasks(program_ids_by_parts, get_groups)
+
+        logging.info("Groups are gathering for the %s remaining programs...", len(remaining_program_ids))
+
+        for group in groups:
+            logging.info("Adding group to database: ID=%s, Name=%s", group.tt_id, group.name)
+            await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
+
+        # Обновление program_ids на основе remaining_program_ids
+        logging.info("Updating program IDs for the next iteration.")
         program_ids = remaining_program_ids.copy()
-        remaining_program_ids.clear()
+        remaining_program_ids.clear()  # Очистка списка оставшихся ID
+        groups.clear()  # Очистка списка групп для следующей итерации
+
     edit_env_variable("ARE_GROUPS_COLLECTED", "False", "True")
+    logging.info("Finished adding groups to the database.")

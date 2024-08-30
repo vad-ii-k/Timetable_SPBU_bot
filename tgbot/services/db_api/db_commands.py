@@ -84,9 +84,6 @@ class DBCommands:
         """
         old_group_by_tt_id = await self.get_group(group_tt_id)
         if old_group_by_tt_id:
-            logging.info(
-                f"Группа с tt_id={group_tt_id} и group_name={group_name} не была создана. tt_id занят {group_name}"
-            )
             return
 
         old_group_by_name = await Group.query.where(Group.name == group_name).gino.first()
