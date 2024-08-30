@@ -62,7 +62,7 @@ async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[Clie
             for item in chunk:
                 task = asyncio.create_task(function(session, item))
                 tasks.append(task)
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.5)
             await asyncio.gather(*tasks)
 
 
@@ -95,13 +95,14 @@ async def get_groups(session: ClientSession, program_id: str) -> None:
     :param session:
     :param program_id:
     """
-    url = f"{TT_API_URL}/progams/{program_id}/groups"
+    url = f"{TT_API_URL}/programs/{program_id}/groups"
     response = await request(session, url)
     if "Groups" in response:
         for group in response["Groups"]:
             if len(group) != 0:
                 groups.append(GroupSearchInfo(tt_id=group["StudentGroupId"], name=group["StudentGroupName"]))
     else:
+        logging.warning(response)
         remaining_program_ids.append(program_id)
 
 
