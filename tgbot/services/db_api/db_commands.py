@@ -166,6 +166,7 @@ class DBCommands:
             await User.join(MainScheduleInfo, User.user_id == MainScheduleInfo.user_id)
             .select()
             .where(MainScheduleInfo.user_id.in_(users_ids))
+            .where(User.is_bot_blocked == False)
             .gino.all()
         )
         user_with_main_schedule = list(
