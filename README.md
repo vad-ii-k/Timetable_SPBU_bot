@@ -60,7 +60,7 @@ the [LICENSE](https://github.com/vad-ii-k/Timetable_SPBU_bot/blob/master/LICENSE
 
 <div>
     <a href="https://github.com/python/cpython" target="_blank">
-        <img alt="Python logo" align="left" src="https://www.python.org/static/img/python-logo@2x.png" height="35px">
+        <img alt="Python logo" align="left" src="https://www.python.org/static/img/python-logo.png" height="35px">
     </a>
     <a href="https://github.com/python-poetry/poetry" target="_blank">
         <img alt="Poetry logo" align="left" src="https://python-poetry.org/images/logo-origami.svg" height="35px">

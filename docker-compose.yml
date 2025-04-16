@@ -30,7 +30,7 @@ services:
         network_mode: host
 
     postgres:
-        image: postgres:14.13-alpine
+        image: postgres:14.17-alpine
         restart: always
         environment:
             TZ: Europe/Moscow
