@@ -3,7 +3,8 @@ FROM node:22.14-alpine AS styles-compiler
 WORKDIR /app
 
 COPY ./data/styles/ data/styles/
-RUN npx sass --update data/styles:data/compiled_html_pages/styles
+RUN npx sass --update data/styles:data/compiled_html_pages/styles \
+    && cp -R data/styles/fonts data/compiled_html_pages/styles/
 
 
 FROM python:3.12.10-bookworm
