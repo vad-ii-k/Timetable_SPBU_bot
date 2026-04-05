@@ -12,10 +12,13 @@ class BrowserManager:
         if not self.playwright:
             self.playwright = await async_playwright().start()
 
+        if self.browser is not None and not self.browser.is_connected():
+            self.browser = None
+
         if not self.browser:
             self.browser = await self.playwright.chromium.launch(
                 headless=True,
-                args=["--no-sandbox"],
+                args=["--no-sandbox", "--disable-dev-shm-usage"],
             )
 
         return self.browser

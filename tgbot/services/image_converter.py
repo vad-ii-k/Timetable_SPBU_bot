@@ -1,7 +1,9 @@
 """ Module for converting a schedule into an image """
 
 import os
+import uuid
 from datetime import date, timedelta
+from pathlib import Path
 from itertools import groupby
 from typing import Literal
 
@@ -24,14 +26,15 @@ async def get_dates_of_days_of_week(schedule: Schedule) -> list[date]:
     return dates_of_days_of_week
 
 
-async def render_template(schedule: Schedule, schedule_type: Literal["day", "week"]) -> None:
+async def render_template(
+    schedule: Schedule, schedule_type: Literal["day", "week"], result_path: str
+) -> None:
     """
 
     :param schedule:
     :param schedule_type:
     :return:
     """
-    result_path = f"data/compiled_html_pages/{schedule_type}_schedule.html"
     environment = Environment(loader=FileSystemLoader("data/html_templates"))
 
     def date_format_ru(value):
@@ -84,11 +87,9 @@ async def render_template(schedule: Schedule, schedule_type: Literal["day", "wee
         )
 
 
-async def take_browser_screenshot(schedule_type: Literal["day", "week"]):
-    """
-
-    :param schedule_type:
-    """
+async def take_browser_screenshot(
+    schedule_type: Literal["day", "week"], html_path: str, jpeg_path: str
+) -> None:
     browser = await browser_manager.get_browser()
 
     viewport = {"width": 2048 if schedule_type == "week" else 1408, "height": 256}
@@ -96,8 +97,8 @@ async def take_browser_screenshot(schedule_type: Literal["day", "week"]):
     page = await context.new_page()
 
     try:
-        await page.goto(f'file:///{os.path.abspath(f"data/compiled_html_pages/{schedule_type}_schedule.html")}')
-        await page.screenshot(path="data/output.jpeg", type="jpeg", full_page=True, quality=75)
+        await page.goto(Path(html_path).resolve().as_uri(), wait_until="domcontentloaded")
+        await page.screenshot(path=jpeg_path, type="jpeg", full_page=True, quality=75)
     finally:
         await page.close()
         await context.close()
@@ -110,8 +111,18 @@ async def get_rendered_image(schedule: Schedule, schedule_type: Literal["day", "
     :param schedule_type:
     :return:
     """
-    await render_template(schedule, schedule_type)
-    await take_browser_screenshot(schedule_type)
-    file_name = f"{schedule.from_date:%d.%m}-{schedule.to_date:%d.%m}.jpg"
-    photo = BufferedInputFile.from_file(r"data/output.jpeg", filename=file_name)
-    return photo
+    uid = uuid.uuid4().hex
+    html_path = f"data/compiled_html_pages/{schedule_type}_schedule_{uid}.html"
+    jpeg_path = f"data/output_{uid}.jpeg"
+    try:
+        await render_template(schedule, schedule_type, html_path)
+        await take_browser_screenshot(schedule_type, html_path, jpeg_path)
+        file_name = f"{schedule.from_date:%d.%m}-{schedule.to_date:%d.%m}.jpg"
+        with open(jpeg_path, "rb") as jpeg_file:
+            return BufferedInputFile(file=jpeg_file.read(), filename=file_name)
+    finally:
+        for path in (html_path, jpeg_path):
+            try:
+                os.unlink(path)
+            except OSError:
+                pass

@@ -1,6 +1,7 @@
 services:
     timetable-tgbot:
         restart: always
+        shm_size: "512mb"
         build:
             context: .
             dockerfile: ./dockerfile
