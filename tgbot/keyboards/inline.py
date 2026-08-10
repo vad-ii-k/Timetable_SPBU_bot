@@ -28,8 +28,8 @@ from tgbot.services.schedule.data_classes import (
     UserType,
 )
 
-# Лимит Telegram на reply_markup; длинные названия программ бакалавриата иначе не влезают
-PROGRAMS_PAGE_SIZE = 12
+# Пагинация: лимит Telegram на reply_markup
+PROGRAMS_PAGE_SIZE = 30
 BUTTON_TEXT_MAX_LEN = 60
 
 
@@ -106,13 +106,22 @@ async def create_study_programs_keyboard(
     row_sizes = [1] * len(page_items)
     if total_pages > 1:
         if page > 0:
-            keyboard.button(text="⬅️", callback_data=ProgramsPageCallbackFactory(page=page - 1))
+            keyboard.button(
+                text="⬅️",
+                callback_data=ProgramsPageCallbackFactory(page=page - 1),
+                style="primary",
+            )
         keyboard.button(
             text=f"{page + 1}/{total_pages}",
             callback_data=ProgramsPageCallbackFactory(page=page),
+            style="primary",
         )
         if page < total_pages - 1:
-            keyboard.button(text="➡️", callback_data=ProgramsPageCallbackFactory(page=page + 1))
+            keyboard.button(
+                text="➡️",
+                callback_data=ProgramsPageCallbackFactory(page=page + 1),
+                style="primary",
+            )
         row_sizes.append(1 + (page > 0) + (page < total_pages - 1))
 
     if row_sizes:
