@@ -1,45 +1,45 @@
+x-common: &common
+    restart: always
+    network_mode: host
+    environment:
+        TZ: Europe/Moscow
+
 services:
     timetable-tgbot:
-        restart: always
-        shm_size: "512mb"
+        <<: *common
+        shm_size: 512mb
         build:
             context: .
-            dockerfile: ./dockerfile
-        env_file:
-            - .env
-        environment:
-            TZ: Europe/Moscow
+            dockerfile: dockerfile
+        env_file: .env
         depends_on:
             - postgres
             - redis
+        # Список из одного элемента: иначе Compose режет строки на argv,
+        # и /bin/sh -c получает только «python» → exit 0 и restart-loop.
         command:
             - |
                 python -m alembic upgrade head
                 poetry run python bot.py
-        network_mode: host
 
     redis:
+        <<: *common
         image: redis:7.2-alpine
-        restart: always
-        command: >
-            --requirepass ${REDIS_PASSWORD}
-        environment:
-            TZ: Europe/Moscow
+        command: --requirepass ${REDIS_PASSWORD}
         volumes:
-            - /usr/src/app/timetable_bot/redis/config:/usr/local/etc/redis
-            - /usr/src/app/timetable_bot/redis/data:/data
-        network_mode: host
+            - redis-data:/data
 
     postgres:
+        <<: *common
         image: postgres:14.23-alpine
-        restart: always
         environment:
             TZ: Europe/Moscow
             POSTGRES_DB: ${DB_NAME}
             POSTGRES_USER: ${DB_USER}
             POSTGRES_PASSWORD: ${DB_PASS}
-            PGDATA: /var/lib/postgresql/data/pgdata
         volumes:
-            - /usr/src/app/timetable_bot/postgres/init:/docker-entrypoint-initdb.d
-            - /usr/src/app/timetable_bot/postgres/data:/var/lib/postgresql/data
-        network_mode: host
+            - postgres-data:/var/lib/postgresql/data
+
+volumes:
+    redis-data:
+    postgres-data:
