@@ -78,6 +78,12 @@ async def change_message_to_loading(message: Message) -> None:
         await message.edit_text("⏳")
 
 
+async def answer_callback_quietly(callback: CallbackQuery, cache_time: int = 2) -> None:
+    """Ответ на callback; просроченный query игнорируем (лимит Telegram ~10 с)."""
+    with suppress(TelegramBadRequest):
+        await callback.answer(cache_time=cache_time)
+
+
 async def delete_message(message: Message, sleep_time: int = 0) -> None:
     """
     Delayed deletion of a message ignoring errors

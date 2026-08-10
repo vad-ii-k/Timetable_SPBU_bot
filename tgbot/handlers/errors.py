@@ -6,13 +6,16 @@ with [ErrorHandler](https://docs.aiogram.dev/en/dev-3.x/dispatcher/class_based_h
 import logging
 
 from aiogram import Router
-from aiogram.exceptions import AiogramError, TelegramAPIError
+from aiogram.exceptions import AiogramError, TelegramAPIError, TelegramBadRequest
 from aiogram.types.error_event import ErrorEvent
 
 from tgbot.config import app_config, bot
 from tgbot.services import broadcaster
 
 router = Router()
+
+# Просроченный callback: расписание могло уже отправиться, пользователю/админам не шлём алерт
+_STALE_CALLBACK_QUERY = "query is too old and response timeout expired or query ID is invalid"
 
 
 @router.errors()
@@ -24,17 +27,23 @@ async def errors_handler(exception: ErrorEvent):
     :return:
     """
     update = exception.update
+    err = exception.exception
+
+    if isinstance(err, TelegramBadRequest) and _STALE_CALLBACK_QUERY in str(err):
+        logging.warning("Просроченный callback query, пропускаем: %s", err)
+        return
+
     error_message = "⚠ Произошла ошибка :("
     if update.message is not None:
         await update.message.answer(error_message)
     else:
         await update.callback_query.message.answer(error_message)
-    await broadcaster.broadcast(bot, app_config.tg_bot.admin_ids, f"<code>{str(exception.exception)[:4080]}</code>")
+    await broadcaster.broadcast(bot, app_config.tg_bot.admin_ids, f"<code>{str(err)[:4080]}</code>")
 
-    if isinstance(exception, AiogramError):
+    if isinstance(err, AiogramError):
         logging.exception("⚠ AiogramError")
         return
-    if isinstance(exception, TelegramAPIError):
+    if isinstance(err, TelegramAPIError):
         logging.exception("⚠ TelegramAPIError")
         return
 

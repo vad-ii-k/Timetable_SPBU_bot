@@ -5,7 +5,12 @@ from aiogram.enums import ChatAction
 from aiogram.filters import and_f
 from aiogram.types import CallbackQuery
 
-from tgbot.handlers.helpers import change_message_to_loading, delete_message, schedule_keyboard_helper
+from tgbot.handlers.helpers import (
+    answer_callback_quietly,
+    change_message_to_loading,
+    delete_message,
+    schedule_keyboard_helper,
+)
 from tgbot.misc.cb_data import ScheduleCallbackFactory
 from tgbot.services.schedule.getting_shedule import (
     get_image_day_schedule,
@@ -25,6 +30,7 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
     :param callback:
     :param callback_data:
     """
+    await answer_callback_quietly(callback)
     await change_message_to_loading(callback.message)
     callback_data.week_counter = None
     if callback_data.day_counter is None:
@@ -47,7 +53,6 @@ async def schedule_days_callback(callback: CallbackQuery, callback_data: Schedul
     else:
         text = await get_text_day_schedule(tt_id, user_type, day_counter=day_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
-    await callback.answer(cache_time=2)
     await delete_message(callback.message, 0)
 
 
@@ -59,6 +64,7 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
     :param callback:
     :param callback_data:
     """
+    await answer_callback_quietly(callback)
     await change_message_to_loading(callback.message)
     callback_data.day_counter = None
     if callback_data.week_counter is None:
@@ -79,7 +85,6 @@ async def schedule_weeks_callback(callback: CallbackQuery, callback_data: Schedu
     else:
         text, _ = await get_text_week_schedule(tt_id, user_type, week_counter=week_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
-    await callback.answer(cache_time=2)
     await delete_message(callback.message, 0)
 
 
@@ -91,6 +96,7 @@ async def schedule_document_callback(callback: CallbackQuery, callback_data: Sch
     :param callback:
     :param callback_data:
     """
+    await answer_callback_quietly(callback)
     await change_message_to_loading(callback.message)
     tt_id, user_type = callback_data.tt_id, callback_data.user_type
     if callback_data.week_counter is not None:
@@ -99,7 +105,6 @@ async def schedule_document_callback(callback: CallbackQuery, callback_data: Sch
     else:
         text = await get_text_day_schedule(tt_id, user_type, day_counter=callback_data.day_counter)
         await schedule_keyboard_helper(callback, callback_data, text)
-    await callback.answer(cache_time=2)
     await delete_message(callback.message, 0)
 
 
@@ -111,6 +116,7 @@ async def schedule_text_callback(callback: CallbackQuery, callback_data: Schedul
     :param callback:
     :param callback_data:
     """
+    await answer_callback_quietly(callback)
     await change_message_to_loading(callback.message)
     tt_id, user_type = callback_data.tt_id, callback_data.user_type
     if callback_data.week_counter is not None:
@@ -119,5 +125,4 @@ async def schedule_text_callback(callback: CallbackQuery, callback_data: Schedul
     else:
         text, photo = await get_image_day_schedule(tt_id, user_type, day_counter=callback_data.day_counter)
         await schedule_keyboard_helper(callback, callback_data, text, photo)
-    await callback.answer(cache_time=2)
     await delete_message(callback.message, 0)
