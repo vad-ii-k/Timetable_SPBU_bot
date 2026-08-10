@@ -2,8 +2,12 @@
 
 from gino import Gino
 from sqlalchemy import BigInteger, Boolean, Column, Date, ForeignKey, Index, Integer, Sequence, String, Time, func
+from sqlalchemy.dialects import registry
 
 from tgbot.config import app_config
+
+# setuptools>=82 убрал pkg_resources; SQLAlchemy 1.3 (GINO) иначе не находит диалект
+registry.register("postgresql.asyncpg", "gino.dialects.asyncpg", "AsyncpgDialect")
 
 db_gino = Gino()
 
