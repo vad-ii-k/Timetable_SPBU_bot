@@ -15,7 +15,7 @@ from tgbot.services import broadcaster
 router = Router()
 
 # Просроченный callback: расписание могло уже отправиться, пользователю/админам не шлём алерт
-_STALE_CALLBACK_QUERY = "query is too old and response timeout expired or query ID is invalid"
+_STALE_CALLBACK_MARKER = "query is too old"
 
 
 @router.errors()
@@ -29,7 +29,7 @@ async def errors_handler(exception: ErrorEvent):
     update = exception.update
     err = exception.exception
 
-    if isinstance(err, TelegramBadRequest) and _STALE_CALLBACK_QUERY in str(err):
+    if isinstance(err, TelegramBadRequest) and _STALE_CALLBACK_MARKER in str(err).lower():
         logging.warning("Просроченный callback query, пропускаем: %s", err)
         return
 

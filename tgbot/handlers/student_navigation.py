@@ -1,7 +1,5 @@
 """ Handling program navigation to select a student's group """
 
-from contextlib import suppress
-
 from aiogram import Router, flags
 from aiogram.enums import ChatAction
 from aiogram.exceptions import TelegramBadRequest
@@ -80,10 +78,14 @@ async def study_programs_page_callback(
     if not program_combinations:
         await callback.answer(_("Список программ устарел, начните выбор заново"), show_alert=True)
         return
-    with suppress(TelegramBadRequest):
+    try:
         await callback.message.edit_reply_markup(
             reply_markup=await create_study_programs_keyboard(program_combinations, page=callback_data.page),
         )
+    except TelegramBadRequest as err:
+        # Повторный клик по «n/m» не меняет разметку — это нормально
+        if "message is not modified" not in str(err).lower():
+            raise
     await callback.answer()
 
 
