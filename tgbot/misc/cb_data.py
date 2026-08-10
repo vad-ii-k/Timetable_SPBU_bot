@@ -38,6 +38,12 @@ class ProgramCombinationsCallbackFactory(CallbackData, prefix="program_combinati
     """ Serial number of the selected study program combinations """
 
 
+class ProgramsPageCallbackFactory(CallbackData, prefix="programs_page"):
+    """CallbackFactory для листания страниц списка программ"""
+
+    page: int
+
+
 class AdmissionYearsCallbackFactory(CallbackData, prefix="admission_years"):
     """CallbackFactory to process the selection of the admission year"""
 

@@ -1,7 +1,10 @@
 """ Handling program navigation to select a student's group """
 
+from contextlib import suppress
+
 from aiogram import Router, flags
 from aiogram.enums import ChatAction
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
@@ -16,6 +19,7 @@ from tgbot.keyboards.inline import (
 from tgbot.misc.cb_data import (
     AdmissionYearsCallbackFactory,
     ProgramCombinationsCallbackFactory,
+    ProgramsPageCallbackFactory,
     StudyDivisionCallbackFactory,
     StudyLevelCallbackFactory,
 )
@@ -63,6 +67,24 @@ async def study_levels_navigation_callback(
         reply_markup=await create_study_programs_keyboard(program_combinations),
     )
     await state.set_data({"program_combinations": program_combinations})
+    await callback.answer()
+
+
+@router.callback_query(ProgramsPageCallbackFactory.filter())
+async def study_programs_page_callback(
+    callback: CallbackQuery, callback_data: ProgramsPageCallbackFactory, state: FSMContext
+):
+    """Листание страниц списка программ подготовки."""
+    data = await state.get_data()
+    program_combinations = data.get("program_combinations")
+    if not program_combinations:
+        await callback.answer(_("Список программ устарел, начните выбор заново"), show_alert=True)
+        return
+    with suppress(TelegramBadRequest):
+        await callback.message.edit_reply_markup(
+            reply_markup=await create_study_programs_keyboard(program_combinations, page=callback_data.page),
+        )
+    await callback.answer()
 
 
 @router.callback_query(ProgramCombinationsCallbackFactory.filter())

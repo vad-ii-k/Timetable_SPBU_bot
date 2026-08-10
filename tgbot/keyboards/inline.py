@@ -9,6 +9,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from tgbot.misc.cb_data import (
     AdmissionYearsCallbackFactory,
     ProgramCombinationsCallbackFactory,
+    ProgramsPageCallbackFactory,
     ScheduleCallbackFactory,
     ScheduleSubscriptionCallbackFactory,
     SettingsCallbackFactory,
@@ -26,6 +27,10 @@ from tgbot.services.schedule.data_classes import (
     StudyLevel,
     UserType,
 )
+
+# Лимит Telegram на reply_markup; длинные названия программ бакалавриата иначе не влезают
+PROGRAMS_PAGE_SIZE = 12
+BUTTON_TEXT_MAX_LEN = 60
 
 
 async def create_start_menu_keyboard() -> InlineKeyboardMarkup:
@@ -72,16 +77,46 @@ async def create_study_levels_keyboard(study_levels: list[StudyLevel]) -> Inline
     return keyboard.as_markup()
 
 
-async def create_study_programs_keyboard(program_combinations: list[dict[str, str]]) -> InlineKeyboardMarkup:
+async def create_study_programs_keyboard(
+    program_combinations: list[dict[str, str]],
+    page: int = 0,
+) -> InlineKeyboardMarkup:
     """
     Creating a keyboard with a list of program combinations
     :param program_combinations:
+    :param page: страница списка (пагинация из‑за лимита reply markup)
     :return:
     """
     keyboard = InlineKeyboardBuilder()
-    for serial, program in enumerate(program_combinations):
-        keyboard.button(text=program["name"], callback_data=ProgramCombinationsCallbackFactory(serial=serial))
-    keyboard.adjust(1)
+    total = len(program_combinations)
+    total_pages = max(1, (total + PROGRAMS_PAGE_SIZE - 1) // PROGRAMS_PAGE_SIZE)
+    page = max(0, min(page, total_pages - 1))
+    start = page * PROGRAMS_PAGE_SIZE
+    page_items = program_combinations[start : start + PROGRAMS_PAGE_SIZE]
+
+    for serial, program in enumerate(page_items, start=start):
+        name = program["name"]
+        if len(name) > BUTTON_TEXT_MAX_LEN:
+            name = name[: BUTTON_TEXT_MAX_LEN - 1] + "…"
+        keyboard.button(
+            text=name,
+            callback_data=ProgramCombinationsCallbackFactory(serial=serial),
+        )
+
+    row_sizes = [1] * len(page_items)
+    if total_pages > 1:
+        if page > 0:
+            keyboard.button(text="⬅️", callback_data=ProgramsPageCallbackFactory(page=page - 1))
+        keyboard.button(
+            text=f"{page + 1}/{total_pages}",
+            callback_data=ProgramsPageCallbackFactory(page=page),
+        )
+        if page < total_pages - 1:
+            keyboard.button(text="➡️", callback_data=ProgramsPageCallbackFactory(page=page + 1))
+        row_sizes.append(1 + (page > 0) + (page < total_pages - 1))
+
+    if row_sizes:
+        keyboard.adjust(*row_sizes)
     return keyboard.as_markup()
 
 
