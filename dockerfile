@@ -1,4 +1,4 @@
-FROM node:22.14-alpine AS styles-compiler
+FROM node:22.23.2-alpine AS styles-compiler
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ RUN npx sass --update data/styles:data/compiled_html_pages/styles \
     && cp -R data/styles/fonts data/compiled_html_pages/styles/
 
 
-FROM python:3.12.10-bookworm
+FROM python:3.12.13-bookworm
 
 WORKDIR /app
 
