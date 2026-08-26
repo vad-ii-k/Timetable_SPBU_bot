@@ -4,7 +4,6 @@ import logging
 from datetime import datetime, time
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from pydantic import ValidationError
 
 from tgbot.config import bot
 from tgbot.services.db_api.db_commands import database
@@ -41,8 +40,9 @@ async def job_send_daily_summary():
     for tg_id, user_type, tt_id in user_with_main_schedule:
         try:
             await send_daily_summary(tg_id, user_type, tt_id, day_counter)
-        except ValidationError as err:
-            logging.error(err)
+        except Exception:
+            # Ошибка одного пользователя не должна рвать рассылку остальным
+            logging.exception("Не удалось отправить сводку пользователю %s", tg_id)
 
 
 async def start_scheduler(scheduler: AsyncIOScheduler):
