@@ -52,11 +52,13 @@ async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[Clie
     :param chunks:
     :param function:
     """
-    proxies_pool = cycle(app_config.proxy.ips)
+    proxies_pool = cycle(app_config.proxy.ips) if app_config.proxy.ips else None
     for chunk in chunks:
-        connector = ProxyConnector.from_url(
-            f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{next(proxies_pool)}"
-        )
+        connector = None
+        if proxies_pool is not None:
+            connector = ProxyConnector.from_url(
+                f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{next(proxies_pool)}"
+            )
         async with ClientSession(connector=connector) as session:
             tasks = []
             for item in chunk:
