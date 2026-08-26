@@ -2,8 +2,7 @@
 
 import asyncio
 import logging
-from itertools import cycle
-from typing import Callable, Coroutine, Iterable
+from typing import Callable, Coroutine
 
 from aiohttp import ClientError, ClientSession
 from aiohttp_socks import ProxyConnectionError, ProxyConnector, ProxyError
@@ -17,6 +16,8 @@ program_ids: list[str] = []
 groups: list[GroupSearchInfo] = []
 remaining_program_ids: list[str] = []
 
+_CONCURRENCY = 8
+
 
 async def request(session: ClientSession, url: str) -> dict:
     """
@@ -26,7 +27,7 @@ async def request(session: ClientSession, url: str) -> dict:
     :return:
     """
     try:
-        async with session.get(url, timeout=30) as response:
+        async with session.get(url, timeout=15) as response:
             if response.status == 200:
                 return await response.json()
             logging.warning("TT API %s: %s", response.status, url)
@@ -37,36 +38,29 @@ async def request(session: ClientSession, url: str) -> dict:
     return {}
 
 
-def chunks_generator(arr: list[str], chunk_size: int) -> Iterable[list[str]]:
-    """
-    Splitting a list into multiple lists
-    :param arr:
-    :param chunk_size:
-    """
-    for i in range(0, len(arr), chunk_size):
-        yield arr[i : i + chunk_size]
+def _proxy_connector() -> ProxyConnector | None:
+    if not app_config.proxy.ips:
+        return None
+    return ProxyConnector.from_url(
+        f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{app_config.proxy.ips[0]}"
+    )
 
 
-async def create_and_run_tasks(chunks: list[list[str]], function: Callable[[ClientSession, str], Coroutine]):
-    """
-    Creating and running tasks for asynchronous API requests
-    :param chunks:
-    :param function:
-    """
-    proxies_pool = cycle(app_config.proxy.ips) if app_config.proxy.ips else None
-    for chunk in chunks:
-        connector = None
-        if proxies_pool is not None:
-            connector = ProxyConnector.from_url(
-                f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{next(proxies_pool)}"
-            )
-        async with ClientSession(connector=connector) as session:
-            tasks = []
-            for item in chunk:
-                task = asyncio.create_task(function(session, item))
-                tasks.append(task)
-                await asyncio.sleep(0.5)
-            await asyncio.gather(*tasks)
+async def create_and_run_tasks(items: list[str], function: Callable[[ClientSession, str], Coroutine]) -> None:
+    """Параллельные запросы к API с ограничением одновременных соединений"""
+    semaphore = asyncio.Semaphore(_CONCURRENCY)
+
+    async with ClientSession(connector=_proxy_connector()) as session:
+
+        async def run_one(item: str) -> None:
+            async with semaphore:
+                await function(session, item)
+
+        results = await asyncio.gather(*(run_one(item) for item in items), return_exceptions=True)
+
+    for item, result in zip(items, results):
+        if isinstance(result, Exception):
+            logging.error("Task failed for %s: %s", item, result)
 
 
 async def get_study_levels(session: ClientSession, alias: str) -> None:
@@ -77,6 +71,9 @@ async def get_study_levels(session: ClientSession, alias: str) -> None:
     """
     url = f"{TT_API_URL}/study/divisions/{alias}/programs/levels"
     response = await request(session, url)
+    if not isinstance(response, list):
+        logging.warning("Skip study levels for %s", alias)
+        return
     for level in response:
         parsed_level = StudyLevel(**level)
         for program_combination in parsed_level.program_combinations:
@@ -88,8 +85,8 @@ async def collecting_program_ids() -> None:
     """Getting IDs of all programs"""
     study_divisions = await get_study_divisions()
     aliases = [division.alias for division in study_divisions]
-    aliases_by_parts = list(chunks_generator(aliases, 4))
-    await create_and_run_tasks(aliases_by_parts, get_study_levels)
+    logging.info("Collecting programs for %d divisions", len(aliases))
+    await create_and_run_tasks(aliases, get_study_levels)
 
 
 async def get_groups(session: ClientSession, program_id: str) -> None:
@@ -122,35 +119,33 @@ def edit_env_variable(env_variable: str, old_value: str, new_value: str) -> None
         env_file.write(new_data)
 
 
+async def _save_groups() -> None:
+    saved = 0
+    for group in groups:
+        await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
+        saved += 1
+    groups.clear()
+    logging.info("Saved %d groups to database", saved)
+
+
 async def adding_groups_to_db() -> None:
     """Adding all groups to the database"""
     logging.info("Collecting programs...")
     await collecting_program_ids()
+    logging.info("Collected %d program IDs", len(program_ids))
 
     logging.info("Collecting groups...")
+    await create_and_run_tasks(program_ids, get_groups)
+    await _save_groups()
 
-    while True:
-        global program_ids
-
-        if not program_ids:
-            logging.info("No more program IDs to process. Exiting loop.")
-            break
-
-        logging.info("Processing %d program IDs", len(program_ids))
-        program_ids_by_parts = list(chunks_generator(program_ids, 50))
-        logging.info("Processing %d chunks of program IDs", len(program_ids_by_parts))
-
-        await create_and_run_tasks(program_ids_by_parts, get_groups)
-
-        logging.info("Retry remaining programs: %d", len(remaining_program_ids))
-
-        for group in groups:
-            logging.info("Adding group to database: ID=%s, Name=%s", group.tt_id, group.name)
-            await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
-
-        program_ids = remaining_program_ids.copy()
+    if remaining_program_ids:
+        retry_ids = remaining_program_ids.copy()
         remaining_program_ids.clear()
-        groups.clear()
+        logging.info("Retry %d programs once", len(retry_ids))
+        await create_and_run_tasks(retry_ids, get_groups)
+        await _save_groups()
+        if remaining_program_ids:
+            logging.warning("Skipped %d programs after retry", len(remaining_program_ids))
 
     edit_env_variable("ARE_GROUPS_COLLECTED", "False", "True")
     logging.info("Finished adding groups to the database.")
