@@ -80,7 +80,7 @@ async def settings_command(message: Message):
     :param message: */settings*
     """
     user = await database.get_user(tg_user_id=message.chat.id)
-    settings = await database.get_settings(user)
+    settings = await database.ensure_settings(user, message.from_user.language_code)
     main_schedule = await database.get_main_schedule(user_id=user.user_id)
 
     text = _("📅 <b>Основное расписание:</b>\nㅤㅤ")
@@ -105,7 +105,13 @@ async def my_schedule_command(message: Message, state: FSMContext):
     if main_schedule:
         user_type = UserType.STUDENT if main_schedule.user_type_is_student else UserType.EDUCATOR
         await state.update_data({"tt_id": main_schedule.timetable_id, "user_type": user_type})
-        await send_schedule(state, subscription=False, tg_user_id=message.from_user.id)
+        await send_schedule(
+            state,
+            subscription=False,
+            tg_user_id=message.from_user.id,
+            tt_id=main_schedule.timetable_id,
+            user_type=user_type,
+        )
     else:
         await message.answer(
             text=_(

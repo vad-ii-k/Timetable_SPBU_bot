@@ -1,6 +1,7 @@
 """ Auxiliary functions for event handling """
 
 import asyncio
+import logging
 import re
 from contextlib import suppress
 
@@ -14,10 +15,17 @@ from tgbot.config import bot
 from tgbot.keyboards.inline import create_schedule_keyboard, create_schedule_subscription_keyboard
 from tgbot.misc.cb_data import ScheduleCallbackFactory
 from tgbot.services.db_api.db_commands import database
+from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.schedule.getting_shedule import get_image_week_schedule, get_text_week_schedule
 
 
-async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) -> None:
+async def send_schedule(
+    state: FSMContext,
+    subscription: bool,
+    tg_user_id: int,
+    tt_id: int,
+    user_type: UserType,
+) -> None:
     """
     Function for sending a message with a schedule after selecting a group or teacher
     :param state:
@@ -25,9 +33,10 @@ async def send_schedule(state: FSMContext, subscription: bool, tg_user_id: int) 
     :param tg_user_id: telegram user id
     """
     user = await database.get_user(tg_user_id=tg_user_id)
-    settings = await database.get_settings(user)
-    data = await state.get_data()
-    tt_id, user_type = int(data.get("tt_id")), data.get("user_type")
+    if user is None:
+        logging.warning("Нет пользователя %s для расписания", tg_user_id)
+        return
+    settings = await database.ensure_settings(user, "ru")
     is_picture = settings.schedule_view_is_picture
     reply_markup = await create_schedule_keyboard(
         is_photo=is_picture, callback_data=ScheduleCallbackFactory(tt_id=tt_id, user_type=user_type)

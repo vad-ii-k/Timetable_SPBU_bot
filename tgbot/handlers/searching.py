@@ -93,4 +93,10 @@ async def sending_schedule_after_search(
     await callback.message.delete()
     await state.set_state(state=None)
     await state.update_data({"tt_id": callback_data.tt_id, "user_type": callback_data.user_type})
-    await send_schedule(state, subscription=True, tg_user_id=callback.from_user.id)
+    await send_schedule(
+        state,
+        subscription=True,
+        tg_user_id=callback.from_user.id,
+        tt_id=callback_data.tt_id,
+        user_type=callback_data.user_type,
+    )
