@@ -5,7 +5,7 @@ import logging
 from itertools import cycle
 from typing import Callable, Coroutine, Iterable
 
-from aiohttp import ClientSession
+from aiohttp import ClientError, ClientSession
 from aiohttp_socks import ProxyConnectionError, ProxyConnector, ProxyError
 
 from tgbot.config import app_config
@@ -26,13 +26,14 @@ async def request(session: ClientSession, url: str) -> dict:
     :return:
     """
     try:
-        async with session.get(url) as response:
+        async with session.get(url, timeout=30) as response:
             if response.status == 200:
                 return await response.json()
-    except ProxyError as err:
-        logging.error("Proxy error: %s", err)
-    except ProxyConnectionError as err:
-        logging.error("Proxy connection error: %s", err)
+            logging.warning("TT API %s: %s", response.status, url)
+            if response.status == 404:
+                return {"Groups": []}
+    except (ProxyError, ProxyConnectionError, TimeoutError, ClientError) as err:
+        logging.error("TT API request failed (%s): %s", url, err)
     return {}
 
 
@@ -103,9 +104,9 @@ async def get_groups(session: ClientSession, program_id: str) -> None:
         for group in response["Groups"]:
             if len(group) != 0:
                 groups.append(GroupSearchInfo(tt_id=group["StudentGroupId"], name=group["StudentGroupName"]))
-    else:
-        logging.warning(response)
-        remaining_program_ids.append(program_id)
+        return
+    logging.warning("Retry program %s later", program_id)
+    remaining_program_ids.append(program_id)
 
 
 def edit_env_variable(env_variable: str, old_value: str, new_value: str) -> None:
@@ -131,29 +132,25 @@ async def adding_groups_to_db() -> None:
     while True:
         global program_ids
 
-        # Проверка на пустоту перед началом цикла
         if not program_ids:
             logging.info("No more program IDs to process. Exiting loop.")
             break
 
-        logging.info("Current program IDs to process: %s", program_ids)
-
+        logging.info("Processing %d program IDs", len(program_ids))
         program_ids_by_parts = list(chunks_generator(program_ids, 50))
-        logging.info("Processing %d chunks of program IDs.", len(program_ids_by_parts))
+        logging.info("Processing %d chunks of program IDs", len(program_ids_by_parts))
 
         await create_and_run_tasks(program_ids_by_parts, get_groups)
 
-        logging.info("Groups are gathering for the %s remaining programs...", len(remaining_program_ids))
+        logging.info("Retry remaining programs: %d", len(remaining_program_ids))
 
         for group in groups:
             logging.info("Adding group to database: ID=%s, Name=%s", group.tt_id, group.name)
             await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
 
-        # Обновление program_ids на основе remaining_program_ids
-        logging.info("Updating program IDs for the next iteration.")
         program_ids = remaining_program_ids.copy()
-        remaining_program_ids.clear()  # Очистка списка оставшихся ID
-        groups.clear()  # Очистка списка групп для следующей итерации
+        remaining_program_ids.clear()
+        groups.clear()
 
     edit_env_variable("ARE_GROUPS_COLLECTED", "False", "True")
     logging.info("Finished adding groups to the database.")
