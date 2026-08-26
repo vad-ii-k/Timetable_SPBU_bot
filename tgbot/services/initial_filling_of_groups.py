@@ -38,19 +38,16 @@ async def request(session: ClientSession, url: str) -> dict:
     return {}
 
 
-def _proxy_connector() -> ProxyConnector | None:
-    if not app_config.proxy.ips:
-        return None
-    return ProxyConnector.from_url(
-        f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{app_config.proxy.ips[0]}"
-    )
-
-
 async def create_and_run_tasks(items: list[str], function: Callable[[ClientSession, str], Coroutine]) -> None:
     """Параллельные запросы к API с ограничением одновременных соединений"""
+    connector = None
+    if app_config.proxy.ips:
+        connector = ProxyConnector.from_url(
+            f"HTTP://{app_config.proxy.login}:{app_config.proxy.password}@{app_config.proxy.ips[0]}"
+        )
     semaphore = asyncio.Semaphore(_CONCURRENCY)
 
-    async with ClientSession(connector=_proxy_connector()) as session:
+    async with ClientSession(connector=connector) as session:
 
         async def run_one(item: str) -> None:
             async with semaphore:
@@ -120,12 +117,10 @@ def edit_env_variable(env_variable: str, old_value: str, new_value: str) -> None
 
 
 async def _save_groups() -> None:
-    saved = 0
+    logging.info("Saving %d groups to database", len(groups))
     for group in groups:
         await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
-        saved += 1
     groups.clear()
-    logging.info("Saved %d groups to database", saved)
 
 
 async def adding_groups_to_db() -> None:

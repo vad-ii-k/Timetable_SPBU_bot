@@ -32,13 +32,9 @@ async def errors_handler(exception: ErrorEvent):
 
     if isinstance(err, TelegramForbiddenError):
         logging.warning("Пользователь заблокировал бота, пропускаем: %s", err)
-        tg_user_id = None
-        if update.message is not None and update.message.from_user is not None:
-            tg_user_id = update.message.from_user.id
-        elif update.callback_query is not None:
-            tg_user_id = update.callback_query.from_user.id
-        if tg_user_id is not None:
-            db_user = await database.get_user(tg_user_id)
+        tg_user = update.event_from_user
+        if tg_user is not None:
+            db_user = await database.get_user(tg_user.id)
             if db_user is not None:
                 await db_user.update(is_bot_blocked=True).apply()
         return

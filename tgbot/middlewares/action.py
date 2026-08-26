@@ -1,6 +1,7 @@
 """ Middlewares """
 
 import asyncio
+from contextlib import suppress
 from typing import Any, Awaitable, Callable
 
 from aiogram import BaseMiddleware
@@ -44,7 +45,7 @@ class ActionMiddleware(BaseMiddleware):
         if not action:
             return await handler(event, data)
         message = event.message if isinstance(event, CallbackQuery) else event
-        try:
+        with suppress(TelegramForbiddenError):
             async with ChatActionSender(bot=bot, action=action, chat_id=message.chat.id):
                 try:
                     return await asyncio.wait_for(handler(event, data), timeout=45)
@@ -52,5 +53,3 @@ class ActionMiddleware(BaseMiddleware):
                     if isinstance(event, CallbackQuery):
                         await delete_message(message)
                     return await message.answer(_("⚠ Превышено время ожидания ответа :(\n" "🔄 Попробуйте снова❕"))
-        except TelegramForbiddenError:
-            return

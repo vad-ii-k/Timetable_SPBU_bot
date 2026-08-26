@@ -41,7 +41,7 @@ class DBCommands:
         return user
 
     @staticmethod
-    async def add_settings(user: User, language_code: str) -> None:
+    async def add_settings(user: User, language_code: str) -> Settings:
         """
         Adding settings for a db user
         :param user:
@@ -54,6 +54,7 @@ class DBCommands:
         else:
             new_settings.language = "ru"
         await new_settings.create()
+        return new_settings
 
     @staticmethod
     async def get_settings(user: User) -> Settings:
@@ -69,8 +70,7 @@ class DBCommands:
         """Создать settings, если пользователя записали раньше, чем строку настроек."""
         settings = await self.get_settings(user)
         if settings is None:
-            await self.add_settings(user, language_code or "ru")
-            settings = await self.get_settings(user)
+            return await self.add_settings(user, language_code or "ru")
         return settings
 
     async def get_settings_by_tg_id(self, tg_user_id: int) -> Settings:
