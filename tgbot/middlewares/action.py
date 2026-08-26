@@ -5,7 +5,7 @@ from typing import Any, Awaitable, Callable
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message, TelegramObject
 from aiogram.utils.chat_action import ChatActionSender
 from aiogram.utils.i18n import gettext as _
 
@@ -28,8 +28,8 @@ class ActionMiddleware(BaseMiddleware):
 
     async def __call__(
         self,
-        handler: Callable[[CallbackQuery, dict[str, Any]], Awaitable[Any]],
-        event: CallbackQuery,
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
+        event: CallbackQuery | Message,
         data: dict[str, Any],
     ) -> Any:
         """
@@ -42,10 +42,11 @@ class ActionMiddleware(BaseMiddleware):
         action = get_flag(data, "chat_action")
         if not action:
             return await handler(event, data)
-        async with ChatActionSender(bot=bot, action=action, chat_id=event.message.chat.id):
-            handler_cor = handler(event, data)
+        message = event.message if isinstance(event, CallbackQuery) else event
+        async with ChatActionSender(bot=bot, action=action, chat_id=message.chat.id):
             try:
-                return await asyncio.wait_for(handler_cor, timeout=45)
+                return await asyncio.wait_for(handler(event, data), timeout=45)
             except asyncio.TimeoutError:
-                await delete_message(event.message)
-                return await event.message.answer(_("⚠ Превышено время ожидания ответа :(\n" "🔄 Попробуйте снова❕"))
+                if isinstance(event, CallbackQuery):
+                    await delete_message(message)
+                return await message.answer(_("⚠ Превышено время ожидания ответа :(\n" "🔄 Попробуйте снова❕"))

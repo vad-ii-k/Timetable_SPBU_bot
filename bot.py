@@ -46,7 +46,7 @@ async def register_global_middlewares(dispatcher: Dispatcher, i18n: I18n):
     :param dispatcher:
     :param i18n:
     """
-    dispatcher.message.middleware()
+    dispatcher.message.middleware(ActionMiddleware(app_config))
     dispatcher.callback_query.middleware(ActionMiddleware(app_config))
     dispatcher.callback_query.middleware(ThrottlingMiddleware())
     dispatcher.update.outer_middleware(LanguageI18nMiddleware(i18n))
