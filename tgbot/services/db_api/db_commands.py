@@ -20,13 +20,14 @@ class DBCommands:
         """
         old_user = await self.get_user(tg_user.id)
         if old_user:
+            await self.ensure_settings(old_user, tg_user.language_code)
             return old_user
         new_user = User()
         new_user.tg_id = tg_user.id
         new_user.full_name = tg_user.full_name
         new_user.username = tg_user.username
         await new_user.create()
-        await self.add_settings(new_user, tg_user.language_code)
+        await self.ensure_settings(new_user, tg_user.language_code)
         return new_user
 
     @staticmethod
@@ -62,6 +63,14 @@ class DBCommands:
         :return:
         """
         settings = await Settings.query.where(Settings.user_id == user.user_id).gino.first()
+        return settings
+
+    async def ensure_settings(self, user: User, language_code: str | None) -> Settings:
+        """Создать settings, если пользователя записали раньше, чем строку настроек."""
+        settings = await self.get_settings(user)
+        if settings is None:
+            await self.add_settings(user, language_code or "ru")
+            settings = await self.get_settings(user)
         return settings
 
     async def get_settings_by_tg_id(self, tg_user_id: int) -> Settings:

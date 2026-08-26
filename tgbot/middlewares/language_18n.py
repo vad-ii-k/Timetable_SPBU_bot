@@ -16,9 +16,11 @@ class LanguageI18nMiddleware(I18nMiddleware):
         :param data:
         :return:
         """
-        tg_user: User = data.get("event_from_user")
+        tg_user: User | None = data.get("event_from_user")
+        if tg_user is None:
+            return None
         user = await database.get_user(tg_user_id=tg_user.id)
         if user is None:
             user = await database.add_new_user(tg_user=tg_user)
-        settings = await database.get_settings(user)
+        settings = await database.ensure_settings(user, tg_user.language_code)
         return settings.language
