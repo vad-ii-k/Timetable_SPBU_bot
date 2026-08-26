@@ -59,7 +59,11 @@ async def study_levels_navigation_callback(
     :param state:
     """
     data = await state.get_data()
-    program_combinations = data["study_levels"][callback_data.serial]["program_combinations"]
+    study_levels = data.get("study_levels") or []
+    if not (0 <= callback_data.serial < len(study_levels)):
+        await callback.answer(_("Список программ устарел, начните выбор заново"), show_alert=True)
+        return
+    program_combinations = study_levels[callback_data.serial]["program_combinations"]
     await callback.message.edit_text(
         text=_("⬇️ Выберите программу подготовки: "),
         reply_markup=await create_study_programs_keyboard(program_combinations),
@@ -100,7 +104,11 @@ async def admission_years_navigation_callback(
     :param state:
     """
     data = await state.get_data()
-    admission_years = data["program_combinations"][callback_data.serial]["admission_years"]
+    program_combinations = data.get("program_combinations") or []
+    if not (0 <= callback_data.serial < len(program_combinations)):
+        await callback.answer(_("Список программ устарел, начните выбор заново"), show_alert=True)
+        return
+    admission_years = program_combinations[callback_data.serial]["admission_years"]
     await callback.message.edit_text(
         text=_("⬇️ Выберите год поступления: "),
         reply_markup=await create_admission_years_keyboard(admission_years),
