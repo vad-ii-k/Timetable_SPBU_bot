@@ -48,7 +48,7 @@ class ActionMiddleware(BaseMiddleware):
         with suppress(TelegramForbiddenError):
             async with ChatActionSender(bot=bot, action=action, chat_id=message.chat.id):
                 try:
-                    return await asyncio.wait_for(handler(event, data), timeout=45)
+                    return await asyncio.wait_for(handler(event, data), timeout=70)
                 except asyncio.TimeoutError:
                     if isinstance(event, CallbackQuery):
                         await delete_message(message)

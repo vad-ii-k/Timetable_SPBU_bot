@@ -31,8 +31,8 @@ async def request(url: str) -> dict:
                 break
     # Trying to get a response without a proxy
     async with aiohttp.ClientSession() as session:
-        # TT API (LETT/programs/levels) часто отвечает дольше 15 с
-        async with session.get(url, timeout=30) as resp:
+        # TT API (LETT/programs/levels) на проде отвечает дольше 30 с
+        async with session.get(url, timeout=60) as resp:
             if resp.status == 200:
                 return await resp.json()
     return {}

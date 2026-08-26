@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import gettext as _
 
-from tgbot.handlers.helpers import change_message_to_loading
+from tgbot.handlers.helpers import answer_callback_quietly, change_message_to_loading
 from tgbot.keyboards.inline import (
     create_admission_years_keyboard,
     create_groups_keyboard,
@@ -38,6 +38,7 @@ async def study_divisions_navigation_callback(
     :param callback_data:
     :param state:
     """
+    await answer_callback_quietly(callback)
     await change_message_to_loading(callback.message)
     study_levels = await get_study_levels(callback_data.alias)
     await callback.message.delete()
