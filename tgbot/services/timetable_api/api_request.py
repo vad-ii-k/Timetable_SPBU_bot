@@ -29,10 +29,16 @@ async def request(url: str) -> dict:
                 break
             except asyncio.exceptions.TimeoutError:
                 break
-    # Trying to get a response without a proxy
+    delay = 1
     async with aiohttp.ClientSession() as session:
         # TT API (LETT/programs/levels) на проде отвечает дольше 30 с
-        async with session.get(url, timeout=60) as resp:
-            if resp.status == 200:
-                return await resp.json()
+        for attempt in range(4):
+            async with session.get(url, timeout=60) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                if resp.status != 429:
+                    break
+                delay = min(delay * 2, 32)
+                if attempt < 3:
+                    await asyncio.sleep(delay)
     return {}

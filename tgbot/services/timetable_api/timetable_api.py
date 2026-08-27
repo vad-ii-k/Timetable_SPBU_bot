@@ -74,7 +74,7 @@ async def get_groups(program_id: int) -> list[GroupSearchInfo]:
     response = await request(url)
 
     groups: list[GroupSearchInfo] = []
-    for group in response["Groups"]:
+    for group in response.get("Groups", []):
         groups.append(GroupSearchInfo(tt_id=group["StudentGroupId"], name=group["StudentGroupName"]))
     return groups
 

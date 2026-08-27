@@ -16,9 +16,11 @@ from tgbot.services.timetable_api.timetable_api import TT_API_URL, get_study_div
 program_ids: list[str] = []
 groups: list[GroupSearchInfo] = []
 
-_REQUEST_ATTEMPTS = 3
+_REQUEST_ATTEMPTS = 6
 _REQUEST_TIMEOUT = 60
 _REQUEST_PAUSE = 1.0
+_RATE_DELAY_MAX = 60
+_rate_delay = _REQUEST_PAUSE
 
 
 async def request(session: ClientSession, url: str) -> dict:
@@ -28,11 +30,19 @@ async def request(session: ClientSession, url: str) -> dict:
     :param url:
     :return:
     """
+    global _rate_delay
     for attempt in range(1, _REQUEST_ATTEMPTS + 1):
         try:
             async with session.get(url, timeout=_REQUEST_TIMEOUT) as response:
                 if response.status == 200:
+                    _rate_delay = max(_REQUEST_PAUSE, _rate_delay / 2)
                     return await response.json()
+                if response.status == 429:
+                    _rate_delay = min(_rate_delay * 2, _RATE_DELAY_MAX)
+                    logging.warning("TT API 429, пауза %s с: %s", _rate_delay, url)
+                    if attempt < _REQUEST_ATTEMPTS:
+                        await asyncio.sleep(_rate_delay)
+                    continue
                 logging.warning("TT API %s: %s", response.status, url)
                 if response.status == 404:
                     return {"Groups": []}
@@ -65,7 +75,7 @@ async def create_and_run_tasks(items: list[str], function: Callable[[ClientSessi
                 await function(session, item)
             except Exception:
                 logging.exception("Task failed for %s", item)
-            await asyncio.sleep(_REQUEST_PAUSE)
+            await asyncio.sleep(_rate_delay)
 
 
 async def get_study_levels(session: ClientSession, alias: str) -> None:
