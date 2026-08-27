@@ -65,10 +65,7 @@ async def main():
 
     await connect_to_db()
     if not app_config.database.are_groups_collected:
-        try:
-            await adding_groups_to_db()
-        except Exception:
-            logger.exception("Initial group filling failed, continue startup")
+        asyncio.create_task(adding_groups_to_db())
 
     await set_commands(bot)
 
