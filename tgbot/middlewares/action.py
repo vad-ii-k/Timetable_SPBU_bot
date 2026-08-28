@@ -1,7 +1,7 @@
 """ Middlewares """
 
 import asyncio
-import logging
+import time
 from contextlib import suppress
 from typing import Any, Awaitable, Callable
 
@@ -15,17 +15,26 @@ from aiogram.utils.i18n import gettext as _
 from tgbot.config import bot
 from tgbot.handlers.helpers import delete_message
 
-logger = logging.getLogger(__name__)
-
 
 class SafeChatActionSender(ChatActionSender):
-    """ChatActionSender без необработанных таймаутов Telegram в фоновой задаче."""
+    """sendChatAction с коротким timeout, чтобы выход из контекста не ждал 60 с Bot API."""
 
     async def _worker(self) -> None:
         try:
-            await super()._worker()
-        except TelegramAPIError as err:
-            logger.warning("ChatActionSender: %s", err)
+            await self._wait(self.initial_sleep)
+            while not self._close_event.is_set():
+                start = time.monotonic()
+                with suppress(TelegramAPIError):
+                    await self.bot.send_chat_action(
+                        chat_id=self.chat_id,
+                        action=self.action,
+                        message_thread_id=self.message_thread_id,
+                        request_timeout=5,
+                    )
+                interval = self.interval - (time.monotonic() - start)
+                await self._wait(max(interval, 0))
+        finally:
+            self._closed_event.set()
 
 
 class ActionMiddleware(BaseMiddleware):
