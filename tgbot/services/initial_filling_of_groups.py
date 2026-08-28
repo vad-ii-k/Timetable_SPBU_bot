@@ -5,29 +5,31 @@ import logging
 from pathlib import Path
 from typing import Callable, Coroutine
 
-from aiohttp import ClientError, ClientSession
+from aiohttp import ClientError, ClientSession, ClientTimeout
 from aiohttp_socks import ProxyConnectionError, ProxyConnector, ProxyError
 
 from tgbot.config import app_config
 from tgbot.services.db_api.db_commands import database
 from tgbot.services.schedule.data_classes import GroupSearchInfo, StudyLevel
-from tgbot.services.timetable_api.api_request import retry_after_seconds
+from tgbot.services.timetable_api.api_request import wait_after_429
 from tgbot.services.timetable_api.timetable_api import TT_API_URL, get_study_divisions
+
+logger = logging.getLogger(__name__)
 
 program_ids: list[str] = []
 groups: list[GroupSearchInfo] = []
 
 _REQUEST_ATTEMPTS = 6
-_REQUEST_TIMEOUT = 60
+_REQUEST_TIMEOUT = ClientTimeout(total=60)
 _REQUEST_PAUSE = 1.0
 
 
-async def request(session: ClientSession, url: str) -> dict:
+async def request(session: ClientSession, url: str) -> dict | None:
     """
     Request to API with [ClientSession](https://docs.aiohttp.org/en/stable/client_reference.html)
     :param session:
     :param url:
-    :return:
+    :return: JSON или None, если запрос окончательно не удался
     """
     for attempt in range(1, _REQUEST_ATTEMPTS + 1):
         try:
@@ -35,24 +37,19 @@ async def request(session: ClientSession, url: str) -> dict:
                 if response.status == 200:
                     return await response.json()
                 if response.status == 429:
-                    wait = retry_after_seconds(response)
-                    logging.warning(
-                        "TT API 429, пауза %s с: %s headers=%s",
-                        wait,
-                        url,
-                        dict(response.headers),
-                    )
-                    if not wait:
+                    wait = wait_after_429(response, attempt)
+                    logger.warning("TT API 429, пауза %s с (попытка %s/%s): %s", wait, attempt, _REQUEST_ATTEMPTS, url)
+                    if attempt >= _REQUEST_ATTEMPTS:
                         break
                     await asyncio.sleep(wait)
                     continue
-                logging.warning("TT API %s: %s", response.status, url)
+                logger.warning("TT API %s: %s", response.status, url)
                 if response.status == 404:
                     return {"Groups": []}
                 if response.status < 500:
                     return {}
         except (ProxyError, ProxyConnectionError, TimeoutError, ClientError) as err:
-            logging.warning(
+            logger.warning(
                 "TT API request failed (попытка %s/%s, %s): %s",
                 attempt,
                 _REQUEST_ATTEMPTS,
@@ -60,9 +57,9 @@ async def request(session: ClientSession, url: str) -> dict:
                 str(err) or type(err).__name__,
             )
         if attempt < _REQUEST_ATTEMPTS:
-            await asyncio.sleep(attempt * 2)
-    logging.error("TT API request failed after %s attempts (%s)", _REQUEST_ATTEMPTS, url)
-    return {}
+            await asyncio.sleep(min(attempt * 2, 60))
+    logger.error("TT API request failed after %s attempts (%s)", _REQUEST_ATTEMPTS, url)
+    return None
 
 
 async def create_and_run_tasks(items: list[str], function: Callable[[ClientSession, str], Coroutine]) -> None:
@@ -77,7 +74,7 @@ async def create_and_run_tasks(items: list[str], function: Callable[[ClientSessi
             try:
                 await function(session, item)
             except Exception:
-                logging.exception("Task failed for %s", item)
+                logger.exception("Task failed for %s", item)
             await asyncio.sleep(_REQUEST_PAUSE)
 
 
@@ -90,7 +87,7 @@ async def get_study_levels(session: ClientSession, alias: str) -> None:
     url = f"{TT_API_URL}/study/divisions/{alias}/programs/levels"
     response = await request(session, url)
     if not isinstance(response, list):
-        logging.warning("Skip study levels for %s", alias)
+        logger.warning("Skip study levels for %s", alias)
         return
     for level in response:
         parsed_level = StudyLevel(**level)
@@ -103,7 +100,7 @@ async def collecting_program_ids() -> None:
     """Getting IDs of all programs"""
     study_divisions = await get_study_divisions()
     aliases = [division.alias for division in study_divisions]
-    logging.info("Collecting programs for %d divisions", len(aliases))
+    logger.info("Collecting programs for %d divisions", len(aliases))
     await create_and_run_tasks(aliases, get_study_levels)
 
 
@@ -115,8 +112,11 @@ async def get_groups(session: ClientSession, program_id: str) -> None:
     """
     url = f"{TT_API_URL}/programs/{program_id}/groups"
     response = await request(session, url)
+    if response is None:
+        logger.warning("Не удалось получить группы программы %s (лимит/сеть)", program_id)
+        return
     if "Groups" not in response:
-        logging.warning("No groups for program %s", program_id)
+        logger.warning("No groups for program %s", program_id)
         return
     for group in response["Groups"]:
         if group:
@@ -132,7 +132,7 @@ def edit_env_variable(env_variable: str, old_value: str, new_value: str) -> None
     """
     env_path = Path(".env")
     if not env_path.is_file():
-        logging.warning(
+        logger.warning(
             "Файла .env нет в контейнере — выставьте %s=%s в env_file на хосте, "
             "иначе сбор групп запустится снова",
             env_variable,
@@ -146,7 +146,7 @@ def edit_env_variable(env_variable: str, old_value: str, new_value: str) -> None
 
 
 async def _save_groups() -> None:
-    logging.info("Saving %d groups to database", len(groups))
+    logger.info("Saving %d groups to database", len(groups))
     for group in groups:
         await database.add_new_group(group_tt_id=group.tt_id, group_name=group.name)
     groups.clear()
@@ -155,15 +155,15 @@ async def _save_groups() -> None:
 async def adding_groups_to_db() -> None:
     """Adding all groups to the database"""
     try:
-        logging.info("Collecting programs in background...")
+        logger.info("Collecting programs in background...")
         await collecting_program_ids()
-        logging.info("Collected %d program IDs", len(program_ids))
+        logger.info("Collected %d program IDs", len(program_ids))
 
-        logging.info("Collecting groups...")
+        logger.info("Collecting groups...")
         await create_and_run_tasks(program_ids, get_groups)
         await _save_groups()
 
         edit_env_variable("ARE_GROUPS_COLLECTED", "False", "True")
-        logging.info("Finished adding groups to the database.")
+        logger.info("Finished adding groups to the database.")
     except Exception:
-        logging.exception("Initial group filling failed")
+        logger.exception("Initial group filling failed")

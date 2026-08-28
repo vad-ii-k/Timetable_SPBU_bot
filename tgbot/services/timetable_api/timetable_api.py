@@ -3,11 +3,12 @@
 from typing import Final
 
 from cashews import cache
+from pydantic import ValidationError
 
 from tgbot.config import app_config
 from tgbot.services.schedule.class_schedule import EducatorSchedule, GroupSchedule
 from tgbot.services.schedule.data_classes import EducatorSearchInfo, GroupSearchInfo, StudyDivision, StudyLevel
-from tgbot.services.timetable_api.api_request import request
+from tgbot.services.timetable_api.api_request import TimetableApiError, request
 
 TT_API_URL: Final[str] = "https://timetable.spbu.ru/api/v1"
 TT_URL: Final[str] = "https://timetable.spbu.ru/"
@@ -23,6 +24,8 @@ async def get_study_divisions() -> list[StudyDivision]:
     """
     url = f"{TT_API_URL}/study/divisions"
     response = await request(url)
+    if not isinstance(response, list):
+        raise TimetableApiError("Не удалось получить список факультетов")
 
     study_divisions: list[StudyDivision] = []
     for division in response:
@@ -41,7 +44,7 @@ async def educator_search(last_name: str) -> list[EducatorSearchInfo]:
     response = await request(url)
 
     educators: list[EducatorSearchInfo] = []
-    if "Educators" in response:
+    if isinstance(response, dict) and "Educators" in response:
         for educator in response["Educators"]:
             educators.append(EducatorSearchInfo(tt_id=educator["Id"], full_name=educator["FullName"]))
     return educators
@@ -56,6 +59,8 @@ async def get_study_levels(alias: str) -> list[StudyLevel]:
     """
     url = f"{TT_API_URL}/study/divisions/{alias}/programs/levels"
     response = await request(url)
+    if not isinstance(response, list):
+        raise TimetableApiError(f"Не удалось получить уровни обучения ({alias})")
 
     study_levels: list[StudyLevel] = []
     for level in response:
@@ -74,6 +79,8 @@ async def get_groups(program_id: int) -> list[GroupSearchInfo]:
     response = await request(url)
 
     groups: list[GroupSearchInfo] = []
+    if not isinstance(response, dict):
+        return groups
     for group in response.get("Groups", []):
         groups.append(GroupSearchInfo(tt_id=group["StudentGroupId"], name=group["StudentGroupName"]))
     return groups
@@ -95,8 +102,10 @@ async def get_educator_schedule_from_tt(tt_id: int, from_date: str, to_date: str
         "from_date": from_date,
         "to_date": to_date,
     }
-    educator_schedule = EducatorSchedule.model_validate(response | support_info)
-    return educator_schedule
+    try:
+        return EducatorSchedule.model_validate(response | support_info)
+    except (TypeError, ValidationError) as err:
+        raise TimetableApiError(f"Нет расписания преподавателя {tt_id}") from err
 
 
 @cache(ttl="2h")
@@ -115,5 +124,7 @@ async def get_group_schedule_from_tt(tt_id: int, from_date: str, to_date: str) -
         "from_date": from_date,
         "to_date": to_date,
     }
-    group_schedule = GroupSchedule.model_validate(response | support_info)
-    return group_schedule
+    try:
+        return GroupSchedule.model_validate(response | support_info)
+    except (TypeError, ValidationError) as err:
+        raise TimetableApiError(f"Нет расписания группы {tt_id}") from err
