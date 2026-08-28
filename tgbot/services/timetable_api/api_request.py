@@ -14,7 +14,8 @@ from tgbot.config import app_config
 
 logger = logging.getLogger(__name__)
 
-_TT_TIMEOUT = ClientTimeout(total=45)
+# LETT /programs/levels на проде часто отвечает дольше 45 с
+_TT_TIMEOUT = ClientTimeout(total=90, sock_connect=15)
 _MAX_429_WAIT = 60.0
 
 
