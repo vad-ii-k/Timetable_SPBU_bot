@@ -5,6 +5,8 @@ import logging
 
 from aiogram import Bot, exceptions
 
+logger = logging.getLogger(__name__)
+
 
 async def send_message(bot: Bot, user_id: int, text: str, disable_notification: bool = False) -> bool:
     """
@@ -18,13 +20,15 @@ async def send_message(bot: Bot, user_id: int, text: str, disable_notification: 
     try:
         await bot.send_message(user_id, text, disable_notification=disable_notification)
     except exceptions.TelegramForbiddenError:
-        logging.error("Target [ID:%s]: got TelegramForbiddenError", user_id)
+        logger.warning("Target [ID:%s]: TelegramForbiddenError", user_id)
+    except exceptions.TelegramNetworkError as err:
+        logger.warning("Target [ID:%s]: таймаут Telegram (%s)", user_id, err)
     except exceptions.TelegramRetryAfter as error:
-        logging.error("Target [ID:%s]: Flood limit is exceeded. Sleep %s seconds.", user_id, error.retry_after)
+        logger.warning("Target [ID:%s]: Flood limit. Sleep %s seconds.", user_id, error.retry_after)
         await asyncio.sleep(error.retry_after)
-        return await send_message(bot, user_id, text)  # Recursive call
+        return await send_message(bot, user_id, text)
     except exceptions.TelegramAPIError:
-        logging.exception("Target [ID:%s]: failed", user_id)
+        logger.exception("Target [ID:%s]: failed", user_id)
     else:
         return True
     return False
@@ -45,4 +49,4 @@ async def broadcast(bot: Bot, users_ids: list[int], text: str, disable_notificat
                 count += 1
             await asyncio.sleep(0.1)  # 10 messages per second (Limit: 30 messages per second)
     finally:
-        logging.info("%s/%s messages successful sent.", count, len(users_ids))
+        logger.info("%s/%s messages successful sent.", count, len(users_ids))

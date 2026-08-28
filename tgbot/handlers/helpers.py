@@ -18,6 +18,8 @@ from tgbot.services.db_api.db_commands import database
 from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.schedule.getting_shedule import get_image_week_schedule, get_text_week_schedule
 
+logger = logging.getLogger(__name__)
+
 
 async def send_schedule(
     state: FSMContext,
@@ -34,7 +36,7 @@ async def send_schedule(
     """
     user = await database.get_user(tg_user_id=tg_user_id)
     if user is None:
-        logging.warning("Нет пользователя %s для расписания", tg_user_id)
+        logger.warning("Нет пользователя %s для расписания", tg_user_id)
         return
     settings = await database.ensure_settings(user, "ru")
     is_picture = settings.schedule_view_is_picture
@@ -89,7 +91,7 @@ async def change_message_to_loading(message: Message) -> None:
 
 async def answer_callback_quietly(callback: CallbackQuery, cache_time: int = 2) -> None:
     """Ответ на callback; просроченный query игнорируем (лимит Telegram ~10 с)."""
-    with suppress(TelegramBadRequest):
+    with suppress(TelegramAPIError):
         await callback.answer(cache_time=cache_time)
 
 
