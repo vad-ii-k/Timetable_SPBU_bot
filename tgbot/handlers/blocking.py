@@ -17,10 +17,7 @@ async def my_chat_member_handler(update: ChatMemberUpdated):
     :param update:
     :return:
     """
-    db_user = await database.get_user(update.from_user.id)
-    if db_user is None:
-        return
     if update.new_chat_member.status == ChatMemberStatus.KICKED:
-        await db_user.update(is_bot_blocked=True).apply()
+        await database.set_bot_blocked(update.from_user.id, True)
     elif update.new_chat_member.status == ChatMemberStatus.MEMBER:
-        await db_user.update(is_bot_blocked=False).apply()
+        await database.set_bot_blocked(update.from_user.id, False)

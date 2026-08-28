@@ -3,12 +3,16 @@
 import logging
 from datetime import datetime, time
 
+from aiogram.exceptions import TelegramForbiddenError, TelegramNetworkError
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from tgbot.config import bot
 from tgbot.services.db_api.db_commands import database
 from tgbot.services.schedule.data_classes import UserType
 from tgbot.services.schedule.getting_shedule import get_image_day_schedule, get_text_day_schedule
+from tgbot.services.timetable_api.api_request import TimetableApiError
+
+logger = logging.getLogger(__name__)
 
 
 async def send_daily_summary(tg_id: int, user_type: UserType, tt_id: int, day_counter: int) -> None:
@@ -37,12 +41,17 @@ async def job_send_daily_summary():
     current_hour = datetime.now().hour
     user_with_main_schedule = await database.get_users_with_sign_to_summary(time(current_hour))
     day_counter = 1 * (current_hour > 12)
+    logger.info("Рассылка сводки: %s пользователей, hour=%s", len(user_with_main_schedule), current_hour)
     for tg_id, user_type, tt_id in user_with_main_schedule:
         try:
             await send_daily_summary(tg_id, user_type, tt_id, day_counter)
+        except TelegramForbiddenError:
+            logger.warning("Сводка: пользователь %s заблокировал бота", tg_id)
+            await database.set_bot_blocked(tg_id)
+        except (TelegramNetworkError, TimetableApiError) as err:
+            logger.warning("Сводка пользователю %s не отправлена: %s", tg_id, err)
         except Exception:
-            # Ошибка одного пользователя не должна рвать рассылку остальным
-            logging.exception("Не удалось отправить сводку пользователю %s", tg_id)
+            logger.exception("Не удалось отправить сводку пользователю %s", tg_id)
 
 
 async def start_scheduler(scheduler: AsyncIOScheduler):

@@ -41,6 +41,11 @@ class DBCommands:
         return user
 
     @staticmethod
+    async def set_bot_blocked(tg_user_id: int, blocked: bool = True) -> None:
+        """Пометить, что пользователь заблокировал бота (или разблокировал)."""
+        await User.update.values(is_bot_blocked=blocked).where(User.tg_id == tg_user_id).gino.status()
+
+    @staticmethod
     async def add_settings(user: User, language_code: str) -> Settings:
         """
         Adding settings for a db user
