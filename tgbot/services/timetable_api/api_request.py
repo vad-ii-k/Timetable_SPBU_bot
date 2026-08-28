@@ -40,12 +40,16 @@ def retry_after_seconds(response: ClientResponse) -> float | None:
     return max(0.0, (when - datetime.now(timezone.utc)).total_seconds())
 
 
-def wait_after_429(response: ClientResponse, attempt: int) -> float:
-    """Пауза после 429: Retry-After или экспонента, не больше 60 с."""
+def wait_after_429(
+    response: ClientResponse,
+    attempt: int,
+    max_wait: float = _MAX_429_WAIT,
+) -> float:
+    """Пауза после 429: Retry-After или экспонента, не больше max_wait."""
     header_wait = retry_after_seconds(response)
     if header_wait and header_wait > 0:
-        return min(header_wait, _MAX_429_WAIT)
-    return min(2.0**attempt, _MAX_429_WAIT)
+        return min(header_wait, max_wait)
+    return min(2.0**attempt, max_wait)
 
 
 async def request(url: str) -> dict | list:

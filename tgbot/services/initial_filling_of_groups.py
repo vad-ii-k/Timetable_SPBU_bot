@@ -19,9 +19,11 @@ logger = logging.getLogger(__name__)
 program_ids: list[str] = []
 groups: list[GroupSearchInfo] = []
 
-_REQUEST_ATTEMPTS = 6
+_REQUEST_ATTEMPTS = 10
 _REQUEST_TIMEOUT = ClientTimeout(total=60)
 _REQUEST_PAUSE = 1.0
+# Фон: лучше подождать лимит TT API, чем пропустить программу
+_MAX_429_WAIT = 300.0
 
 
 async def request(session: ClientSession, url: str) -> dict | None:
@@ -37,7 +39,7 @@ async def request(session: ClientSession, url: str) -> dict | None:
                 if response.status == 200:
                     return await response.json()
                 if response.status == 429:
-                    wait = wait_after_429(response, attempt)
+                    wait = wait_after_429(response, attempt, max_wait=_MAX_429_WAIT)
                     logger.warning("TT API 429, пауза %s с (попытка %s/%s): %s", wait, attempt, _REQUEST_ATTEMPTS, url)
                     if attempt >= _REQUEST_ATTEMPTS:
                         break
@@ -57,7 +59,7 @@ async def request(session: ClientSession, url: str) -> dict | None:
                 str(err) or type(err).__name__,
             )
         if attempt < _REQUEST_ATTEMPTS:
-            await asyncio.sleep(min(attempt * 2, 60))
+            await asyncio.sleep(min(attempt * 2, _MAX_429_WAIT))
     logger.error("TT API request failed after %s attempts (%s)", _REQUEST_ATTEMPTS, url)
     return None
 
