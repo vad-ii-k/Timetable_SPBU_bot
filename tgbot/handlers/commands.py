@@ -20,6 +20,7 @@ from tgbot.services.db_api.db_commands import database
 from tgbot.services.schedule.data_classes import UserType
 
 router = Router()
+logger = logging.getLogger(__name__)
 
 
 async def set_commands(bot_: Bot):
@@ -40,7 +41,7 @@ async def start_command(message: Message, state: FSMContext):
     :param state:
     """
     await state.clear()
-    logging.info("start -- id:%s", message.from_user.id)
+    logger.info("start -- id:%s", message.from_user.id)
     await message.answer(
         text=(
             _("👋🏻 <b>Добро пожаловать, ")

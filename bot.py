@@ -58,9 +58,9 @@ async def main():
         level=logging.INFO,
         format="%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s",
     )
-    root_logger = logging.getLogger("gino")
-    if root_logger.level == logging.NOTSET:
-        root_logger.setLevel(logging.WARN)
+    logging.getLogger("gino").setLevel(logging.WARNING)
+    logging.getLogger("aiohttp").setLevel(logging.WARNING)
+    logging.getLogger("apscheduler.executors").setLevel(logging.WARNING)
     logger.info("Starting bot...")
 
     await connect_to_db()
