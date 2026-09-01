@@ -24,6 +24,9 @@ async def getting_choice_for_educator(message: Message, state: FSMContext):
     :param message:
     :param state:
     """
+    if not message.text:
+        await message.answer(_("Пожалуйста, отправьте фамилию текстом."))
+        return
     teachers_list = await educator_search(message.text)
     if len(teachers_list) == 0:
         await message.answer(
@@ -54,6 +57,9 @@ async def getting_choice_for_student(message: Message, state: FSMContext):
     :param message:
     :param state:
     """
+    if not message.text:
+        await message.answer(_("Пожалуйста, отправьте название группы текстом."))
+        return
     groups_list = await database.get_groups_by_name(message.text)
     if len(groups_list) == 0:
         await message.answer(

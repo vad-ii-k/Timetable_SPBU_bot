@@ -103,9 +103,14 @@ async def schedule_subscription_callback(
     """
     if callback_data.answer:
         data = await state.get_data()
+        tt_id = data.get("tt_id")
+        if tt_id is None:
+            await callback.answer(_("⚠️ Сначала выберите расписание"), show_alert=True)
+            await delete_message(callback.message)
+            return
         await database.set_main_schedule(
             tg_user_id=callback.from_user.id,
-            tt_id=int(data.get("tt_id")),
+            tt_id=int(tt_id),
             user_type=data.get("user_type"),
             schedule_name=data.get("schedule_name"),
         )

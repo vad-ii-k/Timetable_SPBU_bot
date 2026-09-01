@@ -4,6 +4,8 @@ from aiogram import Router
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.i18n import gettext as _
 
+from tgbot.handlers.helpers import delete_message
+
 router = Router()
 
 
@@ -13,7 +15,7 @@ async def unexpected_message_handler(message: Message):
     Deleting an unexpected message
     :param message:
     """
-    await message.delete()
+    await delete_message(message)
 
 
 @router.callback_query()

@@ -90,5 +90,6 @@ async def request(url: str) -> dict | list:
             except (TimeoutError, ClientError) as err:
                 logger.warning("TT API сбой (%s): %s", url, str(err) or type(err).__name__)
                 break
-    logger.error("TT API недоступен (%s), last_status=%s", url, last_status)
+    if last_status is None or last_status >= 500:
+        logger.error("TT API недоступен (%s), last_status=%s", url, last_status)
     return {}

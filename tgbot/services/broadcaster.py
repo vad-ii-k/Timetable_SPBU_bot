@@ -27,6 +27,8 @@ async def send_message(bot: Bot, user_id: int, text: str, disable_notification: 
         logger.warning("Target [ID:%s]: Flood limit. Sleep %s seconds.", user_id, error.retry_after)
         await asyncio.sleep(error.retry_after)
         return await send_message(bot, user_id, text)
+    except exceptions.TelegramBadRequest as err:
+        logger.warning("Target [ID:%s]: Bad Request (%s)", user_id, err)
     except exceptions.TelegramAPIError:
         logger.exception("Target [ID:%s]: failed", user_id)
     else:

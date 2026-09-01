@@ -5,7 +5,7 @@ with [ErrorHandler](https://docs.aiogram.dev/en/dev-3.x/dispatcher/class_based_h
 
 import logging
 
-from aiogram import Router
+from aiogram import Router, html
 from aiogram.exceptions import TelegramAPIError, TelegramBadRequest, TelegramForbiddenError, TelegramNetworkError
 from aiogram.types.error_event import ErrorEvent
 
@@ -19,6 +19,11 @@ logger = logging.getLogger(__name__)
 
 # Просроченный callback: расписание могло уже отправиться, пользователю/админам не шлём алерт
 _STALE_CALLBACK_MARKER = "query is too old"
+_HARMLESS_BAD_REQUEST = (
+    "message to edit not found",
+    "message to delete not found",
+    "message can't be deleted",
+)
 
 
 async def _answer_user(update, text: str) -> None:
@@ -53,9 +58,14 @@ async def errors_handler(exception: ErrorEvent):
         logger.warning("Таймаут Telegram: %s", err)
         return
 
-    if isinstance(err, TelegramBadRequest) and _STALE_CALLBACK_MARKER in str(err).lower():
-        logger.warning("Просроченный callback query, пропускаем: %s", err)
-        return
+    if isinstance(err, TelegramBadRequest):
+        err_text = str(err).lower()
+        if _STALE_CALLBACK_MARKER in err_text:
+            logger.warning("Просроченный callback query, пропускаем: %s", err)
+            return
+        if any(marker in err_text for marker in _HARMLESS_BAD_REQUEST):
+            logger.warning("Сообщение уже недоступно: %s", err)
+            return
 
     if isinstance(err, TimetableApiError):
         logger.warning("TT API: %s", err)
@@ -63,5 +73,5 @@ async def errors_handler(exception: ErrorEvent):
         return
 
     await _answer_user(update, "⚠ Произошла ошибка :(")
-    await broadcaster.broadcast(bot, app_config.tg_bot.admin_ids, f"<code>{str(err)[:4080]}</code>")
+    await broadcaster.broadcast(bot, app_config.tg_bot.admin_ids, f"<code>{html.quote(str(err)[:4080])}</code>")
     logger.error("%s", err, exc_info=err)

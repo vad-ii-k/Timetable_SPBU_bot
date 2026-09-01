@@ -83,10 +83,11 @@ async def change_message_to_loading(message: Message) -> None:
     Changes the message to bootable
     :param message:
     """
-    if message.content_type == ContentType.DOCUMENT:
-        await message.edit_caption(caption=_("🕒 <i>Загрузка...</i>"))
-    else:
-        await message.edit_text("⏳")
+    with suppress(TelegramBadRequest):
+        if message.content_type == ContentType.DOCUMENT:
+            await message.edit_caption(caption=_("🕒 <i>Загрузка...</i>"))
+        else:
+            await message.edit_text("⏳")
 
 
 async def answer_callback_quietly(callback: CallbackQuery, cache_time: int = 2) -> None:

@@ -5,7 +5,7 @@ with the [Command](https://docs.aiogram.dev/en/dev-3.x/dispatcher/filters/comman
 
 import logging
 
-from aiogram import Bot, Router, flags
+from aiogram import Bot, Router, flags, html
 from aiogram.enums import ChatAction
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -45,7 +45,7 @@ async def start_command(message: Message, state: FSMContext):
     await message.answer(
         text=(
             _("👋🏻 <b>Добро пожаловать, ")
-            + f"{message.from_user.full_name}!</b>\n"
+            + f"{html.quote(message.from_user.full_name)}!</b>\n"
             + _("ℹ️ Следуйте указаниям для настройки\n" "➖➖➖➖➖➖➖➖➖➖➖➖\n" "⬇️ Получить расписание по:")
         ),
         reply_markup=await create_start_menu_keyboard(),
